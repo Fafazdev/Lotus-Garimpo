@@ -1,0 +1,262 @@
+/* PODE APAGAR ESSA PARTE DO SEU BODY.CSS */
+.produtos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto; 
+}
+
+@media (max-width: 992px) {
+    .produtos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 576px) {
+    .produtos-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================
+   ESTRUTURA DA LOJA E SIDEBAR
+   ========================================= */
+.shop-section {
+    background-color: #499273; /* Verde de fundo da sua referência */
+    color: #ffffff;
+}
+
+/* Breadcrumbs (Início > Produtos) */
+.breadcrumb-text {
+    font-size: 15px;
+    font-weight: 800;
+}
+.breadcrumb-text a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.breadcrumb-text a:hover {
+    opacity: 0.7;
+}
+
+/* Botão de Destaque */
+.btn-destaque {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+.btn-destaque:hover {
+    background-color: #ffffff;
+    color: #499273;
+}
+
+/* Títulos da Sidebar */
+.sidebar-title {
+    font-family: 'Georgia', serif;
+    font-size: 26px;
+    margin-bottom: 25px;
+}
+.sidebar-subtitle {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* Lista de Categorias */
+.sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.sidebar-list li {
+    margin-bottom: 15px;
+}
+.sidebar-list a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 15px;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+}
+.sidebar-list a:hover {
+    opacity: 0.7;
+}
+
+/* =========================================
+   CHECKBOXES CUSTOMIZADOS
+   ========================================= */
+.custom-checkbox {
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    user-select: none;
+}
+
+/* Esconde o checkbox original */
+.custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Cria um quadrado branco vazado */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: transparent;
+    border: 1.5px solid #ffffff;
+    border-radius: 4px;
+}
+
+/* Quando marcado, pinta de branco */
+.custom-checkbox input:checked ~ .checkmark {
+    background-color: #ffffff;
+}
+
+/* Cria a setinha de "check" invisível */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Mostra a setinha quando marcado */
+.custom-checkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Desenha a setinha usando bordas verdes (para contrastar com o fundo branco) */
+.custom-checkbox .checkmark:after {
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 11px;
+    border: solid #499273;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* =========================================
+   ESTILO DO CARD DO UIVERSE (ADAPTADO)
+   ========================================= */
+.card-produto {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #fbe5f0; /* Bordinha rosa clara */
+    transition: transform 0.2s;
+}
+
+.card-produto:hover {
+    transform: translateY(-5px); /* Efeito de pular ao passar o mouse */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Fundo da imagem (Rosa claro da Lótus) */
+.image_container {
+    background-color: #fbe5f0; 
+    border-radius: 8px;
+    height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Ícone de placeholder de imagem (Rosa escuro) */
+.image_container .image {
+    width: 60px;
+    fill: #df8bb0;
+}
+
+/* Título (Verde do site) */
+.card-produto .title span {
+    font-weight: 700;
+    color: #519f79;
+    font-size: 1.2rem;
+}
+
+/* Tamanhos */
+.card-produto .size span {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+}
+.list-size {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 15px 0;
+    display: flex;
+    gap: 8px;
+}
+.item-list-button {
+    background: transparent;
+    border: 1px solid #519f79; /* Borda verde */
+    color: #519f79;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.item-list-button:hover {
+    background-color: #519f79;
+    color: #ffffff;
+}
+
+/* Base do card (Preço e Botão) */
+.card-produto .action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Empurra essa área pro final do card */
+}
+
+/* Preço (Rosa vibrante) */
+.card-produto .price span {
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: #ff66b2; 
+}
+
+/* Botão de Comprar (Verde) */
+.cart-button {
+    background-color: #519f79;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.cart-button:hover {
+    background-color: #3b7d5d;
+}
+.cart-icon {
+    width: 18px;
+}

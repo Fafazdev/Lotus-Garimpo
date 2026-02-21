@@ -1,0 +1,117 @@
+
+.site-footer {
+    background-color: #df8bb0; /* Tom de rosa do rodapé */
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    margin-top: 50px; /* Dá um espaço entre o conteúdo do site e o rodapé */
+}
+
+/* Títulos do Rodapé (Fonte com serifa para ficar igual à imagem) */
+.footer-title {
+    font-family: 'Georgia', serif; 
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 25px;
+    color: #ffffff;
+}
+
+/* Links em lista */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footer-links li {
+    margin-bottom: 15px;
+}
+.footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800; /* Deixa a fonte mais gordinha */
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+.footer-links a:hover {
+    opacity: 0.7;
+}
+
+/* Redes Sociais (Instagram) */
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+.social-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    background-color: #ffffff;
+    color: #df8bb0; /* Ícone rosa */
+    border-radius: 50%; /* Faz o círculo perfeito */
+    text-decoration: none;
+    font-size: 24px;
+    transition: transform 0.2s;
+}
+.social-icon:hover {
+    transform: scale(1.1);
+    color: #df8bb0;
+}
+
+/* Meios de Pagamento */
+.payment-methods {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+.payment-card {
+    background-color: #ffffff;
+    width: 45px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px; /* Bordinha levemente arredondada como um cartão */
+    font-size: 22px;
+}
+/* Cores originais das marcas para os ícones FontAwesome */
+.payment-card.visa { color: #1434CB; }
+.payment-card.master { color: #eb001b; }
+.payment-card.amex { color: #002663; }
+.payment-card.pix { color: #32bcad; }
+
+/* Textos da parte de baixo (Copyright) */
+.copyright-text, .credits-text {
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+/* =========================================
+   BANNER DE COOKIES
+   ========================================= */
+.cookie-banner {
+    background-color: #ff66b2; /* Rosa vibrante */
+    color: #3b7d5d; /* Tom esverdeado para o texto, combinando com a marca */
+    padding: 15px 0;
+    width: 100%;
+}
+.cookie-banner p {
+    font-size: 14px;
+}
+.btn-cookie {
+    background-color: transparent;
+    color: #3b7d5d;
+    border: 1px solid #3b7d5d;
+    padding: 5px 25px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-cookie:hover {
+    background-color: #3b7d5d;
+    color: #ffffff;
+}

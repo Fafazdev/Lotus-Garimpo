@@ -1,0 +1,109 @@
+body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa; /* Fundo padrão do site abaixo do header */
+            margin: 0;
+            padding: 0;
+            background-color: #519f79;
+        }
+
+        /* Área total do cabeçalho rosa */
+        .top-header {
+            background-color: #fbe5f0; /* Rosa clarinho da referência */
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* --- Barra de Pesquisa Verde --- */
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+        }
+        .search-input {
+            width: 100%;
+            background-color: #519f79; /* Verde da referência */
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 45px 10px 20px;
+            font-size: 15px;
+            outline: none;
+        }
+        .search-input::placeholder {
+            color: #c0decb; /* Verde claro para o placeholder */
+            font-weight: 500;
+        }
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        /* --- Logo --- */
+        .logo-img {
+            max-width: 120px; /* Ajuste o tamanho da sua logo aqui */
+            height: auto;
+        }
+
+        /* --- Ícones da Direita (Conta e Carrinho) --- */
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 30px;
+        }
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #519f79; /* Verde escuro */
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .action-item:hover {
+            color: #3b7d5d;
+        }
+        .action-item i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        /* Bolinha rosa do carrinho */
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: 15px;
+            background-color: #ff66b2; /* Rosa vibrante */
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 3px 6px;
+            border-radius: 50%;
+        }
+
+        /* --- Menu de Navegação --- */
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .nav-menu a {
+            text-decoration: none;
+            color: #519f79; /* Verde */
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: capitalize;
+            transition: opacity 0.2s;
+        }
+        .nav-menu a:hover {
+            opacity: 0.7;
+        }
