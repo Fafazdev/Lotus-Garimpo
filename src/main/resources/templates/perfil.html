@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Lótus Garimpo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/perfil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <main class="profile-content">
+        <div class="container-fluid px-4 px-lg-5 py-5">
+            <!-- Seção de Header do Perfil -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h1 th:text="${session.usuarioLogado?.nome ?: 'Usuário'}">Nome do Usuário</h1>
+                            <p th:text="${session.usuarioLogado?.email ?: 'email@example.com'}">email@example.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="row mb-5">
+                <div class="col-12 d-flex gap-3 flex-wrap">
+                    <button class="btn-add-piece" data-bs-toggle="modal" data-bs-target="#addPieceModal">
+                        <i class="fas fa-plus"></i> Adicionar Nova Peça
+                    </button>
+                    <a th:href="@{/}" class="btn-back-home">
+                        <i class="fas fa-arrow-left"></i> Voltar ao Início
+                    </a>
+                    <a th:href="@{/logout}" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </a>
+                </div>
+            </div>
+
+            <!-- Container Principal com Layout de Grid -->
+            <div class="row g-4">
+                <!-- Coluna de Informações -->
+                <div class="col-lg-12">
+                    <!-- Card de Informações Pessoais -->
+                    <div class="card-info">
+                        <label class="card-title">INFORMAÇÕES PESSOAIS</label>
+                        <div class="info-section">
+                            <div>
+                                <span class="info-label">NOME</span>
+                                <div class="editable-item" onclick="editField(this, 'nome')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.nome ?: 'Clique para editar'}">João Silva</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="text" class="editable-input" th:value="${session.usuarioLogado?.nome ?: ''}" placeholder="Digite seu nome">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'nome')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div>
+                                <span class="info-label">EMAIL</span>
+                                <div class="editable-item" onclick="editField(this, 'email')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.email ?: 'Clique para editar'}">joao@email.com</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="email" class="editable-input" th:value="${session.usuarioLogado?.email ?: ''}" placeholder="Digite seu email">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'email')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div>
+                                <span class="info-label">TELEFONE</span>
+                                <div class="editable-item" onclick="editField(this, 'telefone')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.telefone ?: 'Clique para editar'}">Não preenchido</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="tel" class="editable-input" th:value="${session.usuarioLogado?.telefone ?: ''}" placeholder="(XX) XXXXX-XXXX">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'telefone')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de CPF -->
+                    <div class="card-info">
+                        <label class="card-title">DADOS PESSOAIS</label>
+                        <div class="info-section">
+                            <div>
+                                <span class="info-label">CPF</span>
+                                <div class="editable-item" onclick="editField(this, 'cpf')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.cpf ?: 'Clique para editar'}">Não preenchido</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="text" class="editable-input" th:value="${session.usuarioLogado?.cpf ?: ''}" placeholder="XXX.XXX.XXX-XX">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'cpf')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de Endereço -->
+                    <div class="card-info">
+                        <label class="card-title">ENDEREÇO</label>
+                        <div class="info-section">
+                            <div>
+                                <span class="info-label">CEP</span>
+                                <div class="editable-item" onclick="editField(this, 'cep')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.cep ?: 'Clique para editar'}">Não preenchido</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="text" class="editable-input" id="cepInput" th:value="${session.usuarioLogado?.cep ?: ''}" placeholder="XXXXX-XXX" onchange="buscarEnderecoPorCep()">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'cep')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div>
+                                <span class="info-label">RUA</span>
+                                <div class="editable-item" onclick="editField(this, 'endereco')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.endereco ?: 'Clique para editar'}">Não preenchido</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="text" class="editable-input" id="ruaInput" th:value="${session.usuarioLogado?.endereco ?: ''}" placeholder="Nome da rua">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'endereco')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div>
+                                <span class="info-label">NÚMERO</span>
+                                <div class="editable-item" onclick="editField(this, 'numero')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.numero ?: 'Clique para editar'}">Não preenchido</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="text" class="editable-input" id="numeroInput" th:value="${session.usuarioLogado?.numero ?: ''}" placeholder="Número">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'numero')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div>
+                                <span class="info-label">COMPLEMENTO</span>
+                                <div class="editable-item" onclick="editField(this, 'complemento')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.complemento ?: 'Clique para editar'}">Não preenchido</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="text" class="editable-input" id="complementoInput" th:value="${session.usuarioLogado?.complemento ?: ''}" placeholder="Apt, sala, etc">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'complemento')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div>
+                                <span class="info-label">CIDADE</span>
+                                <div class="editable-item" onclick="editField(this, 'cidade')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.cidade ?: 'Clique para editar'}">Não preenchido</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="text" class="editable-input" id="cidadeInput" th:value="${session.usuarioLogado?.cidade ?: ''}" placeholder="Cidade">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'cidade')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div>
+                                <span class="info-label">ESTADO</span>
+                                <div class="editable-item" onclick="editField(this, 'estado')">
+                                    <p class="editable-text-display" th:text="${session.usuarioLogado?.estado ?: 'Clique para editar'}">Não preenchido</p>
+                                    <div class="editable-form">
+                                        <div class="form-group-editable">
+                                            <input type="text" class="editable-input" id="estadoInput" th:value="${session.usuarioLogado?.estado ?: ''}" placeholder="UF">
+                                        </div>
+                                        <div class="button-group-editable">
+                                            <button class="btn-save-edit" onclick="saveField(this, 'estado')">Salvar</button>
+                                            <button class="btn-cancel-edit" onclick="cancelEdit(this)">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Adicionar Nova Peça -->
+    <div class="modal fade" id="addPieceModal" tabindex="-1" aria-labelledby="addPieceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; background: transparent;">
+                
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10; background: white; border-radius: 50%;"></button>
+                
+                <div class="modal-body p-0">
+                    <div class="form-container-piece">
+                        <p class="title-piece">Adicionar Peça</p>
+
+                        <form class="form-piece" th:action="@{/peca/adicionar}" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label>Nome da Peça</label>
+                                <input type="text" name="nome" class="input-piece" placeholder="Ex: Jaqueta Vintage" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea name="descricao" class="input-piece textarea-piece" placeholder="Descreva a peça..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Preço</label>
+                                <input type="number" name="preco" class="input-piece" placeholder="R$ 0,00" step="0.01" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tamanho</label>
+                                <select name="tamanho" class="input-piece" required>
+                                    <option value="">Selecione um tamanho</option>
+                                    <option value="P">P</option>
+                                    <option value="M">M</option>
+                                    <option value="G">G</option>
+                                    <option value="GG">GG</option>
+                                    <option value="U">U</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Categoria</label>
+                                <select name="categoria" class="input-piece" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Partes de cima">Partes de cima</option>
+                                    <option value="Partes de baixo">Partes de baixo</option>
+                                    <option value="Acessórios">Acessórios</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Imagem</label>
+                                <input type="file" name="imagem" class="input-piece" accept="image/*" required>
+                            </div>
+
+                            <button type="submit" class="form-btn-piece">Adicionar Peça</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function editField(element, fieldName) {
+        const form = element.querySelector('.editable-form');
+        const input = form.querySelector('.editable-input');
+        form.classList.add('active');
+        input.focus();
+    }
+
+    let unsavedWarnings = {};
+
+    function cancelEdit(button) {
+        const form = button.closest('.editable-form');
+        
+        // Remove o aviso
+        const warning = form.querySelector('.unsaved-warning');
+        if (warning) warning.remove();
+        
+        form.classList.remove('active');
+    }
+
+    function saveField(button, fieldName) {
+        // Se for CEP, salvar CEP + endereço auto-preenchido
+        if (fieldName === 'cep') {
+            saveCepAndAddress(button);
+            return;
+        }
+
+        const form = button.closest('.editable-form');
+        const input = form.querySelector('.editable-input');
+        const item = form.closest('.editable-item');
+        const textDisplay = item.querySelector('.editable-text-display');
+        const value = input.value.trim();
+
+        if (!value) {
+            alert('Campo não pode estar vazio!');
+            return;
+        }
+
+        // Envia para o servidor
+        fetch('/api/usuario/atualizar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                campo: fieldName,
+                valor: value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                textDisplay.textContent = value;
+                form.classList.remove('active');
+                
+                // Remove o aviso
+                const warning = form.querySelector('.unsaved-warning');
+                if (warning) warning.remove();
+                
+                console.log('Campo ' + fieldName + ' atualizado com sucesso!');
+            } else {
+                alert('Erro ao atualizar: ' + (data.mensagem || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao salvar dados');
+        });
+    }
+
+    // Função para salvar CEP e campos de endereço auto-preenchidos
+    function saveCepAndAddress(button) {
+        const form = button.closest('.editable-form');
+        const cepInput = form.querySelector('.editable-input');
+        const cepValue = cepInput.value.trim();
+
+        if (!cepValue) {
+            alert('Campo CEP não pode estar vazio!');
+            return;
+        }
+
+        // Coletar valores dos campos de endereço
+        const endereco = document.getElementById('ruaInput').value.trim();
+        const cidade = document.getElementById('cidadeInput').value.trim();
+        const estado = document.getElementById('estadoInput').value.trim();
+        const numero = document.getElementById('numeroInput').value.trim();
+        const complemento = document.getElementById('complementoInput').value.trim();
+
+        // Array de campos para salvar
+        const fieldsToSave = [
+            { campo: 'cep', valor: cepValue }
+        ];
+
+        if (endereco) fieldsToSave.push({ campo: 'endereco', valor: endereco });
+        if (cidade) fieldsToSave.push({ campo: 'cidade', valor: cidade });
+        if (estado) fieldsToSave.push({ campo: 'estado', valor: estado });
+        if (numero) fieldsToSave.push({ campo: 'numero', valor: numero });
+        if (complemento) fieldsToSave.push({ campo: 'complemento', valor: complemento });
+
+        // Salvar cada campo
+        let successCount = 0;
+        let totalFields = fieldsToSave.length;
+
+        fieldsToSave.forEach((fieldData, index) => {
+            fetch('/api/usuario/atualizar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso) {
+                    successCount++;
+                    
+                    // Atualizar display e remover avisos para cada campo
+                    const fieldElement = document.getElementById(fieldData.campo + 'Input');
+                    if (fieldElement) {
+                        const item = fieldElement.closest('.editable-item');
+                        if (item) {
+                            const textDisplay = item.querySelector('.editable-text-display');
+                            if (textDisplay) textDisplay.textContent = fieldData.valor;
+                            
+                            const editForm = item.querySelector('.editable-form');
+                            if (editForm) {
+                                editForm.classList.remove('active');
+                                const warning = editForm.querySelector('.unsaved-warning');
+                                if (warning) warning.remove();
+                            }
+                        }
+                    }
+
+                    console.log('Campo ' + fieldData.campo + ' atualizado com sucesso!');
+
+                    // Se todos foram salvos, fechar o formulário do CEP
+                    if (successCount === totalFields) {
+                        form.classList.remove('active');
+                        console.log('Todos os campos foram salvos com sucesso!');
+                    }
+                } else {
+                    console.error('Erro ao atualizar ' + fieldData.campo + ': ' + (data.mensagem || 'Erro desconhecido'));
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao salvar ' + fieldData.campo + ':', error);
+            });
+        });
+    }
+
+    // Detectar mudanças nos inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        const editableInputs = document.querySelectorAll('.editable-input');
+        editableInputs.forEach(input => {
+            const initialValue = input.value;
+            const form = input.closest('.editable-form');
+            
+            input.addEventListener('input', function() {
+                const buttonGroup = form.querySelector('.button-group-editable');
+                const existingWarning = form.querySelector('.unsaved-warning');
+                
+                if (this.value !== initialValue && !existingWarning) {
+                    const warning = document.createElement('span');
+                    warning.className = 'unsaved-warning';
+                    warning.textContent = '⚠ não salvo';
+                    buttonGroup.appendChild(warning);
+                } else if (this.value === initialValue && existingWarning) {
+                    existingWarning.remove();
+                }
+            });
+        });
+    });
+
+    // Máscaras de entrada
+    document.addEventListener('DOMContentLoaded', function() {
+        const telefoneInputs = document.querySelectorAll('input[type="tel"]');
+        telefoneInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                let telefone = e.target.value.replace(/\D/g, '');
+                if (telefone.length > 0) {
+                    telefone = '(' + telefone.substring(0, 2) + ') ' + telefone.substring(2, 7) + '-' + telefone.substring(7, 11);
+                }
+                e.target.value = telefone;
+            });
+        });
+    });
+
+    // Buscar endereço por CEP
+    function buscarEnderecoPorCep() {
+        const cepInput = document.getElementById('cepInput');
+        const cep = cepInput.value.replace(/\D/g, '');
+
+        if (cep.length !== 8) {
+            alert('CEP deve conter 8 dígitos');
+            return;
+        }
+
+        // Formatar CEP para display (XXXXX-XXX)
+        cepInput.value = cep.substring(0, 5) + '-' + cep.substring(5);
+
+        // Chamar API ViaCEP
+        fetch('/api/endereco-por-cep?cep=' + cep)
+            .then(response => response.json())
+            .then(data => {
+                if (data.erro) {
+                    alert('CEP não encontrado');
+                    return;
+                }
+
+                // Preencher os campos automaticamente
+                document.getElementById('ruaInput').closest('.editable-item').querySelector('.editable-text-display').textContent = data.endereco || '';
+                document.getElementById('ruaInput').value = data.endereco || '';
+                
+                document.getElementById('cidadeInput').closest('.editable-item').querySelector('.editable-text-display').textContent = data.cidade || '';
+                document.getElementById('cidadeInput').value = data.cidade || '';
+                
+                document.getElementById('estadoInput').closest('.editable-item').querySelector('.editable-text-display').textContent = data.estado || '';
+                document.getElementById('estadoInput').value = data.estado || '';
+
+                console.log('Endereço encontrado:', data);
+            })
+            .catch(error => {
+                console.error('Erro ao buscar CEP:', error);
+                alert('Erro ao buscar CEP');
+            });
+    }
+
+</script>
+
+</body>
+
+</html>
