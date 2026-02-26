@@ -27,17 +27,8 @@ public class PerfilController {
 
     @GetMapping("/perfil")
     public String perfil(Model model, HttpSession session) {
-        // Busca o usuário logado na sessão
-        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
-        
-        // Verifica se o usuário está autenticado
-        if (usuarioLogado == null) {
-            return "redirect:/";
-        }
-
-        // Passa o usuário para o template
-        model.addAttribute("usuarioLogado", usuarioLogado);
-
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+        model.addAttribute("usuario", usuario);
         return "perfil";
     }
 
