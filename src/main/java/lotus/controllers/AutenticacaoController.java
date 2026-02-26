@@ -35,11 +35,14 @@ public class AutenticacaoController {
             return "redirect:/?erro=email";
         }
 
+        // aceita só 1 (cliente) ou 2 (vendedor); default seguro = 1 (cliente)
+        int tipoNormalizado = (tipo != null && (tipo == 1 || tipo == 2)) ? tipo : 1;
+
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(nome);
         novoUsuario.setEmail(email);
         novoUsuario.setSenha(senha);
-        novoUsuario.setTipo(tipo);
+        novoUsuario.setTipo(tipoNormalizado);
         novoUsuario.setDataNascimento(LocalDate.now());
 
         novoUsuario = usuarioRepository.save(novoUsuario);
@@ -72,18 +75,4 @@ public class AutenticacaoController {
         session.removeAttribute("usuarioLogado");
         return "redirect:/";
     }
-
-    @PostMapping("/cadastrar")
-    public String cadastrar(@RequestParam String nome,
-                       @RequestParam String email,
-                       @RequestParam String senha,
-                       @RequestParam Integer tipo) {
-    Usuario usuario = new Usuario();
-    usuario.setNome(nome);
-    usuario.setEmail(email);
-    usuario.setSenha(senha);
-    usuario.setTipo(tipo);
-    usuarioRepository.save(usuario);
-    return "redirect:/home";
-}
 }
