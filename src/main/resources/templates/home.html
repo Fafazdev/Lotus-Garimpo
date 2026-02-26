@@ -14,21 +14,46 @@
 
     <link href="/css/bodyhome.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
-    <link href="/css/header.css" rel="stylesheet">
+        <link href="/css/header.css" rel="stylesheet">
 
 </head>
 
 <body>
-    <!-- bloco de erro logo no topo -->
-    <div class="container mt-3" th:if="${param.erro != null}">
-        <div class="alert alert-danger" th:if="${param.erro[0] == 'email'}">
-            Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail.
+        <!-- Alerta flutuante da home -->
+        <div id="home-alert" class="home-alert-container" style="display: none;">
+                <div id="home-alert-card" class="home-alert-card home-alert-error">
+                        <div class="home-alert-bar">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="96" width="16" viewBox="0 0 16 96">
+                                        <path
+                                                d="M 8 0 
+                                                     Q 4 4.8, 8 9.6 
+                                                     T 8 19.2 
+                                                     Q 4 24, 8 28.8 
+                                                     T 8 38.4 
+                                                     Q 4 43.2, 8 48 
+                                                     T 8 57.6 
+                                                     Q 4 62.4, 8 67.2 
+                                                     T 8 76.8 
+                                                     Q 4 81.6, 8 86.4 
+                                                     T 8 96 
+                                                     L 0 96 
+                                                     L 0 0 
+                                                     Z" />
+                                </svg>
+                        </div>
+                        <div class="home-alert-content">
+                                <p id="home-alert-title" class="home-alert-title">Erro</p>
+                                <p id="home-alert-message" class="home-alert-message">
+                                        Ocorreu um erro. Tente novamente.
+                                </p>
+                        </div>
+                        <button id="home-alert-close" class="home-alert-close" type="button" aria-label="Fechar alerta">
+                                <svg class="home-alert-close-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                        </button>
+                </div>
         </div>
-
-        <div class="alert alert-danger" th:if="${param.erro[0] == 'senha'}">
-            As senhas não conferem. Verifique e tente novamente.
-        </div>
-    </div>
 
     <header class="top-header">
         <div class="container-fluid px-4 px-lg-5">
@@ -286,7 +311,67 @@
         </section>
 
     </main>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            let homeAlertTimeout;
+
+            function showAlert(type, title, message) {
+                const container = document.getElementById('home-alert');
+                const card = document.getElementById('home-alert-card');
+                const titleEl = document.getElementById('home-alert-title');
+                const messageEl = document.getElementById('home-alert-message');
+
+                if (!container || !card || !titleEl || !messageEl) {
+                    return;
+                }
+
+                if (homeAlertTimeout) {
+                    clearTimeout(homeAlertTimeout);
+                }
+
+                titleEl.textContent = title || '';
+                messageEl.innerHTML = message || '';
+
+                card.classList.remove('home-alert-error', 'home-alert-success');
+                if (type === 'success') {
+                    card.classList.add('home-alert-success');
+                } else {
+                    card.classList.add('home-alert-error');
+                }
+
+                container.style.display = 'flex';
+
+                homeAlertTimeout = setTimeout(function () {
+                    container.style.display = 'none';
+                }, 4000);
+            }
+
+            window.showAlert = showAlert;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const container = document.getElementById('home-alert');
+                const closeBtn = document.getElementById('home-alert-close');
+
+                if (container && closeBtn) {
+                    closeBtn.addEventListener('click', function () {
+                        container.style.display = 'none';
+                    });
+                }
+
+                const params = new URLSearchParams(window.location.search);
+                const erro = params.get('erro');
+
+                if (erro === 'email') {
+                    showAlert('error', 'Erro no cadastro', 'Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail.');
+                } else if (erro === 'senha') {
+                    showAlert('error', 'Erro no cadastro', 'As senhas não conferem. Verifique e tente novamente.');
+                } else if (erro === 'cpf') {
+                    showAlert('error', 'Problema com CPF', 'CPF inválido ou já cadastrado. Verifique o dado informado.');
+                }
+            });
+        })();
+    </script>
 
 </body>
 
