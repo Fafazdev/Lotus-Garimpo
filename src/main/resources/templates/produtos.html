@@ -12,9 +12,9 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900&display=swap" rel="stylesheet" />
 
-    <link href="/css/bodyprodutos.css" rel="stylesheet">
-    <link href="/css/footer.css" rel="stylesheet">
-    <link href="/css/header.css" rel="stylesheet">
+    <link th:href="@{/css/bodyprodutos.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
 </head>
 <header class="top-header">
     <div class="container-fluid px-4 px-lg-5">
@@ -265,14 +265,35 @@
             </div>
         </div>
     </div>
-</footer>
-
-<div class="cookie-banner">
+<div id="cookieBanner" class="cookie-banner-fixed">
     <div class="container-fluid d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
         <p class="mb-0 text-center">Ao navegar por este site <strong>você aceita o uso de cookies</strong> para agilizar
             a sua experiência de compra.</p>
-        <button class="btn-cookie">ENTENDI</button>
+        <div class="cookie-buttons-group">
+            <button class="btn-cookie" onclick="aceitarCookies()">ENTENDI</button>
+            <button class="btn-cookie btn-cookie-negar" onclick="negarCookies()">NEGAR</button>
+        </div>
     </div>
 </div>
+
+<div th:replace="~{modal :: modalLogin}"></div>
+
+<script>
+    function aceitarCookies() {
+        const banner = document.getElementById('cookieBanner');
+        banner.classList.add('cookie-banner-removed');
+        setTimeout(() => {
+            banner.style.display = 'none';
+        }, 300);
+    }
+
+    function negarCookies() {
+        const banner = document.getElementById('cookieBanner');
+        banner.classList.add('cookie-banner-removed');
+        setTimeout(() => {
+            banner.style.display = 'none';
+        }, 300);
+    }
+</script>
 
 </html>
