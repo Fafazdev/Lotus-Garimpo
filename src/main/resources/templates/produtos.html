@@ -33,9 +33,16 @@
 
             <div class="col-6 col-md-4 order-1 order-md-3">
                 <div class="header-actions">
-                    <a href="#" class="action-item">
+
+                    <a th:if="${session.usuarioLogado == null}" href="#" class="action-item" data-bs-toggle="modal"
+                        data-bs-target="#loginModal">
                         <i class="far fa-user"></i>
                         <span>Minha conta</span>
+                    </a>
+
+                    <a th:if="${session.usuarioLogado != null}" th:href="@{/perfil}" class="action-item">
+                        <i class="fas fa-user-circle" style="color: #ff69b4;"></i>
+                        <span th:text="${'Olá, ' + session.usuarioLogado.nome}">Usuário</span>
                     </a>
 
                     <a href="#" class="action-item">
