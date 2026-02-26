@@ -6,13 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Lótus Garimpo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/perfil.css">
+    <link rel="stylesheet" th:href="@{/css/perfil.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
+<div id="alert-container" class="flex flex-col gap-2 w-60 sm:w-72 text-[10px] sm:text-xs z-50">
+    <div
+        class="alert-box cursor-default flex items-center justify-between w-full h-12 sm:h-14 rounded-lg bg-[#232531] px-[10px]"
+    >
+        <div class="flex gap-2">
+            <div id="alert-icon-wrapper" class="text-[#d65563] bg-white/5 backdrop-blur-xl p-1 rounded-lg">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+          ></path>
+        </svg>
+      </div>
+            <div>
+                <p id="alert-title" class="text-white">Please try again</p>
+                <p id="alert-message" class="text-gray-500">This is the description part</p>
+      </div>
+    </div>
+    <button
+            id="alert-close-button"
+            class="text-gray-600 hover:bg-white/10 p-1 rounded-md transition-colors ease-linear"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18 18 6M6 6l12 12"
+        ></path>
+      </svg>
+    </button>
+  </div>
+</div>
 
     <main class="profile-content">
         <div class="container-fluid px-4 px-lg-5 py-5">
@@ -364,6 +410,49 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Função genérica para mostrar alertas visuais (sucesso/erro)
+        function showAlert(type, title, message) {
+            const container = document.getElementById('alert-container');
+            const iconWrapper = document.getElementById('alert-icon-wrapper');
+            const alertTitle = document.getElementById('alert-title');
+            const alertMessage = document.getElementById('alert-message');
+
+            if (!container || !iconWrapper || !alertTitle || !alertMessage) {
+                console.warn('Componente de alerta não encontrado no DOM');
+                return;
+            }
+
+            alertTitle.textContent = title || '';
+            alertMessage.textContent = message || '';
+
+            // Define cor da "bolinha": vermelho para erro, verde para sucesso
+            if (type === 'success') {
+                iconWrapper.classList.remove('text-[#d65563]');
+                iconWrapper.classList.add('text-[#22c55e]'); // verde
+            } else {
+                iconWrapper.classList.remove('text-[#22c55e]');
+                iconWrapper.classList.add('text-[#d65563]'); // vermelho
+            }
+
+            container.style.display = 'flex';
+
+            // Auto-fechar depois de alguns segundos
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 4000);
+        }
+
+        // Botão de fechar do alerta
+        document.addEventListener('DOMContentLoaded', function () {
+            const closeButton = document.getElementById('alert-close-button');
+            const container = document.getElementById('alert-container');
+            if (closeButton && container) {
+                closeButton.addEventListener('click', function () {
+                    container.style.display = 'none';
+                });
+            }
+        });
+
         function editField(element, fieldName) {
             const form = element.querySelector('.editable-form');
             const input = form.querySelector('.editable-input');
@@ -397,8 +486,17 @@
             const value = input.value.trim();
 
             if (!value) {
-                alert('Campo não pode estar vazio!');
+                showAlert('error', 'Erro ao atualizar', 'Campo não pode estar vazio.');
                 return;
+            }
+
+            // Validação simples de CPF no perfil: 11 dígitos
+            if (fieldName === 'cpf') {
+                const digits = value.replace(/\D/g, '');
+                if (digits.length !== 11) {
+                    showAlert('error', 'CPF inválido', 'O CPF deve ter 11 dígitos numéricos.');
+                    return;
+                }
             }
 
             // Envia para o servidor
@@ -423,13 +521,25 @@
                         if (warning) warning.remove();
 
                         console.log('Campo ' + fieldName + ' atualizado com sucesso!');
+                        const successTitle = fieldName === 'cpf' ? 'CPF atualizado' : 'Dados salvos';
+                        const successMsg = fieldName === 'cpf'
+                            ? 'Seu CPF foi atualizado com sucesso.'
+                            : 'O campo "' + fieldName + '" foi atualizado com sucesso.';
+                        showAlert('success', successTitle, successMsg);
                     } else {
-                        alert('Erro ao atualizar: ' + (data.mensagem || 'Erro desconhecido'));
+                        console.error('Erro ao atualizar campo', fieldName, 'detalhes:', data);
+                        const errorTitle = fieldName === 'cpf' ? 'Erro com CPF' : 'Erro ao atualizar';
+                        const errorMsg = data.mensagem
+                            ? data.mensagem
+                            : (fieldName === 'cpf'
+                                ? 'Não foi possível validar seu CPF. Tente novamente.'
+                                : 'Erro desconhecido (campo: ' + fieldName + ')');
+                        showAlert('error', errorTitle, errorMsg);
                     }
                 })
                 .catch(error => {
-                    console.error('Erro:', error);
-                    alert('Erro ao salvar dados');
+                    console.error('Erro ao salvar dados do campo', fieldName, error);
+                    showAlert('error', 'Erro de comunicação', 'Não foi possível salvar os dados. Tente novamente.');
                 });
         }
 
@@ -440,7 +550,7 @@
             const cepValue = cepInput.value.trim();
 
             if (!cepValue) {
-                alert('Campo CEP não pode estar vazio!');
+                showAlert('error', 'Erro ao atualizar', 'Campo CEP não pode estar vazio.');
                 return;
             }
 
@@ -502,13 +612,16 @@
                             if (successCount === totalFields) {
                                 form.classList.remove('active');
                                 console.log('Todos os campos foram salvos com sucesso!');
+                                showAlert('success', 'Endereço salvo', 'CEP e endereço foram atualizados com sucesso.');
                             }
                         } else {
                             console.error('Erro ao atualizar ' + fieldData.campo + ': ' + (data.mensagem || 'Erro desconhecido'));
+                            showAlert('error', 'Erro ao atualizar', (data.mensagem || 'Erro desconhecido') + ' (campo: ' + fieldData.campo + ')');
                         }
                     })
                     .catch(error => {
                         console.error('Erro ao salvar ' + fieldData.campo + ':', error);
+                        showAlert('error', 'Erro de comunicação', 'Não foi possível salvar o campo "' + fieldData.campo + '".');
                     });
             });
         }
@@ -534,10 +647,32 @@
                     }
                 });
             });
-        });
 
-        // Máscaras de entrada
-        document.addEventListener('DOMContentLoaded', function () {
+            // CPF: apenas n\u00fameros e no m\u00e1ximo 11 d\u00edgitos
+            const cpfInput = document.querySelector('.editable-item[onclick*="cpf"] .editable-input');
+            if (cpfInput) {
+                cpfInput.addEventListener('input', function (e) {
+                    let digits = e.target.value.replace(/\D/g, '');
+                    if (digits.length > 11) {
+                        digits = digits.substring(0, 11);
+                    }
+                    e.target.value = digits;
+                });
+            }
+
+            // CEP: apenas n\u00fameros e no m\u00e1ximo 8 d\u00edgitos
+            const cepInput = document.getElementById('cepInput');
+            if (cepInput) {
+                cepInput.addEventListener('input', function (e) {
+                    let digits = e.target.value.replace(/\D/g, '');
+                    if (digits.length > 8) {
+                        digits = digits.substring(0, 8);
+                    }
+                    e.target.value = digits;
+                });
+            }
+
+            // M\u00e1scara de telefone
             const telefoneInputs = document.querySelectorAll('input[type="tel"]');
             telefoneInputs.forEach(input => {
                 input.addEventListener('input', function (e) {
@@ -556,7 +691,7 @@
             const cep = cepInput.value.replace(/\D/g, '');
 
             if (cep.length !== 8) {
-                alert('CEP deve conter 8 dígitos');
+                showAlert('error', 'CEP inválido', 'CEP deve conter 8 dígitos.');
                 return;
             }
 
@@ -568,7 +703,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.erro) {
-                        alert('CEP não encontrado');
+                        showAlert('error', 'CEP não encontrado', 'Verifique o CEP informado e tente novamente.');
                         return;
                     }
 
@@ -586,7 +721,7 @@
                 })
                 .catch(error => {
                     console.error('Erro ao buscar CEP:', error);
-                    alert('Erro ao buscar CEP');
+                    showAlert('error', 'Erro de comunicação', 'Não foi possível buscar o CEP.');
                 });
         }
 

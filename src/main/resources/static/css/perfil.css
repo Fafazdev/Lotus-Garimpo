@@ -275,6 +275,90 @@ main {
     font-size: 14px;
 }
 
+/* =========================================
+   ALERTA FLUTUANTE (ERROS/SUCESSO)
+   ========================================= */
+
+#alert-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+    max-width: 320px;
+    width: 90%;
+    font-size: 10px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#alert-container .alert-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 48px;
+    padding: 10px 14px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #ffe4f2 100%);
+    border: 1px solid rgba(255, 105, 180, 0.7);
+    box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+}
+
+#alert-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 999px;
+    background-color: rgba(255, 105, 180, 0.12);
+    border: 1px solid rgba(255, 105, 180, 0.6);
+}
+
+#alert-icon-wrapper svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Cores da "bolinha" controladas por classes usadas no JS */
+.text-\[\#d65563\] {
+    color: #ff69b4;
+}
+
+.text-\[\#22c55e\] {
+    color: #2d5a27;
+}
+
+#alert-title {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 800;
+    color: #2d5a27;
+}
+
+#alert-message {
+    margin: 0;
+    margin-top: 2px;
+    font-size: 11px;
+    color: #555555;
+}
+
+#alert-close-button {
+    border: none;
+    background: transparent;
+    color: #555555;
+    padding: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#alert-close-button:hover {
+    background-color: rgba(255, 105, 180, 0.12);
+}
+
 /* Cards de Informação */
 .card-info {
     width: 100%;

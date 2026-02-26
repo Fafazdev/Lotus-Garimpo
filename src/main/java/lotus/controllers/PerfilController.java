@@ -18,6 +18,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class PerfilController {
@@ -159,6 +160,13 @@ public class PerfilController {
                     usuarioLogado.setTelefone(valor);
                     break;
                 case "cpf":
+                    // verifica se já existe outro usuário com este CPF
+                    Optional<Usuario> outroUsuario = usuarioRepository.findByCpf(valor);
+                    if (outroUsuario.isPresent() && !outroUsuario.get().getId().equals(usuarioLogado.getId())) {
+                        resposta.put("sucesso", false);
+                        resposta.put("mensagem", "CPF já cadastrado em outra conta");
+                        return resposta;
+                    }
                     usuarioLogado.setCpf(valor);
                     break;
                 case "cep":

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -14,66 +14,99 @@
 
     <link href="/css/bodyhome.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
-    <link href="/css/header.css" rel="stylesheet">
+        <link href="/css/header.css" rel="stylesheet">
 
 </head>
-<header class="top-header">
-    <div class="container-fluid px-4 px-lg-5">
-        <div class="row align-items-center">
-
-            <div class="col-12 col-md-4 order-2 order-md-1 mt-3 mt-md-0">
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="O que você está buscando?">
-                    <i class="fas fa-search search-icon"></i>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-4 order-1 order-md-2 text-md-center">
-                <img th:src="@{/imagens/lotus.webp}" alt="Lótus Logo" class="logo-img">
-            </div>
-
-            <div class="col-6 col-md-4 order-1 order-md-3">
-                <div class="header-actions">
-
-                    <a th:if="${session.usuarioLogado == null}" href="#" class="action-item" data-bs-toggle="modal"
-                        data-bs-target="#loginModal">
-                        <i class="far fa-user"></i>
-                        <span>Minha conta</span>
-                    </a>
-
-                    <a th:if="${session.usuarioLogado != null}" th:href="@{/perfil}" class="action-item">
-                        <i class="fas fa-user-circle" style="color: #ff69b4;"></i>
-                        <span th:text="${'Olá, ' + session.usuarioLogado.nome}">Usuário</span>
-                    </a>
-
-                    <a href="#" class="action-item">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-badge">0</span>
-                        <span>Meu carrinho</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-12">
-                <nav class="nav-menu">
-                    <a th:href="@{/}">Início</a>
-                    <a th:href="@{/produtos}">Produtos <i class="fas fa-chevron-down ms-1"
-                            style="font-size: 10px;"></i></a>
-                    <a href="#">Sacolinha</a>
-                    <a href="#">Guia de medidas</a>
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-    crossorigin="anonymous"></script>
 
 <body>
+        <!-- Alerta flutuante da home -->
+        <div id="home-alert" class="home-alert-container" style="display: none;">
+                <div id="home-alert-card" class="home-alert-card home-alert-error">
+                        <div class="home-alert-bar">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="96" width="16" viewBox="0 0 16 96">
+                                        <path
+                                                d="M 8 0 
+                                                     Q 4 4.8, 8 9.6 
+                                                     T 8 19.2 
+                                                     Q 4 24, 8 28.8 
+                                                     T 8 38.4 
+                                                     Q 4 43.2, 8 48 
+                                                     T 8 57.6 
+                                                     Q 4 62.4, 8 67.2 
+                                                     T 8 76.8 
+                                                     Q 4 81.6, 8 86.4 
+                                                     T 8 96 
+                                                     L 0 96 
+                                                     L 0 0 
+                                                     Z" />
+                                </svg>
+                        </div>
+                        <div class="home-alert-content">
+                                <p id="home-alert-title" class="home-alert-title">Erro</p>
+                                <p id="home-alert-message" class="home-alert-message">
+                                        Ocorreu um erro. Tente novamente.
+                                </p>
+                        </div>
+                        <button id="home-alert-close" class="home-alert-close" type="button" aria-label="Fechar alerta">
+                                <svg class="home-alert-close-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                        </button>
+                </div>
+        </div>
+
+    <header class="top-header">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="row align-items-center">
+
+                <div class="col-12 col-md-4 order-2 order-md-1 mt-3 mt-md-0">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="O que você está buscando?">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-4 order-1 order-md-2 text-md-center">
+                    <img th:src="@{/imagens/lotus.webp}" alt="Lótus Logo" class="logo-img">
+                </div>
+
+                <div class="col-6 col-md-4 order-1 order-md-3">
+                    <div class="header-actions">
+
+                        <a th:if="${session.usuarioLogado == null}" href="#" class="action-item" data-bs-toggle="modal"
+                            data-bs-target="#loginModal">
+                            <i class="far fa-user"></i>
+                            <span>Minha conta</span>
+                        </a>
+
+                        <a th:if="${session.usuarioLogado != null}" th:href="@{/perfil}" class="action-item">
+                            <i class="fas fa-user-circle" style="color: #ff69b4;"></i>
+                            <span th:text="${'Olá, ' + session.usuarioLogado.nome}">Usuário</span>
+                        </a>
+
+                        <a href="#" class="action-item">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge">0</span>
+                            <span>Meu carrinho</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <nav class="nav-menu">
+                        <a th:href="@{/}">Início</a>
+                        <a th:href="@{/produtos}">Produtos <i class="fas fa-chevron-down ms-1"
+                            style="font-size: 10px;"></i></a>
+                        <a href="#">Sacolinha</a>
+                        <a href="#">Guia de medidas</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <main class="main-content">
 
         <section class="container-fluid p-0 m-0">
@@ -278,7 +311,67 @@
         </section>
 
     </main>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            let homeAlertTimeout;
+
+            function showAlert(type, title, message) {
+                const container = document.getElementById('home-alert');
+                const card = document.getElementById('home-alert-card');
+                const titleEl = document.getElementById('home-alert-title');
+                const messageEl = document.getElementById('home-alert-message');
+
+                if (!container || !card || !titleEl || !messageEl) {
+                    return;
+                }
+
+                if (homeAlertTimeout) {
+                    clearTimeout(homeAlertTimeout);
+                }
+
+                titleEl.textContent = title || '';
+                messageEl.innerHTML = message || '';
+
+                card.classList.remove('home-alert-error', 'home-alert-success');
+                if (type === 'success') {
+                    card.classList.add('home-alert-success');
+                } else {
+                    card.classList.add('home-alert-error');
+                }
+
+                container.style.display = 'flex';
+
+                homeAlertTimeout = setTimeout(function () {
+                    container.style.display = 'none';
+                }, 4000);
+            }
+
+            window.showAlert = showAlert;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const container = document.getElementById('home-alert');
+                const closeBtn = document.getElementById('home-alert-close');
+
+                if (container && closeBtn) {
+                    closeBtn.addEventListener('click', function () {
+                        container.style.display = 'none';
+                    });
+                }
+
+                const params = new URLSearchParams(window.location.search);
+                const erro = params.get('erro');
+
+                if (erro === 'email') {
+                    showAlert('error', 'Erro no cadastro', 'Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail.');
+                } else if (erro === 'senha') {
+                    showAlert('error', 'Erro no cadastro', 'As senhas não conferem. Verifique e tente novamente.');
+                } else if (erro === 'cpf') {
+                    showAlert('error', 'Problema com CPF', 'CPF inválido ou já cadastrado. Verifique o dado informado.');
+                }
+            });
+        })();
+    </script>
 
 </body>
 
@@ -332,15 +425,35 @@
     </div>
 </footer>
 
-<div class="cookie-banner">
+<div id="cookieBanner" class="cookie-banner-fixed">
     <div class="container-fluid d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
         <p class="mb-0 text-center">Ao navegar por este site <strong>você aceita o uso de cookies</strong> para agilizar
             a sua experiência de compra.</p>
-        <button class="btn-cookie">ENTENDI</button>
+        <div class="cookie-buttons-group">
+            <button class="btn-cookie" onclick="aceitarCookies()">ENTENDI</button>
+            <button class="btn-cookie btn-cookie-negar" onclick="negarCookies()">NEGAR</button>
+        </div>
     </div>
 </div>
 
 <div th:replace="~{modal :: modalLogin}"></div>
 
+<script>
+    function aceitarCookies() {
+        const banner = document.getElementById('cookieBanner');
+        banner.classList.add('cookie-banner-removed');
+        setTimeout(() => {
+            banner.style.display = 'none';
+        }, 300);
+    }
+
+    function negarCookies() {
+        const banner = document.getElementById('cookieBanner');
+        banner.classList.add('cookie-banner-removed');
+        setTimeout(() => {
+            banner.style.display = 'none';
+        }, 300);
+    }
+</script>
 
 </html>

@@ -79,6 +79,7 @@
                         <form class="form" id="formCadastro" th:action="@{/cadastro}" method="POST">
                             <input type="text" name="nome" class="input" placeholder="Nome Completo" required>
                             <input type="email" name="email" class="input" placeholder="Email" required>
+                            <input type="text" name="cpf" class="input" placeholder="CPF" required>
                             <input type="password" name="senha" class="input" placeholder="Senha" required>
                             <input type="password" name="confirmar_senha" class="input" placeholder="Confirmar Senha"
                                 required>
@@ -111,7 +112,13 @@
         </div>
     </div>
 
-
+    <!-- Modal de Cookies -->
+    <div class="modal fade" id="cookieModal" tabindex="-1" aria-labelledby="cookieModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; background-color: #ff66b2;">
+            </div>
+        </div>
+    </div>
 
     <script>
         function abrirCadastro() {
@@ -135,5 +142,58 @@
             const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
             loginModal.show();
         }
+
+        // Validação de CPF no formulário de cadastro (front-end)
+        function validarCpf(cpf) {
+            if (!cpf) return false;
+            const numero = cpf.replace(/\D/g, '');
+            if (numero.length !== 11) return false;
+            if (/^(\d)\1{10}$/.test(numero)) return false; // todos iguais
+
+            try {
+                let soma = 0;
+                for (let i = 0; i < 9; i++) {
+                    soma += parseInt(numero.charAt(i)) * (10 - i);
+                }
+                let resto = soma % 11;
+                let dv1 = resto < 2 ? 0 : 11 - resto;
+                if (dv1 !== parseInt(numero.charAt(9))) return false;
+
+                soma = 0;
+                for (let i = 0; i < 10; i++) {
+                    soma += parseInt(numero.charAt(i)) * (11 - i);
+                }
+                resto = soma % 11;
+                let dv2 = resto < 2 ? 0 : 11 - resto;
+
+                return dv2 === parseInt(numero.charAt(10));
+            } catch (e) {
+                return false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const formCadastro = document.getElementById('formCadastro');
+            if (formCadastro) {
+                formCadastro.addEventListener('submit', function (e) {
+                    const cpfInput = formCadastro.querySelector('input[name="cpf"]');
+                    if (!cpfInput) return;
+
+                    const cpfValor = cpfInput.value || '';
+                    if (!validarCpf(cpfValor)) {
+                        e.preventDefault();
+                        if (typeof showAlert === 'function') {
+                            showAlert('error', 'CPF inválido', 'Digite um CPF válido com 11 dígitos.');
+                        } else {
+                            alert('CPF inválido. Digite um CPF válido com 11 dígitos.');
+                        }
+                        return;
+                    }
+
+                    // Normaliza para apenas dígitos antes de enviar (opcional)
+                    cpfInput.value = cpfValor.replace(/\D/g, '');
+                });
+            }
+        });
     </script>
 </div>
