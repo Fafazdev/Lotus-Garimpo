@@ -89,17 +89,54 @@
 }
 
 /* =========================================
-   BANNER DE COOKIES
+   BANNER DE COOKIES (FIXO NA PARTE INFERIOR)
    ========================================= */
-.cookie-banner {
+.cookie-banner-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background-color: #ff66b2; /* Rosa vibrante */
-    color: #3b7d5d; /* Tom esverdeado para o texto, combinando com a marca */
+    color: #3b7d5d;
     padding: 15px 0;
     width: 100%;
+    z-index: 1000;
+    animation: slideUp 0.4s ease-out;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
-.cookie-banner p {
+
+.cookie-banner-fixed p {
     font-size: 14px;
 }
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.cookie-banner-removed {
+    animation: slideDown 0.3s ease-in forwards;
+}
+
+@keyframes slideDown {
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+.cookie-buttons-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .btn-cookie {
     background-color: transparent;
     color: #3b7d5d;
@@ -114,4 +151,14 @@
 .btn-cookie:hover {
     background-color: #3b7d5d;
     color: #ffffff;
+}
+
+.btn-cookie-negar {
+    background-color: #3b7d5d;
+    color: #ffffff;
+    border: 1px solid #3b7d5d;
+}
+.btn-cookie-negar:hover {
+    background-color: transparent;
+    color: #3b7d5d;
 }
