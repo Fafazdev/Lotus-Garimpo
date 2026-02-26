@@ -23,31 +23,26 @@ public class AutenticacaoController {
             @RequestParam("email") String email,
             @RequestParam("senha") String senha,
             @RequestParam("confirmar_senha") String confirmarSenha,
+            @RequestParam("tipo") Integer tipo,
             HttpSession session) {
 
-        // Verifica se as senhas conferem
         if (!senha.equals(confirmarSenha)) {
             return "redirect:/?erro=senha";
         }
 
-        // Verifica se o email já está registrado no banco de dados
         Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(email);
         if (usuarioExistente.isPresent()) {
             return "redirect:/?erro=email";
         }
 
-        // Cria um novo usuário
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(nome);
         novoUsuario.setEmail(email);
         novoUsuario.setSenha(senha);
-        novoUsuario.setTipo(1); // Tipo padrão de usuário
-        novoUsuario.setDataNascimento(LocalDate.now()); // Data padrão
+        novoUsuario.setTipo(tipo);
+        novoUsuario.setDataNascimento(LocalDate.now());
 
-        // Salva no banco de dados
         novoUsuario = usuarioRepository.save(novoUsuario);
-
-        // Armazena na sessão
         session.setAttribute("usuarioLogado", novoUsuario);
 
         return "redirect:/perfil";
@@ -59,27 +54,36 @@ public class AutenticacaoController {
             @RequestParam("senha") String senha,
             HttpSession session) {
 
-        // Busca o usuário no banco de dados
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
-        // Verifica se o usuário existe e a senha está correta
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
             if (usuario.getSenha().equals(senha)) {
-                // Armazena o usuário na sessão
                 session.setAttribute("usuarioLogado", usuario);
                 return "redirect:/perfil";
             }
         }
-        
-        // Redireciona para login com mensagem de erro
+
         return "redirect:/?erro=true";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        // Remove o usuário da sessão
         session.removeAttribute("usuarioLogado");
         return "redirect:/";
     }
+
+    @PostMapping("/cadastrar")
+    public String cadastrar(@RequestParam String nome,
+                       @RequestParam String email,
+                       @RequestParam String senha,
+                       @RequestParam Integer tipo) {
+    Usuario usuario = new Usuario();
+    usuario.setNome(nome);
+    usuario.setEmail(email);
+    usuario.setSenha(senha);
+    usuario.setTipo(tipo);
+    usuarioRepository.save(usuario);
+    return "redirect:/home";
+}
 }
