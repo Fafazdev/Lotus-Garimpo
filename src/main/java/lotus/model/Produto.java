@@ -11,14 +11,23 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nm_produto")
     private String nome;
+
+    @Column(name = "ds_descricao")
     private String descricao;
+
+    @Column(name = "cd_preco")
     private BigDecimal preco;
+
+    @Column(name = "tamanho_produto")
     private String tamanho;
+
+    @Column(name = "categoria")
     private String categoria;
 
-    @Column(name = "nm_imagem")
-    private String imagem; // Guardará o nome do arquivo (ex: "camisa.jpg")
+    @Column(name = "url_imagem") // ou "nm_imagem", conforme você quiser usar
+    private String imagem;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
