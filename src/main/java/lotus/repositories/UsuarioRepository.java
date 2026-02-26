@@ -1,11 +1,10 @@
 package lotus.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import lotus.model.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
-@Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    Optional<Usuario> findByEmail(String email);
+
+    Optional<Usuario> findByEmail(String email); // verifica se já existe
 }

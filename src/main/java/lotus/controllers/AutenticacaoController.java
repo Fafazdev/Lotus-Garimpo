@@ -32,6 +32,7 @@ public class AutenticacaoController {
 
         Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(email);
         if (usuarioExistente.isPresent()) {
+            // se já existe, NÃO cria conta
             return "redirect:/?erro=email";
         }
 
