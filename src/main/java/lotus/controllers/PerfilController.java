@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
 import lotus.model.Usuario;
+import lotus.model.Produto;
 import lotus.repositories.UsuarioRepository;
+import lotus.repositories.ProdutoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.net.URI;
@@ -26,10 +28,18 @@ public class PerfilController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    // repositório para peças
+    @Autowired
+    private ProdutoRepository produtoRepository;
+
     @GetMapping("/perfil")
-    public String perfil(Model model, HttpSession session) {
+    public String perfil(Model model, HttpSession session,
+                         @org.springframework.web.bind.annotation.RequestParam(value = "pecaAdicionada", required = false) String pecaAdicionada) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
         model.addAttribute("usuario", usuario);
+        if (pecaAdicionada != null) {
+            model.addAttribute("mensagemPeca", "Peça adicionada com sucesso!");
+        }
         return "perfil";
     }
 
@@ -227,14 +237,42 @@ public class PerfilController {
         if (usuarioLogado == null) {
             return "redirect:/";
         }
+        // apenas vendedores podem inserir peças
+        if (usuarioLogado.getTipo() == null || usuarioLogado.getTipo() != 2) {
+            return "redirect:/perfil";
+        }
 
-        // TODO: Implementar lógica para adicionar peça ao banco de dados
-        // Exemplo:
-        // - Salvar imagem em um repositório
-        // - Criar objeto Produto com os dados
-        // - Salvar no banco de dados
-        // - Associar ao usuário logado
+        // cria o objeto produto e preenche os campos
+        Produto produto = new Produto();
+        produto.setNome(nome);
+        produto.setDescricao(descricao);
+        // converte Double para BigDecimal
+        produto.setPreco(preco != null ? java.math.BigDecimal.valueOf(preco) : null);
+        produto.setTamanho(tamanho);
+        produto.setCategoria(categoria);
+        produto.setUsuario(usuarioLogado);
 
+        // trata a imagem enviada pelo formulário
+        if (imagem != null && !imagem.isEmpty()) {
+            try {
+                // pasta relativa dentro do projeto para servir os arquivos estáticos
+                java.nio.file.Path uploadDir = java.nio.file.Paths.get("src/main/resources/static/imagens");
+                java.nio.file.Files.createDirectories(uploadDir);
+                String filename = System.currentTimeMillis() + "_" + imagem.getOriginalFilename();
+                java.nio.file.Path filePath = uploadDir.resolve(filename);
+                imagem.transferTo(filePath.toFile());
+                // salva o caminho relativo que será usado nas páginas
+                produto.setImagem("/imagens/" + filename);
+            } catch (Exception e) {
+                // se falhar no upload, apenas registra no console e continua sem imagem
+                e.printStackTrace();
+            }
+        }
+
+        // salva no banco de dados
+        produtoRepository.save(produto);
+
+        // opcional: imprimir para debug
         System.out.println("Peça adicionada:");
         System.out.println("Nome: " + nome);
         System.out.println("Descrição: " + descricao);
@@ -243,7 +281,7 @@ public class PerfilController {
         System.out.println("Categoria: " + categoria);
         System.out.println("Usuário: " + usuarioLogado.getNome());
 
-        // Redireciona de volta para o perfil
-        return "redirect:/perfil";
+        // Redireciona de volta para o perfil mostrando mensagem de sucesso
+        return "redirect:/perfil?pecaAdicionada=true";
     }
 }

@@ -727,6 +727,11 @@
 
     </script>
 
+    <!-- exibe alerta de sucesso quando produto é adicionado -->
+    <script th:if="${mensagemPeca}">
+        showAlert('success','Tudo certo','[[${mensagemPeca}]]');
+    </script>
+
 </body>
 
 </html>
