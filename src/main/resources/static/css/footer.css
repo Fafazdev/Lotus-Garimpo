@@ -1,0 +1,164 @@
+
+.site-footer {
+    background-color: #df8bb0; /* Tom de rosa do rodapé */
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    margin-top: 50px; /* Dá um espaço entre o conteúdo do site e o rodapé */
+}
+
+/* Títulos do Rodapé (Fonte com serifa para ficar igual à imagem) */
+.footer-title {
+    font-family: 'Georgia', serif; 
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 25px;
+    color: #ffffff;
+}
+
+/* Links em lista */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footer-links li {
+    margin-bottom: 15px;
+}
+.footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800; /* Deixa a fonte mais gordinha */
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+.footer-links a:hover {
+    opacity: 0.7;
+}
+
+/* Redes Sociais (Instagram) */
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+.social-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    background-color: #ffffff;
+    color: #df8bb0; /* Ícone rosa */
+    border-radius: 50%; /* Faz o círculo perfeito */
+    text-decoration: none;
+    font-size: 24px;
+    transition: transform 0.2s;
+}
+.social-icon:hover {
+    transform: scale(1.1);
+    color: #df8bb0;
+}
+
+/* Meios de Pagamento */
+.payment-methods {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+.payment-card {
+    background-color: #ffffff;
+    width: 45px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px; /* Bordinha levemente arredondada como um cartão */
+    font-size: 22px;
+}
+/* Cores originais das marcas para os ícones FontAwesome */
+.payment-card.visa { color: #1434CB; }
+.payment-card.master { color: #eb001b; }
+.payment-card.amex { color: #002663; }
+.payment-card.pix { color: #32bcad; }
+
+/* Textos da parte de baixo (Copyright) */
+.copyright-text, .credits-text {
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+/* =========================================
+   BANNER DE COOKIES (FIXO NA PARTE INFERIOR)
+   ========================================= */
+.cookie-banner-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ff66b2; /* Rosa vibrante */
+    color: #3b7d5d;
+    padding: 15px 0;
+    width: 100%;
+    z-index: 1000;
+    animation: slideUp 0.4s ease-out;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cookie-banner-fixed p {
+    font-size: 14px;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.cookie-banner-removed {
+    animation: slideDown 0.3s ease-in forwards;
+}
+
+@keyframes slideDown {
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+.cookie-buttons-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-cookie {
+    background-color: transparent;
+    color: #3b7d5d;
+    border: 1px solid #3b7d5d;
+    padding: 5px 25px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-cookie:hover {
+    background-color: #3b7d5d;
+    color: #ffffff;
+}
+
+.btn-cookie-negar {
+    background-color: #3b7d5d;
+    color: #ffffff;
+    border: 1px solid #3b7d5d;
+}
+.btn-cookie-negar:hover {
+    background-color: transparent;
+    color: #3b7d5d;
+}

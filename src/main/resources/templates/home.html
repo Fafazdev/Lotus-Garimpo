@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lótus - Novo Drop</title>
-    <link rel="stylesheet" href="teste.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
@@ -13,69 +12,108 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900&display=swap" rel="stylesheet" />
 
-    <link href="../css paginas/bodyhome.css" rel="stylesheet">
-    <link href="../css paginas/footer.css" rel="stylesheet">
-    <link href="../css paginas/header.css" rel="stylesheet">
+    <link href="/css/bodyhome.css" rel="stylesheet">
+    <link href="/css/footer.css" rel="stylesheet">
+        <link href="/css/header.css" rel="stylesheet">
+
 </head>
-<header class="top-header">
-    <div class="container-fluid px-4 px-lg-5">
-        <div class="row align-items-center">
-
-            <div class="col-12 col-md-4 order-2 order-md-1 mt-3 mt-md-0">
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="O que você está buscando?">
-                    <i class="fas fa-search search-icon"></i>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-4 order-1 order-md-2 text-md-center">
-                <img src="../imagens/lotus.webp" alt="Lótus Logo" class="logo-img">
-            </div>
-
-            <div class="col-6 col-md-4 order-1 order-md-3">
-                <div class="header-actions">
-                    <a href="#" class="action-item">
-                        <i class="far fa-user"></i>
-                        <span>Minha conta</span>
-                    </a>
-
-                    <a href="#" class="action-item">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-badge">0</span>
-                        <span>Meu carrinho</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-12">
-                <nav class="nav-menu">
-                    <a href="#">Início</a>
-                    <a href="/produtos">Produtos <i class="fas fa-chevron-down ms-1" style="font-size: 10px;"></i></a>
-                    <a href="#">Sacolinha</a>
-                    <a href="#">Guia de medidas</a>
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-    crossorigin="anonymous"></script>
 
 <body>
-<main class="main-content">
+        <!-- Alerta flutuante da home -->
+        <div id="home-alert" class="home-alert-container" style="display: none;">
+                <div id="home-alert-card" class="home-alert-card home-alert-error">
+                        <div class="home-alert-bar">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="96" width="16" viewBox="0 0 16 96">
+                                        <path
+                                                d="M 8 0 
+                                                     Q 4 4.8, 8 9.6 
+                                                     T 8 19.2 
+                                                     Q 4 24, 8 28.8 
+                                                     T 8 38.4 
+                                                     Q 4 43.2, 8 48 
+                                                     T 8 57.6 
+                                                     Q 4 62.4, 8 67.2 
+                                                     T 8 76.8 
+                                                     Q 4 81.6, 8 86.4 
+                                                     T 8 96 
+                                                     L 0 96 
+                                                     L 0 0 
+                                                     Z" />
+                                </svg>
+                        </div>
+                        <div class="home-alert-content">
+                                <p id="home-alert-title" class="home-alert-title">Erro</p>
+                                <p id="home-alert-message" class="home-alert-message">
+                                        Ocorreu um erro. Tente novamente.
+                                </p>
+                        </div>
+                        <button id="home-alert-close" class="home-alert-close" type="button" aria-label="Fechar alerta">
+                                <svg class="home-alert-close-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                        </button>
+                </div>
+        </div>
 
-       <section class="container-fluid p-0 m-0">
+    <header class="top-header">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="row align-items-center">
+
+                <div class="col-12 col-md-4 order-2 order-md-1 mt-3 mt-md-0">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="O que você está buscando?">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-4 order-1 order-md-2 text-md-center">
+                    <img th:src="@{/imagens/lotus.webp}" alt="Lótus Logo" class="logo-img">
+                </div>
+
+                <div class="col-6 col-md-4 order-1 order-md-3">
+                    <div class="header-actions">
+
+                        <a th:if="${session.usuarioLogado == null}" href="#" class="action-item" data-bs-toggle="modal"
+                            data-bs-target="#loginModal">
+                            <i class="far fa-user"></i>
+                            <span>Minha conta</span>
+                        </a>
+
+                        <a th:if="${session.usuarioLogado != null}" th:href="@{/perfil}" class="action-item">
+                            <i class="fas fa-user-circle" style="color: #ff69b4;"></i>
+                            <span th:text="${'Olá, ' + session.usuarioLogado.nome}">Usuário</span>
+                        </a>
+
+                        <a href="#" class="action-item">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge">0</span>
+                            <span>Meu carrinho</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <nav class="nav-menu">
+                        <a th:href="@{/}">Início</a>
+                        <a th:href="@{/produtos}">Produtos <i class="fas fa-chevron-down ms-1"
+                            style="font-size: 10px;"></i></a>
+                        <a href="#">Guia de medidas</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        <section class="container-fluid p-0 m-0">
             <img src="../imagens/banner.webp" class="w-100 d-block" alt="Ver tudo aqui" style="object-fit: cover;">
         </section>
         <section class="info-section py-4">
             <div class="container-fluid px-4 px-lg-5 text-white">
                 <div class="row g-4 justify-content-center">
-                    
                     <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-center justify-content-md-center">
                         <div class="info-icon-circle me-3">
                             <i class="far fa-credit-card"></i>
@@ -123,10 +161,11 @@
         <section class="categorias-section">
             <div class="container-fluid px-0">
                 <div class="row g-0">
-                    
+
                     <div class="col-12 col-md-4 d-flex flex-column">
                         <div class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
-                            <img src="../imagens/calca.png" alt="Partes de baixo" class="img-fluid" style="max-height: 250px;">
+                            <img src="../imagens/calca.png" alt="Partes de baixo" class="img-fluid"
+                                style="max-height: 250px;">
                         </div>
                         <div class="category-strip text-center py-3">
                             <h3 class="category-title m-0">Partes de baixo</h3>
@@ -135,7 +174,8 @@
 
                     <div class="col-12 col-md-4 d-flex flex-column">
                         <div class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
-                             <img src="../imagens/jaqueta.png" alt="Partes de cima" class="img-fluid" style="max-height: 250px;">
+                            <img src="../imagens/jaqueta.png" alt="Partes de cima" class="img-fluid"
+                                style="max-height: 250px;">
                         </div>
                         <div class="category-strip text-center py-3">
                             <h3 class="category-title m-0">Partes de cima</h3>
@@ -144,7 +184,8 @@
 
                     <div class="col-12 col-md-4 d-flex flex-column">
                         <div class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
-                             <img src="../imagens/bolsa.png" alt="Acessórios" class="img-fluid" style="max-height: 250px;">
+                            <img src="../imagens/bolsa.png" alt="Acessórios" class="img-fluid"
+                                style="max-height: 250px;">
                         </div>
                         <div class="category-strip text-center py-3">
                             <h3 class="category-title m-0">Acessórios</h3>
@@ -160,45 +201,49 @@
                 <div class="row mb-5">
                     <div class="col-12 text-center">
                         <h2 class="section-title">
-                            <i class="fas fa-sparkles fs-4 me-2"></i> Novo drop <i class="fas fa-sparkles fs-4 ms-2"></i>
+                            <i class="fas fa-sparkles fs-4 me-2"></i> Novo drop <i
+                                class="fas fa-sparkles fs-4 ms-2"></i>
                         </h2>
                     </div>
                 </div>
 
                 <div class="row justify-content-center g-4">
-                    
+
                     <div class="col-12 col-sm-8 col-md-6 col-lg-3">
                         <div class="card-produto position-relative">
-                            
+
                             <div class="image_container">
-                                <img src="../imagens/jaqueta-puffer.png" alt="Produto" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                                </div>
-                            
+                                <img src="../imagens/jaqueta-puffer.png" alt="Produto"
+                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                            </div>
+
                             <div class="title">
                                 <span>Jaqueta Puffer Sthill M</span>
                             </div>
-                            
+
                             <div class="size">
                                 <span>Tamanho</span>
                                 <ul class="list-size">
                                     <li class="item-list"><button class="item-list-button">M</button></li>
                                 </ul>
                             </div>
-                            
                             <div class="action">
                                 <div class="price">
                                     <span>R$50,00</span>
                                 </div>
                                 <button class="cart-button">
-                                    <svg class="cart-icon" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" stroke-linejoin="round" stroke-linecap="round"></path>
+                                    <svg class="cart-icon" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                                        fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                            stroke-linejoin="round" stroke-linecap="round"></path>
                                     </svg>
                                     <span>Comprar</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    </div>
+                </div>
             </div>
         </section>
 
@@ -213,11 +258,12 @@
                 </div>
 
                 <div class="row justify-content-center g-4">
-                    
+
                     <div class="col-12 col-sm-8 col-md-6 col-lg-3">
                         <div class="card-produto">
                             <div class="image_container">
-                                <img src="../imagens/casaquinho.png" alt="Produto" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                                <img src="../imagens/casaquinho.png" alt="Produto"
+                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
                             </div>
                             <div class="title">
                                 <span>Casaquinho (U)</span>
@@ -233,15 +279,18 @@
                                     <span>R$43,00</span>
                                 </div>
                                 <button class="cart-button">
-                                    <svg class="cart-icon" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" stroke-linejoin="round" stroke-linecap="round"></path>
+                                    <svg class="cart-icon" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                                        fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                            stroke-linejoin="round" stroke-linecap="round"></path>
                                     </svg>
                                     <span>Comprar</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    </div>
+                </div>
             </div>
         </section>
 
@@ -250,14 +299,79 @@
                 <div class="row justify-content-center">
                     <div class="col-12 col-lg-8">
                         <h2 class="welcome-title mb-4">Bem-vindo ao Lotus!</h2>
-                        <p class="welcome-text fw-bold">Fundado em 2024, o Lotus dá nova vida a peças rejeitadas, transformando-as em moda sustentável e única. Cada item é cuidadosamente selecionado, unindo estilo e responsabilidade ambiental.</p>
+                        <p class="welcome-text fw-bold">Fundado em 2024, o Lotus dá nova vida a peças rejeitadas,
+                            transformando-as em moda sustentável e única. Cada item é cuidadosamente selecionado, unindo
+                            estilo e responsabilidade ambiental.</p>
                     </div>
                 </div>
             </div>
         </section>
 
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            let homeAlertTimeout;
+
+            function showAlert(type, title, message) {
+                const container = document.getElementById('home-alert');
+                const card = document.getElementById('home-alert-card');
+                const titleEl = document.getElementById('home-alert-title');
+                const messageEl = document.getElementById('home-alert-message');
+
+                if (!container || !card || !titleEl || !messageEl) {
+                    return;
+                }
+
+                if (homeAlertTimeout) {
+                    clearTimeout(homeAlertTimeout);
+                }
+
+                titleEl.textContent = title || '';
+                messageEl.innerHTML = message || '';
+
+                card.classList.remove('home-alert-error', 'home-alert-success');
+                if (type === 'success') {
+                    card.classList.add('home-alert-success');
+                } else {
+                    card.classList.add('home-alert-error');
+                }
+
+                container.style.display = 'flex';
+
+                homeAlertTimeout = setTimeout(function () {
+                    container.style.display = 'none';
+                }, 4000);
+            }
+
+            window.showAlert = showAlert;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const container = document.getElementById('home-alert');
+                const closeBtn = document.getElementById('home-alert-close');
+
+                if (container && closeBtn) {
+                    closeBtn.addEventListener('click', function () {
+                        container.style.display = 'none';
+                    });
+                }
+
+                const params = new URLSearchParams(window.location.search);
+                const erro = params.get('erro');
+
+                if (erro === 'email') {
+                    showAlert('error', 'Erro no cadastro', 'Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail.');
+                } else if (erro === 'senha') {
+                    showAlert('error', 'Erro no cadastro', 'As senhas não conferem. Verifique e tente novamente.');
+                } else if (erro === 'cpf') {
+                    showAlert('error', 'Problema com CPF', 'CPF inválido ou já cadastrado. Verifique o dado informado.');
+                }
+            });
+        })();
+    </script>
+
 </body>
+
 <footer class="site-footer">
     <div class="container-fluid px-4 px-lg-5">
 
@@ -308,12 +422,35 @@
     </div>
 </footer>
 
-<div class="cookie-banner">
+<div id="cookieBanner" class="cookie-banner-fixed">
     <div class="container-fluid d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
         <p class="mb-0 text-center">Ao navegar por este site <strong>você aceita o uso de cookies</strong> para agilizar
             a sua experiência de compra.</p>
-        <button class="btn-cookie">ENTENDI</button>
+        <div class="cookie-buttons-group">
+            <button class="btn-cookie" onclick="aceitarCookies()">ENTENDI</button>
+            <button class="btn-cookie btn-cookie-negar" onclick="negarCookies()">NEGAR</button>
+        </div>
     </div>
 </div>
+
+<div th:replace="~{modal :: modalLogin}"></div>
+
+<script>
+    function aceitarCookies() {
+        const banner = document.getElementById('cookieBanner');
+        banner.classList.add('cookie-banner-removed');
+        setTimeout(() => {
+            banner.style.display = 'none';
+        }, 300);
+    }
+
+    function negarCookies() {
+        const banner = document.getElementById('cookieBanner');
+        banner.classList.add('cookie-banner-removed');
+        setTimeout(() => {
+            banner.style.display = 'none';
+        }, 300);
+    }
+</script>
 
 </html>

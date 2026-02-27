@@ -1,0 +1,550 @@
+/* =========================================
+   PÁGINA DE PERFIL DO USUÁRIO
+   ========================================= */
+
+/* Estilos Globais */
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #ffffff 0%, #ff69b4 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Container principal */
+.profile-content {
+    min-height: 100%;
+    padding: 50px 0;
+}
+
+/* Header do Perfil */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    background: linear-gradient(135deg, #fff 0%, #f9faf8 100%);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0px 10px 40px rgba(45, 90, 39, 0.12);
+    border: 1px solid rgba(45, 90, 39, 0.1);
+}
+
+.profile-avatar {
+    font-size: 90px;
+    color: #ff69b4;
+    flex-shrink: 0;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.profile-info h1 {
+    color: #2d5a27;
+    font-size: 36px;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.profile-info p {
+    color: #ff69b4;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 8px 0 0 0;
+}
+
+/* =========================================
+   INPUT EDITÁVEL UIVERSE STYLE
+   ========================================= */
+
+.editable-item {
+    position: relative;
+    cursor: pointer;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+}
+
+.editable-item:hover {
+    color: #ff69b4;
+}
+
+.unsaved-warning {
+    display: inline-block;
+    font-size: 11px;
+    color: #ff4444;
+    font-weight: 600;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+.editable-item p {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.editable-text-display {
+    display: block;
+}
+
+.editable-form {
+    display: none;
+    position: relative;
+}
+
+.editable-form.active {
+    display: block;
+}
+
+.editable-form.active .editable-text-display {
+    display: none;
+}
+
+.form-group-editable {
+    position: relative;
+    margin: 15px 0;
+}
+
+.editable-input {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    background-color: transparent;
+    font-size: 1rem;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.editable-input:focus {
+    outline: none;
+    border-bottom-color: #ff69b4;
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.1);
+    background-color: rgba(255, 105, 180, 0.02);
+}
+
+.editable-input::placeholder {
+    color: #999;
+}
+
+.button-group-editable {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-save-edit {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #2d5a27 0%, #1f3d1a 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-save-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3);
+}
+
+.btn-cancel-edit {
+    padding: 8px 16px;
+    background: transparent;
+    color: #999;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel-edit:hover {
+    border-color: #ff69b4;
+    color: #ff69b4;
+}
+
+/* Botões */
+.btn-add-piece {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #2d5a27 0%, #1f3d1a 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+    box-shadow: 0px 8px 25px rgba(45, 90, 39, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-add-piece:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 12px 35px rgba(45, 90, 39, 0.45);
+}
+
+.btn-add-piece:active {
+    transform: translateY(-2px);
+}
+
+.btn-add-piece i {
+    font-size: 18px;
+}
+
+/* Botão Voltar ao Início */
+.btn-back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.2) 0%, rgba(255, 105, 180, 0.35) 100%);
+    color: #ff69b4;
+    border: 2px solid #ff69b4;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-back-home:hover {
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.3) 0%, rgba(255, 105, 180, 0.45) 100%);
+    box-shadow: 0px 12px 35px rgba(255, 105, 180, 0.35);
+    color: #ff69b4;
+    text-decoration: none;
+}
+
+.btn-back-home:active {
+    transform: translateY(-2px);
+}
+
+.btn-back-home i {
+    font-size: 18px;
+}
+
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: transparent;
+    color: #ff69b4;
+    border: 2px solid #ff69b4;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: fit-content;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 105, 180, 0.1);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.btn-logout i {
+    font-size: 14px;
+}
+
+/* =========================================
+   ALERTA FLUTUANTE (ERROS/SUCESSO)
+   ========================================= */
+
+#alert-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+    max-width: 320px;
+    width: 90%;
+    font-size: 10px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#alert-container .alert-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 48px;
+    padding: 10px 14px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #ffe4f2 100%);
+    border: 1px solid rgba(255, 105, 180, 0.7);
+    box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+}
+
+#alert-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 999px;
+    background-color: rgba(255, 105, 180, 0.12);
+    border: 1px solid rgba(255, 105, 180, 0.6);
+}
+
+#alert-icon-wrapper svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Cores da "bolinha" controladas por classes usadas no JS */
+.text-\[\#d65563\] {
+    color: #ff69b4;
+}
+
+.text-\[\#22c55e\] {
+    color: #2d5a27;
+}
+
+#alert-title {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 800;
+    color: #2d5a27;
+}
+
+#alert-message {
+    margin: 0;
+    margin-top: 2px;
+    font-size: 11px;
+    color: #555555;
+}
+
+#alert-close-button {
+    border: none;
+    background: transparent;
+    color: #555555;
+    padding: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#alert-close-button:hover {
+    background-color: rgba(255, 105, 180, 0.12);
+}
+
+/* Cards de Informação */
+.card-info {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0px 8px 30px rgba(45, 90, 39, 0.08);
+    overflow: hidden;
+    margin-bottom: 25px;
+    border: 1px solid rgba(45, 90, 39, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card-info:hover {
+    box-shadow: 0px 12px 40px rgba(45, 90, 39, 0.15);
+    transform: translateY(-4px);
+}
+
+.card-title {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding-left: 30px;
+    background: linear-gradient(135deg, #2d5a27 0%, #1f3d1a 100%);
+    color: white;
+    font-weight: 750;
+    font-size: 13px;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-section {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-section > div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-label {
+    font-size: 12px;
+    font-weight: 750;
+    color: #2d5a27;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-section p {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.info-section hr {
+    height: 2px;
+    background: linear-gradient(90deg, rgba(45, 90, 39, 0.3) 0%, transparent 100%);
+    border: none;
+    margin: 8px 0;
+}
+
+/* =========================================
+   MODAL - ADICIONAR PEÇA
+   ========================================= */
+
+.form-container-piece {
+    width: 420px;
+    height: auto;
+    background: linear-gradient(135deg, #fff 0%, #f9faf8 100%);
+    box-shadow: 0px 15px 50px rgba(45, 90, 39, 0.25);
+    border-radius: 25px;
+    box-sizing: border-box;
+    padding: 40px;
+    border: 1px solid rgba(45, 90, 39, 0.08);
+}
+
+.title-piece {
+    text-align: center;
+    font-family: inherit;
+    margin: 0 0 30px 0;
+    font-size: 26px;
+    font-weight: 900;
+    color: #2d5a27;
+    letter-spacing: -0.5px;
+}
+
+.form-piece {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group label {
+    font-size: 12px;
+    font-weight: 800;
+    color: #2d5a27;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-piece {
+    border-radius: 12px;
+    border: 2px solid #e8e8e8;
+    outline: 0 !important;
+    box-sizing: border-box;
+    padding: 14px 18px;
+    font-family: inherit;
+    font-size: 14px;
+    background: linear-gradient(135deg, #fff 0%, #f9faf8 100%);
+    transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+}
+
+.input-piece:focus {
+    border-color: #ff69b4 !important;
+    background-color: #fff;
+    box-shadow: 0px 0px 20px rgba(255, 105, 180, 0.25);
+}
+
+.input-piece:hover {
+    border-color: #2d5a27;
+    box-shadow: 0px 4px 12px rgba(45, 90, 39, 0.08);
+}
+
+.textarea-piece {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+}
+
+.form-btn-piece {
+    padding: 16px 20px;
+    font-family: inherit;
+    border-radius: 50px;
+    border: 0 !important;
+    outline: 0 !important;
+    background: linear-gradient(135deg, #2d5a27 0%, #1f3d1a 100%);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0px 8px 25px rgba(45, 90, 39, 0.3);
+    font-weight: 800;
+    transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+    margin-top: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-btn-piece:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 12px 35px rgba(45, 90, 39, 0.45);
+}
+
+.form-btn-piece:active {
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 20px rgba(45, 90, 39, 0.3);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .profile-avatar {
+        font-size: 60px;
+    }
+
+    .profile-info h1 {
+        font-size: 24px;
+    }
+
+    .form-container-piece {
+        width: 100%;
+    }
+}
