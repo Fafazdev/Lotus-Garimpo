@@ -1,111 +1,102 @@
 /* Container de fundo */
 .medidas-section {
-  background-color: #5e9b81;
-  padding: 80px 0;
-  min-height: 80vh;
+    background-color: #5e9b81;
+    padding: 80px 0;
+    min-height: 80vh;
 }
 
 /* Estrutura do Card (Livro) */
 .book {
-  position: relative;
-  border-radius: 10px;
-  width: 260px;
-  height: 360px;
-  background-color: whitesmoke;
-  -webkit-box-shadow: 1px 1px 12px #000;
-  box-shadow: 1px 1px 12px rgba(0,0,0,0.5);
-  -webkit-transform: preserve-3d;
-  -ms-transform: preserve-3d;
-  transform: preserve-3d;
-  -webkit-perspective: 2000px;
-  perspective: 2000px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  color: #000;
+    position: relative;
+    border-radius: 10px;
+    width: 280px; /* Aumentado para dar espaço lateral */
+    height: 400px; /* Aumentado para não amontoar as linhas */
+    background-color: whitesmoke;
+    box-shadow: 1px 1px 12px rgba(0,0,0,0.5);
+    transform-style: preserve-3d;
+    perspective: 2000px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
 }
 
 /* Capa do Card */
 .cover {
-  top: 0;
-  position: absolute;
-  background-color: #f8bbd0; /* Rosa Lótus */
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  cursor: pointer;
-  -webkit-transition: all 0.5s;
-  transition: all 0.5s;
-  -webkit-transform-origin: 0;
-  -ms-transform-origin: 0;
-  transform-origin: 0;
-  -webkit-box-shadow: 1px 1px 12px #000;
-  box-shadow: 1px 1px 12px rgba(0,0,0,0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
+    top: 0;
+    position: absolute;
+    background-color: #f8bbd0; /* Rosa Lótus */
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.5s;
+    transform-origin: 0;
+    box-shadow: 1px 1px 12px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2; /* Garante que a capa fique por cima */
 }
 
-/* Gatilho da Animação */
+/* Gatilho da Animação exato do Uiverse */
 .book:hover .cover {
-  -webkit-transition: all 0.5s;
-  transition: all 0.5s;
-  -webkit-transform: rotatey(-80deg);
-  -ms-transform: rotatey(-80deg);
-  transform: rotatey(-80deg);
+    transition: all 0.5s;
+    transform: rotatey(-80deg);
 }
 
 .cover p {
-  font-size: 20px;
-  font-weight: bolder;
-  margin: 0;
-  color: #333;
+    font-size: 22px;
+    font-weight: bolder;
+    margin: 0;
+    color: #333;
 }
 
 .cover i {
-  font-size: 40px;
-  color: #5e9b81;
+    font-size: 50px;
+    color: #5e9b81;
+    margin-bottom: 10px;
 }
 
-/* Conteúdo Interno Intuitivo */
+/* Conteúdo Interno (Informações) */
 .book-content {
-  padding: 25px 15px;
-  width: 100%;
+    padding: 30px 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .book-content h6 {
-  text-align: center;
-  font-weight: 800;
-  margin-bottom: 20px;
-  color: #5e9b81;
-  text-transform: uppercase;
-  border-bottom: 2px solid #f8bbd0;
-  padding-bottom: 5px;
+    text-align: center;
+    font-weight: 800;
+    margin-bottom: 25px;
+    color: #5e9b81;
+    text-transform: uppercase;
+    border-bottom: 2px solid #f8bbd0;
+    padding-bottom: 10px;
 }
 
 .table-medidas {
-  width: 100%;
-  font-size: 13px;
-  text-align: center;
-  border-collapse: collapse;
+    width: 100%;
+    font-size: 14px; /* Fonte mais legível */
+    text-align: center;
+    border-collapse: collapse;
 }
 
 .table-medidas th {
-  padding: 8px 2px;
-  color: #555;
-  font-weight: 700;
-  border-bottom: 1px solid #ddd;
+    padding: 10px 5px;
+    color: #555;
+    border-bottom: 2px solid #ddd;
 }
 
 .table-medidas td {
-  padding: 10px 2px;
-  border-bottom: 1px solid #eee;
-  color: #333;
+    padding: 12px 5px; /* Espaço generoso entre linhas */
+    border-bottom: 1px solid #eee;
 }
 
-/* Linhas alternadas para facilitar a leitura */
 .table-medidas tbody tr:nth-child(even) {
-  background-color: rgba(0,0,0,0.03);
+    background-color: rgba(0,0,0,0.03);
 }
