@@ -1,0 +1,6 @@
+## Exemplo de configuração OAuth2 (NÃO usar este arquivo em produção)
+## Copie este arquivo para "application-oauth.properties" (que está no .gitignore)
+## e preencha com suas credenciais reais do Google.
+
+spring.security.oauth2.client.registration.google.client-id=SEU_CLIENT_ID_AQUI
+spring.security.oauth2.client.registration.google.client-secret=SEU_CLIENT_SECRET_AQUI
