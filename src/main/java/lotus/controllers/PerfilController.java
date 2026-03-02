@@ -255,8 +255,8 @@ public class PerfilController {
         // trata a imagem enviada pelo formulário
         if (imagem != null && !imagem.isEmpty()) {
             try {
-                // pasta relativa dentro do projeto para servir os arquivos estáticos
-                java.nio.file.Path uploadDir = java.nio.file.Paths.get("src/main/resources/static/imagens");
+                // usa caminho absoluto para garantir que sempre funcione
+                java.nio.file.Path uploadDir = java.nio.file.Paths.get("src/main/resources/static/imagens").toAbsolutePath().normalize();
                 java.nio.file.Files.createDirectories(uploadDir);
                 String filename = System.currentTimeMillis() + "_" + imagem.getOriginalFilename();
                 java.nio.file.Path filePath = uploadDir.resolve(filename);

@@ -118,6 +118,22 @@
     fill: #df8bb0;
 }
 
+/* descrição e categoria no card (mesmas regras do bodyprodutos.css) */
+.card-produto .description span {
+    display: block;
+    font-size: 0.9rem;
+    color: #444;
+    margin: 6px 0;
+}
+.card-produto .category span {
+    display: block;
+    font-size: 0.8rem;
+    color: #777;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
 .card-produto .title span {
     font-weight: 700;
     color: #519f79;
