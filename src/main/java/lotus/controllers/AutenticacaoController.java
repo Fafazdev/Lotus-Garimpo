@@ -11,6 +11,8 @@ import lotus.model.Usuario;
 import lotus.repositories.UsuarioRepository;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @Controller
 public class AutenticacaoController {
@@ -59,7 +61,10 @@ public class AutenticacaoController {
         novoUsuario.setNome(nome);
         novoUsuario.setEmail(email);
         novoUsuario.setCpf(cpf);
-        novoUsuario.setSenha(senha);
+
+        // Gera hash da senha (SHA-256) antes de salvar no banco
+        String senhaHash = hashSenha(senha);
+        novoUsuario.setSenha(senhaHash);
         novoUsuario.setTipo(tipoNormalizado);
         novoUsuario.setDataNascimento(LocalDate.now());
 
@@ -85,7 +90,9 @@ public class AutenticacaoController {
 
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            if (usuario.getSenha().equals(senha)) {
+
+            // Compara a senha digitada com o hash armazenado
+            if (usuario.getSenha() != null && hashSenha(senha).equals(usuario.getSenha())) {
                 session.setAttribute("usuarioLogado", usuario);
                 return "redirect:/perfil";
             }
@@ -137,6 +144,22 @@ public class AutenticacaoController {
             return dv2 == Character.getNumericValue(numero.charAt(10));
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    // Gera hash SHA-256 em hexadecimal para a senha
+    private String hashSenha(String senha) {
+        if (senha == null) return null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] digest = md.digest(senha.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Erro ao gerar hash da senha", e);
         }
     }
 }
