@@ -20,8 +20,8 @@ public class Usuario {
     @Column(name = "cd_tipo")
     private Integer tipo;
 
-    @Column(name = "dt_nascimento", nullable = false)
-    private LocalDate dataNascimento;
+    @Column(name = "dt_criacao", nullable = false)
+    private LocalDate dataCriacao;
 
     @Column(name = "cd_telefone")
     private String telefone;
@@ -69,8 +69,8 @@ public class Usuario {
     public Integer getTipo() { return tipo; }
     public void setTipo(Integer tipo) { this.tipo = tipo; }
 
-    public LocalDate getDataNascimento() { return dataNascimento; }
-    public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
+    public LocalDate getDataCriacao() { return dataCriacao; }
+    public void setDataCriacao(LocalDate dataCriacao) { this.dataCriacao = dataCriacao; }
 
     public String getTelefone() { return telefone; }
     public void setTelefone(String telefone) { this.telefone = telefone; }

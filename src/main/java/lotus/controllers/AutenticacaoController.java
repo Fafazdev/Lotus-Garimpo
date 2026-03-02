@@ -66,7 +66,7 @@ public class AutenticacaoController {
         String senhaHash = hashSenha(senha);
         novoUsuario.setSenha(senhaHash);
         novoUsuario.setTipo(tipoNormalizado);
-        novoUsuario.setDataNascimento(LocalDate.now());
+        novoUsuario.setDataCriacao(LocalDate.now());
 
         novoUsuario = usuarioRepository.save(novoUsuario);
         session.setAttribute("usuarioLogado", novoUsuario);
