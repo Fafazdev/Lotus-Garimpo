@@ -707,7 +707,14 @@
         // Buscar endereço por CEP
         function buscarEnderecoPorCep() {
             const cepInput = document.getElementById('cepInput');
+            if (!cepInput) return;
+
             const cep = cepInput.value.replace(/\D/g, '');
+
+            // Se não tiver 8 dígitos ainda, não faz nada (nem mostra erro)
+            if (cep.length === 0) {
+                return;
+            }
 
             if (cep.length !== 8) {
                 showAlert('error', 'CEP inválido', 'CEP deve conter 8 dígitos.');
@@ -717,30 +724,96 @@
             // Formatar CEP para display (XXXXX-XXX)
             cepInput.value = cep.substring(0, 5) + '-' + cep.substring(5);
 
-            // Chamar API ViaCEP
-            fetch('/api/endereco-por-cep?cep=' + cep)
-                .then(response => response.json())
+            // Tenta BrasilAPI primeiro; se falhar, cai para ViaCEP
+            fetch('https://brasilapi.com.br/api/cep/v1/' + cep)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('BrasilAPI respondeu com status ' + response.status);
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    if (data.erro) {
-                        showAlert('error', 'CEP não encontrado', 'Verifique o CEP informado e tente novamente.');
-                        return;
+                    // Campos: street, city, state
+                    const ruaInput = document.getElementById('ruaInput');
+                    if (ruaInput) {
+                        const ruaItem = ruaInput.closest('.editable-item');
+                        if (ruaItem) {
+                            const ruaDisplay = ruaItem.querySelector('.editable-text-display');
+                            if (ruaDisplay) ruaDisplay.textContent = data.street || '';
+                        }
+                        ruaInput.value = data.street || '';
                     }
 
-                    // Preencher os campos automaticamente
-                    document.getElementById('ruaInput').closest('.editable-item').querySelector('.editable-text-display').textContent = data.endereco || '';
-                    document.getElementById('ruaInput').value = data.endereco || '';
+                    const cidadeInput = document.getElementById('cidadeInput');
+                    if (cidadeInput) {
+                        const cidadeItem = cidadeInput.closest('.editable-item');
+                        if (cidadeItem) {
+                            const cidadeDisplay = cidadeItem.querySelector('.editable-text-display');
+                            if (cidadeDisplay) cidadeDisplay.textContent = data.city || '';
+                        }
+                        cidadeInput.value = data.city || '';
+                    }
 
-                    document.getElementById('cidadeInput').closest('.editable-item').querySelector('.editable-text-display').textContent = data.cidade || '';
-                    document.getElementById('cidadeInput').value = data.cidade || '';
+                    const estadoInput = document.getElementById('estadoInput');
+                    if (estadoInput) {
+                        const estadoItem = estadoInput.closest('.editable-item');
+                        if (estadoItem) {
+                            const estadoDisplay = estadoItem.querySelector('.editable-text-display');
+                            if (estadoDisplay) estadoDisplay.textContent = data.state || '';
+                        }
+                        estadoInput.value = data.state || '';
+                    }
 
-                    document.getElementById('estadoInput').closest('.editable-item').querySelector('.editable-text-display').textContent = data.estado || '';
-                    document.getElementById('estadoInput').value = data.estado || '';
-
-                    console.log('Endereço encontrado:', data);
+                    console.log('Endereço encontrado (BrasilAPI):', data);
                 })
                 .catch(error => {
-                    console.error('Erro ao buscar CEP:', error);
-                    showAlert('error', 'Erro de comunicação', 'Não foi possível buscar o CEP.');
+                    console.warn('Erro com BrasilAPI, tentando ViaCEP...', error);
+
+                    // Fallback: ViaCEP
+                    fetch('https://viacep.com.br/ws/' + cep + '/json/')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.erro) {
+                                showAlert('error', 'CEP não encontrado', 'Verifique o CEP informado e tente novamente.');
+                                return;
+                            }
+
+                            const ruaInput = document.getElementById('ruaInput');
+                            if (ruaInput) {
+                                const ruaItem = ruaInput.closest('.editable-item');
+                                if (ruaItem) {
+                                    const ruaDisplay = ruaItem.querySelector('.editable-text-display');
+                                    if (ruaDisplay) ruaDisplay.textContent = data.logradouro || '';
+                                }
+                                ruaInput.value = data.logradouro || '';
+                            }
+
+                            const cidadeInput = document.getElementById('cidadeInput');
+                            if (cidadeInput) {
+                                const cidadeItem = cidadeInput.closest('.editable-item');
+                                if (cidadeItem) {
+                                    const cidadeDisplay = cidadeItem.querySelector('.editable-text-display');
+                                    if (cidadeDisplay) cidadeDisplay.textContent = data.localidade || '';
+                                }
+                                cidadeInput.value = data.localidade || '';
+                            }
+
+                            const estadoInput = document.getElementById('estadoInput');
+                            if (estadoInput) {
+                                const estadoItem = estadoInput.closest('.editable-item');
+                                if (estadoItem) {
+                                    const estadoDisplay = estadoItem.querySelector('.editable-text-display');
+                                    if (estadoDisplay) estadoDisplay.textContent = data.uf || '';
+                                }
+                                estadoInput.value = data.uf || '';
+                            }
+
+                            console.log('Endereço encontrado (ViaCEP fallback):', data);
+                        })
+                        .catch(err2 => {
+                            console.error('Erro ao buscar CEP (BrasilAPI e ViaCEP falharam):', err2);
+                            showAlert('error', 'Erro de comunicação', 'Não foi possível buscar o CEP.');
+                        });
                 });
         }
 
