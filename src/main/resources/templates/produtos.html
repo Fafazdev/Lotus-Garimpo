@@ -15,6 +15,7 @@
     <link th:href="@{/css/bodyprodutos.css}" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <link th:href="@{/css/header.css}" rel="stylesheet">
+        <link th:href="@{/css/piece-modal.css}" rel="stylesheet">
 </head>
 <header class="top-header">
     <div class="container-fluid px-4 px-lg-5">
@@ -152,9 +153,30 @@
                                         <li class="item-list"><button class="item-list-button" th:text="${produto.tamanho}">Tamanho</button></li>
                                     </ul>
                                 </div>
-                                <div class="action">
+                                <div class="action d-flex justify-content-between align-items-center">
                                     <div class="price"><span th:text="'R$' + ${#numbers.formatDecimal(produto.preco, 1, 2, 'POINT')}">R$</span></div>
-                                    <button class="cart-button"><span>Comprar</span></button>
+                                    <div class="manage-buttons">
+                                        <button class="cart-button"><span>Comprar</span></button>
+                                        <div th:if="${session.usuarioLogado != null and produto.usuario != null and produto.usuario.id == session.usuarioLogado.id}">
+                                            <button type="button"
+                                                    class="edit-card-button"
+                                                    th:attr="data-id=${produto.id},
+                                                             data-nome=${produto.nome},
+                                                             data-descricao=${produto.descricao},
+                                                             data-preco=${produto.preco},
+                                                             data-tamanho=${produto.tamanho},
+                                                             data-categoria=${produto.categoria},
+                                                             data-imagem=${produto.imagem}">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                            <form th:action="@{'/produto/excluir/' + ${produto.id}}" method="post" style="display:inline;">
+                                                <input type="hidden" name="origem" value="produtos" />
+                                                <button type="submit" class="delete-card-button">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -182,17 +204,8 @@
         </div>
     </main>
 
-<!-- Modal para visualizar imagem em tela cheia -->
-<div class="modal fade" id="imageViewModal" tabindex="-1" aria-labelledby="imageViewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-        <div class="modal-content" style="background-color: rgba(0,0,0,0.9); border: none;">
-            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10;"></button>
-            <div class="modal-body d-flex justify-content-center align-items-center p-0">
-                <img id="imageViewModalImg" src="" alt="Visualização do produto" style="max-width: 100%; max-height: 100vh; object-fit: contain;">
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Modais de produto vindos do fragmento modal.html -->
+<div th:replace="~{modal :: produtoModals('produtos')}"></div>
 
 </body>
 <footer class="site-footer">
@@ -290,6 +303,67 @@
                 imageModal.show();
             });
         });
+    });
+
+    // Abrir modal de edição preenchendo com dados do card + confirmação de exclusão
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof bootstrap === 'undefined') return;
+
+        // Edição
+        const editButtons = document.querySelectorAll('.edit-card-button');
+        const editModalElement = document.getElementById('editPieceModal');
+        if (editModalElement) {
+            const editModal = new bootstrap.Modal(editModalElement);
+
+            editButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const id = btn.getAttribute('data-id');
+                    const nome = btn.getAttribute('data-nome') || '';
+                    const descricao = btn.getAttribute('data-descricao') || '';
+                    const preco = btn.getAttribute('data-preco') || '';
+                    const tamanho = btn.getAttribute('data-tamanho') || '';
+                    const categoria = btn.getAttribute('data-categoria') || '';
+                    const imagem = btn.getAttribute('data-imagem') || '';
+
+                    document.getElementById('editPieceId').value = id;
+                    document.getElementById('editPieceNome').value = nome;
+                    document.getElementById('editPieceDescricao').value = descricao;
+                    document.getElementById('editPiecePreco').value = preco;
+                    document.getElementById('editPieceTamanho').value = tamanho;
+                    document.getElementById('editPieceCategoria').value = categoria;
+
+                    const preview = document.getElementById('editPiecePreview');
+                    if (preview) {
+                        preview.src = imagem || '/imagens/lotus.webp';
+                    }
+
+                    editModal.show();
+                });
+            });
+        }
+
+        // Confirmação de exclusão
+        const deleteModalElement = document.getElementById('deleteConfirmModal');
+        const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+        let deleteFormToSubmit = null;
+
+        if (deleteModalElement && confirmDeleteButton) {
+            const deleteModal = new bootstrap.Modal(deleteModalElement);
+
+            document.querySelectorAll('.delete-card-button').forEach(btn => {
+                btn.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    deleteFormToSubmit = btn.closest('form');
+                    deleteModal.show();
+                });
+            });
+
+            confirmDeleteButton.addEventListener('click', function () {
+                if (deleteFormToSubmit) {
+                    deleteFormToSubmit.submit();
+                }
+            });
+        }
     });
 </script>
 
