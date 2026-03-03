@@ -12,6 +12,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900&display=swap" rel="stylesheet" />
 
+    <link th:href="@{/css/bodyhome.css}" rel="stylesheet">
     <link th:href="@{/css/bodyprodutos.css}" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <link th:href="@{/css/header.css}" rel="stylesheet">
@@ -74,6 +75,7 @@
 
 <body>
 
+<div th:replace="~{alerta :: floatingAlert}"></div>
 <div th:replace="~{modal :: modalLogin}"></div>
 <main class="shop-section">
         <div class="container-fluid px-4 px-lg-5 py-5">
@@ -256,87 +258,10 @@
             </div>
         </div>
     </div>
-<div th:replace="~{modal :: cookieBanner}"></div>
+<div th:replace="~{alerta :: cookieBanner}"></div>
 <div th:replace="~{modal :: modalLogin}"></div>
+<div th:replace="~{alerta :: floatingAlertJs}"></div>
 
-<script>
-    // Clique na imagem do produto para ver em tela cheia
-    document.addEventListener('DOMContentLoaded', function () {
-        const modalElement = document.getElementById('imageViewModal');
-        if (!modalElement || typeof bootstrap === 'undefined') return;
-
-        const imageModal = new bootstrap.Modal(modalElement);
-        const modalImg = document.getElementById('imageViewModalImg');
-
-        document.querySelectorAll('.product-image-fullscreen').forEach(function (img) {
-            img.addEventListener('click', function () {
-                const fullSrc = img.getAttribute('data-full-src') || img.getAttribute('src');
-                modalImg.src = fullSrc;
-                imageModal.show();
-            });
-        });
-    });
-
-    // Abrir modal de edição preenchendo com dados do card + confirmação de exclusão
-    document.addEventListener('DOMContentLoaded', function () {
-        if (typeof bootstrap === 'undefined') return;
-
-        // Edição
-        const editButtons = document.querySelectorAll('.edit-card-button');
-        const editModalElement = document.getElementById('editPieceModal');
-        if (editModalElement) {
-            const editModal = new bootstrap.Modal(editModalElement);
-
-            editButtons.forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const id = btn.getAttribute('data-id');
-                    const nome = btn.getAttribute('data-nome') || '';
-                    const descricao = btn.getAttribute('data-descricao') || '';
-                    const preco = btn.getAttribute('data-preco') || '';
-                    const tamanho = btn.getAttribute('data-tamanho') || '';
-                    const categoria = btn.getAttribute('data-categoria') || '';
-                    const imagem = btn.getAttribute('data-imagem') || '';
-
-                    document.getElementById('editPieceId').value = id;
-                    document.getElementById('editPieceNome').value = nome;
-                    document.getElementById('editPieceDescricao').value = descricao;
-                    document.getElementById('editPiecePreco').value = preco;
-                    document.getElementById('editPieceTamanho').value = tamanho;
-                    document.getElementById('editPieceCategoria').value = categoria;
-
-                    const preview = document.getElementById('editPiecePreview');
-                    if (preview) {
-                        preview.src = imagem || '/imagens/lotus.webp';
-                    }
-
-                    editModal.show();
-                });
-            });
-        }
-
-        // Confirmação de exclusão
-        const deleteModalElement = document.getElementById('deleteConfirmModal');
-        const confirmDeleteButton = document.getElementById('confirmDeleteButton');
-        let deleteFormToSubmit = null;
-
-        if (deleteModalElement && confirmDeleteButton) {
-            const deleteModal = new bootstrap.Modal(deleteModalElement);
-
-            document.querySelectorAll('.delete-card-button').forEach(btn => {
-                btn.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    deleteFormToSubmit = btn.closest('form');
-                    deleteModal.show();
-                });
-            });
-
-            confirmDeleteButton.addEventListener('click', function () {
-                if (deleteFormToSubmit) {
-                    deleteFormToSubmit.submit();
-                }
-            });
-        }
-    });
-</script>
+<script th:src="@{/js/produtos.js}"></script>
 
 </html>

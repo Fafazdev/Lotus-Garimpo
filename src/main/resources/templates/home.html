@@ -20,41 +20,7 @@
 </head>
 
 <body>
-        <!-- Alerta flutuante da home -->
-        <div id="home-alert" class="home-alert-container" style="display: none;">
-                <div id="home-alert-card" class="home-alert-card home-alert-error">
-                        <div class="home-alert-bar">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="96" width="16" viewBox="0 0 16 96">
-                                        <path
-                                                d="M 8 0 
-                                                     Q 4 4.8, 8 9.6 
-                                                     T 8 19.2 
-                                                     Q 4 24, 8 28.8 
-                                                     T 8 38.4 
-                                                     Q 4 43.2, 8 48 
-                                                     T 8 57.6 
-                                                     Q 4 62.4, 8 67.2 
-                                                     T 8 76.8 
-                                                     Q 4 81.6, 8 86.4 
-                                                     T 8 96 
-                                                     L 0 96 
-                                                     L 0 0 
-                                                     Z" />
-                                </svg>
-                        </div>
-                        <div class="home-alert-content">
-                                <p id="home-alert-title" class="home-alert-title">Erro</p>
-                                <p id="home-alert-message" class="home-alert-message">
-                                        Ocorreu um erro. Tente novamente.
-                                </p>
-                        </div>
-                        <button id="home-alert-close" class="home-alert-close" type="button" aria-label="Fechar alerta">
-                                <svg class="home-alert-close-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                        </button>
-                </div>
-        </div>
+    <div th:replace="~{alerta :: floatingAlert}"></div>
 
     <header class="top-header">
         <div class="container-fluid px-4 px-lg-5">
@@ -350,138 +316,7 @@
     <!-- Modais de produto vindos do fragmento modal.html -->
     <div th:replace="~{modal :: produtoModals('home')}"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Clique na imagem do produto para ver em tela cheia
-        document.addEventListener('DOMContentLoaded', function () {
-            const modalElement = document.getElementById('imageViewModal');
-            if (!modalElement || typeof bootstrap === 'undefined') return;
-
-            const imageModal = new bootstrap.Modal(modalElement);
-            const modalImg = document.getElementById('imageViewModalImg');
-
-            document.querySelectorAll('.product-image-fullscreen').forEach(function (img) {
-                img.addEventListener('click', function () {
-                    const fullSrc = img.getAttribute('data-full-src') || img.getAttribute('src');
-                    modalImg.src = fullSrc;
-                    imageModal.show();
-                });
-            });
-
-            // Modal de edição de peça (home)
-            const editModalElement = document.getElementById('editPieceModal');
-            if (editModalElement) {
-                const editModal = new bootstrap.Modal(editModalElement);
-
-                document.querySelectorAll('.edit-card-button').forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        const id = btn.getAttribute('data-id');
-                        const nome = btn.getAttribute('data-nome') || '';
-                        const descricao = btn.getAttribute('data-descricao') || '';
-                        const preco = btn.getAttribute('data-preco') || '';
-                        const tamanho = btn.getAttribute('data-tamanho') || '';
-                        const categoria = btn.getAttribute('data-categoria') || '';
-                        const imagem = btn.getAttribute('data-imagem') || '';
-
-                        document.getElementById('editPieceId').value = id;
-                        document.getElementById('editPieceNome').value = nome;
-                        document.getElementById('editPieceDescricao').value = descricao;
-                        document.getElementById('editPiecePreco').value = preco;
-                        document.getElementById('editPieceTamanho').value = tamanho;
-                        document.getElementById('editPieceCategoria').value = categoria;
-
-                        const preview = document.getElementById('editPiecePreview');
-                        if (preview) {
-                            preview.src = imagem || '/imagens/lotus.webp';
-                        }
-
-                        editModal.show();
-                    });
-                });
-            }
-
-            // Modal de confirmação de exclusão (home)
-            const deleteModalElement = document.getElementById('deleteConfirmModal');
-            const confirmDeleteButton = document.getElementById('confirmDeleteButton');
-            let deleteFormToSubmit = null;
-
-            if (deleteModalElement && confirmDeleteButton) {
-                const deleteModal = new bootstrap.Modal(deleteModalElement);
-
-                document.querySelectorAll('.delete-card-button').forEach(btn => {
-                    btn.addEventListener('click', function (event) {
-                        event.preventDefault();
-                        deleteFormToSubmit = btn.closest('form');
-                        deleteModal.show();
-                    });
-                });
-
-                confirmDeleteButton.addEventListener('click', function () {
-                    if (deleteFormToSubmit) {
-                        deleteFormToSubmit.submit();
-                    }
-                });
-            }
-        });
-
-        (function () {
-            let homeAlertTimeout;
-
-            function showAlert(type, title, message) {
-                const container = document.getElementById('home-alert');
-                const card = document.getElementById('home-alert-card');
-                const titleEl = document.getElementById('home-alert-title');
-                const messageEl = document.getElementById('home-alert-message');
-
-                if (!container || !card || !titleEl || !messageEl) {
-                    return;
-                }
-
-                if (homeAlertTimeout) {
-                    clearTimeout(homeAlertTimeout);
-                }
-
-                titleEl.textContent = title || '';
-                messageEl.innerHTML = message || '';
-
-                card.classList.remove('home-alert-error', 'home-alert-success');
-                if (type === 'success') {
-                    card.classList.add('home-alert-success');
-                } else {
-                    card.classList.add('home-alert-error');
-                }
-
-                container.style.display = 'flex';
-
-                homeAlertTimeout = setTimeout(function () {
-                    container.style.display = 'none';
-                }, 4000);
-            }
-
-            window.showAlert = showAlert;
-
-            document.addEventListener('DOMContentLoaded', function () {
-                const container = document.getElementById('home-alert');
-                const closeBtn = document.getElementById('home-alert-close');
-
-                if (container && closeBtn) {
-                    closeBtn.addEventListener('click', function () {
-                        container.style.display = 'none';
-                    });
-                }
-
-                const params = new URLSearchParams(window.location.search);
-                const erro = params.get('erro');
-
-                if (erro === 'email') {
-                    showAlert('error', 'Erro no cadastro', 'Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail.');
-                } else if (erro === 'senha') {
-                    showAlert('error', 'Erro no cadastro', 'As senhas não conferem. Verifique e tente novamente.');
-                } else if (erro === 'cpf') {
-                    showAlert('error', 'Problema com CPF', 'CPF inválido ou já cadastrado. Verifique o dado informado.');
-                }
-            });
-        })();
-    </script>
+    <script th:src="@{/js/home.js}"></script>
 
 </body>
 
@@ -535,7 +370,8 @@
     </div>
 </footer>
 
-<div th:replace="~{modal :: cookieBanner}"></div>
+<div th:replace="~{alerta :: cookieBanner}"></div>
 <div th:replace="~{modal :: modalLogin}"></div>
+<div th:replace="~{alerta :: floatingAlertJs}"></div>
 
 </html>

@@ -20,40 +20,7 @@
 </head>
 
 <body>
-    <!-- Alerta flutuante da home -->
-    <div id="home-alert" class="home-alert-container" style="display: none;">
-        <div id="home-alert-card" class="home-alert-card home-alert-error">
-            <div class="home-alert-bar">
-                <svg xmlns="http://www.w3.org/2000/svg" height="96" width="16" viewBox="0 0 16 96">
-                    <path d="M 8 0 
-                                                     Q 4 4.8, 8 9.6 
-                                                     T 8 19.2 
-                                                     Q 4 24, 8 28.8 
-                                                     T 8 38.4 
-                                                     Q 4 43.2, 8 48 
-                                                     T 8 57.6 
-                                                     Q 4 62.4, 8 67.2 
-                                                     T 8 76.8 
-                                                     Q 4 81.6, 8 86.4 
-                                                     T 8 96 
-                                                     L 0 96 
-                                                     L 0 0 
-                                                     Z" />
-                </svg>
-            </div>
-            <div class="home-alert-content">
-                <p id="home-alert-title" class="home-alert-title">Erro</p>
-                <p id="home-alert-message" class="home-alert-message">
-                    Ocorreu um erro. Tente novamente.
-                </p>
-            </div>
-            <button id="home-alert-close" class="home-alert-close" type="button" aria-label="Fechar alerta">
-                <svg class="home-alert-close-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-    </div>
+    <div th:replace="~{alerta :: floatingAlert}"></div>
 
     <header class="top-header">
         <div class="container-fluid px-4 px-lg-5">
@@ -317,7 +284,8 @@
         </div>
     </div>
 </footer>
-<div th:replace="~{modal :: cookieBanner}"></div>
+<div th:replace="~{alerta :: cookieBanner}"></div>
 <div th:replace="~{modal :: modalLogin}"></div>
+<div th:replace="~{alerta :: floatingAlertJs}"></div>
 
 </html>

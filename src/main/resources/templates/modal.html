@@ -288,37 +288,93 @@
 
 </div>
 
-<div th:fragment="cookieBanner" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="perfilModals" xmlns:th="http://www.thymeleaf.org">
+    <!-- Modal para Adicionar Nova Peça -->
+    <div class="modal fade" id="addPieceModal" tabindex="-1" aria-labelledby="addPieceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="border-radius: 20px; overflow: hidden; border: none; background: transparent;">
 
-    <div id="cookieBanner" class="cookie-banner-fixed">
-        <div class="container-fluid d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
-            <p class="mb-0 text-center">Ao navegar por este site <strong>você aceita o uso de cookies</strong> para agilizar
-                a sua experiência de compra.</p>
-            <div class="cookie-buttons-group">
-                <button class="btn-cookie" onclick="aceitarCookies()">ENTENDI</button>
-                <button class="btn-cookie btn-cookie-negar" onclick="negarCookies()">NEGAR</button>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
+                    aria-label="Close" style="z-index: 10; background: white; border-radius: 50%;"></button>
+
+                <div class="modal-body p-0">
+                    <div class="form-container-piece">
+                        <p class="title-piece">Adicionar Peça</p>
+
+                        <form class="form-piece" th:action="@{/peca/adicionar}" method="POST"
+                            enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label>Nome da Peça</label>
+                                <input type="text" name="nome" class="input-piece" placeholder="Ex: Jaqueta Vintage"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea name="descricao" class="input-piece textarea-piece"
+                                    placeholder="Descreva a peça..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Preço</label>
+                                <input type="number" name="preco" class="input-piece" placeholder="R$ 0,00" step="0.01"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tamanho</label>
+                                <select name="tamanho" class="input-piece" required>
+                                    <option value="" disabled selected>Selecione um tamanho</option>
+                                    <!-- Tamanhos em letras -->
+                                    <option value="P">P</option>
+                                    <option value="M">M</option>
+                                    <option value="G">G</option>
+                                    <option value="GG">GG</option>
+                                    <option value="U">U</option>
+                                    <!-- Numeração de 34 a 50 -->
+                                    <option value="34">34</option>
+                                    <option value="35">35</option>
+                                    <option value="36">36</option>
+                                    <option value="37">37</option>
+                                    <option value="38">38</option>
+                                    <option value="39">39</option>
+                                    <option value="40">40</option>
+                                    <option value="41">41</option>
+                                    <option value="42">42</option>
+                                    <option value="43">43</option>
+                                    <option value="44">44</option>
+                                    <option value="45">45</option>
+                                    <option value="46">46</option>
+                                    <option value="47">47</option>
+                                    <option value="48">48</option>
+                                    <option value="49">49</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Categoria</label>
+                                <select name="categoria" class="input-piece" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Partes de cima">Partes de cima</option>
+                                    <option value="Partes de baixo">Partes de baixo</option>
+                                    <option value="Acessórios">Acessórios</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Imagem</label>
+                                <input type="file" name="imagem" class="input-piece" accept="image/*" required>
+                            </div>
+
+                            <button type="submit" class="form-btn-piece">Adicionar Peça</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <script>
-        function aceitarCookies() {
-            const banner = document.getElementById('cookieBanner');
-            if (!banner) return;
-            banner.classList.add('cookie-banner-removed');
-            setTimeout(() => {
-                banner.style.display = 'none';
-            }, 300);
-        }
-
-        function negarCookies() {
-            const banner = document.getElementById('cookieBanner');
-            if (!banner) return;
-            banner.classList.add('cookie-banner-removed');
-            setTimeout(() => {
-                banner.style.display = 'none';
-            }, 300);
-        }
-    </script>
 
 </div>

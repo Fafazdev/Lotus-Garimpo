@@ -97,10 +97,11 @@ public class ProdutoController {
 
         produtoRepository.save(produto);
 
+        // Após editar, redireciona com flag de sucesso para exibir alerta na tela
         if ("home".equalsIgnoreCase(origem)) {
-            return "redirect:/";
+            return "redirect:/?sucesso=produtoAtualizado";
         }
-        return "redirect:/produtos";
+        return "redirect:/produtos?sucesso=produtoAtualizado";
     }
 
     @PostMapping("/produto/excluir/{id}")

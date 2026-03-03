@@ -98,7 +98,8 @@ public class AutenticacaoController {
             }
         }
 
-        return "redirect:/?erro=true";
+        // Login inválido: email não encontrado ou senha incorreta
+        return "redirect:/?erro=login";
     }
 
     @GetMapping("/logout")
