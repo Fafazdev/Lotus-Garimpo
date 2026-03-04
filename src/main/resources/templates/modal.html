@@ -1,6 +1,7 @@
 <div th:fragment="modalLogin" xmlns:th="http://www.thymeleaf.org">
     <link th:href="@{/css/modal.css}" rel="stylesheet">
 
+    <!-- Modal de Login -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content"
@@ -26,37 +27,6 @@
                             Não tem uma conta?<span class="sign-up-link" onclick="abrirCadastro()"
                                 style="cursor: pointer;">Cadastre-se</span>
                         </p>
-
-                        <div class="buttons-container">
-                            <div class="apple-login-button">
-                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" class="apple-icon"
-                                    viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M747.4 535.7c-.4-68.2 30.5-119.6 92.9-157.5-34.9-50-87.7-77.5-157.3-82.8-65.9-5.2-138 38.4-164.4 38.4-27.9 0-91.7-36.6-141.9-36.6C273.1 298.8 163 379.8 163 544.6c0 48.7 8.9 99 26.7 150.8 23.8 68.2 109.6 235.3 199.1 232.6 46.8-1.1 79.9-33.2 140.8-33.2 59.1 0 89.7 33.2 141.9 33.2 90.3-1.3 167.9-153.2 190.5-221.6-121.1-57.1-114.6-167.2-114.6-170.7zm-105.1-305c50.7-60.2 46.1-115 44.6-134.7-44.8 2.6-96.6 30.5-126.1 64.8-32.5 36.8-51.6 82.3-47.5 133.6 48.4 3.7 92.6-21.2 129-63.7z">
-                                    </path>
-                                </svg>
-                                <span>Entrar com Apple</span>
-                            </div>
-                            <div class="google-login-button">
-                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1.1" x="0px"
-                                    y="0px" class="google-icon" viewBox="0 0 48 48" height="1em" width="1em"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill="#FFC107"
-                                        d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z">
-                                    </path>
-                                    <path fill="#FF3D00"
-                                        d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z">
-                                    </path>
-                                    <path fill="#4CAF50"
-                                        d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z">
-                                    </path>
-                                    <path fill="#1976D2"
-                                        d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z">
-                                    </path>
-                                </svg>
-                                <span>Entrar com Google</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -84,8 +54,7 @@
                             <input type="password" name="confirmar_senha" class="input" placeholder="Confirmar Senha"
                                 required>
                             <div class="tipo-conta">
-                                <label
-                                    style="font-weight: 600; color: #1f3d1a; display: block; margin-bottom: 10px;">Tipo
+                                <label style="font-weight: 600; color: #1f3d1a; display: block; margin-bottom: 10px;">Tipo
                                     de Conta:</label>
                                 <div>
                                     <label for="cliente" style="cursor: pointer;">
@@ -113,87 +82,299 @@
     </div>
 
     <!-- Modal de Cookies -->
-    <div class="modal fade" id="cookieModal" tabindex="-1" aria-labelledby="cookieModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal fade" id="cookieModal" tabindex="-1" aria-labelledby="cookieModalLabel" aria-hidden="true"
+        style="display: none;">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; background-color: #ff66b2;">
+            <div class="modal-content"
+                style="border-radius: 20px; overflow: hidden; border: none; background-color: #ff66b2;">
             </div>
         </div>
     </div>
 
     <script>
-        function abrirCadastro() {
-            // Fecha o modal de login
-            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-            if (loginModal) {
-                loginModal.hide();
-            }
-            // Abre o modal de cadastro
-            const cadastroModal = new bootstrap.Modal(document.getElementById('cadastroModal'));
-            cadastroModal.show();
+    function abrirCadastro() {
+        // Fecha o modal de login
+        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+        if (loginModal) {
+            loginModal.hide();
         }
+        // Abre o modal de cadastro
+        const cadastroModal = new bootstrap.Modal(document.getElementById('cadastroModal'));
+        cadastroModal.show();
+    }
 
-        function voltarLogin() {
-            // Fecha o modal de cadastro
-            const cadastroModal = bootstrap.Modal.getInstance(document.getElementById('cadastroModal'));
-            if (cadastroModal) {
-                cadastroModal.hide();
-            }
-            // Abre o modal de login
-            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
+    function voltarLogin() {
+        // Fecha o modal de cadastro
+        const cadastroModal = bootstrap.Modal.getInstance(document.getElementById('cadastroModal'));
+        if (cadastroModal) {
+            cadastroModal.hide();
         }
+        // Abre o modal de login
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+    }
 
-        // Validação de CPF no formulário de cadastro (front-end)
-        function validarCpf(cpf) {
-            if (!cpf) return false;
-            const numero = cpf.replace(/\D/g, '');
-            if (numero.length !== 11) return false;
-            if (/^(\d)\1{10}$/.test(numero)) return false; // todos iguais
+    // Validação de CPF no formulário de cadastro (front-end)
+    function validarCpf(cpf) {
+        if (!cpf) return false;
+        const numero = cpf.replace(/\D/g, '');
+        if (numero.length !== 11) return false;
+        if (/^(\d)\1{10}$/.test(numero)) return false; // todos iguais
 
-            try {
-                let soma = 0;
-                for (let i = 0; i < 9; i++) {
-                    soma += parseInt(numero.charAt(i)) * (10 - i);
-                }
-                let resto = soma % 11;
-                let dv1 = resto < 2 ? 0 : 11 - resto;
-                if (dv1 !== parseInt(numero.charAt(9))) return false;
-
-                soma = 0;
-                for (let i = 0; i < 10; i++) {
-                    soma += parseInt(numero.charAt(i)) * (11 - i);
-                }
-                resto = soma % 11;
-                let dv2 = resto < 2 ? 0 : 11 - resto;
-
-                return dv2 === parseInt(numero.charAt(10));
-            } catch (e) {
-                return false;
+        try {
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+                soma += parseInt(numero.charAt(i)) * (10 - i);
             }
+            let resto = soma % 11;
+            let dv1 = resto < 2 ? 0 : 11 - resto;
+            if (dv1 !== parseInt(numero.charAt(9))) return false;
+
+            soma = 0;
+            for (let i = 0; i < 10; i++) {
+                soma += parseInt(numero.charAt(i)) * (11 - i);
+            }
+            resto = soma % 11;
+            let dv2 = resto < 2 ? 0 : 11 - resto;
+
+            return dv2 === parseInt(numero.charAt(10));
+        } catch (e) {
+            return false;
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const formCadastro = document.getElementById('formCadastro');
-            if (formCadastro) {
-                formCadastro.addEventListener('submit', function (e) {
-                    const cpfInput = formCadastro.querySelector('input[name="cpf"]');
-                    if (!cpfInput) return;
+    document.addEventListener('DOMContentLoaded', function () {
+        const formCadastro = document.getElementById('formCadastro');
+        if (formCadastro) {
+            formCadastro.addEventListener('submit', function (e) {
+                const cpfInput = formCadastro.querySelector('input[name="cpf"]');
+                if (!cpfInput) return;
 
-                    const cpfValor = cpfInput.value || '';
-                    if (!validarCpf(cpfValor)) {
-                        e.preventDefault();
-                        if (typeof showAlert === 'function') {
-                            showAlert('error', 'CPF inválido', 'Digite um CPF válido com 11 dígitos.');
-                        } else {
-                            alert('CPF inválido. Digite um CPF válido com 11 dígitos.');
-                        }
-                        return;
+                const cpfValor = cpfInput.value || '';
+                if (!validarCpf(cpfValor)) {
+                    e.preventDefault();
+                    if (typeof showAlert === 'function') {
+                        showAlert('error', 'CPF inválido', 'Digite um CPF válido com 11 dígitos.');
+                    } else {
+                        alert('CPF inválido. Digite um CPF válido com 11 dígitos.');
                     }
+                    return;
+                }
 
-                    // Normaliza para apenas dígitos antes de enviar (opcional)
-                    cpfInput.value = cpfValor.replace(/\D/g, '');
-                });
-            }
-        });
+                // Normaliza para apenas dígitos antes de enviar (opcional)
+                cpfInput.value = cpfValor.replace(/\D/g, '');
+            });
+        }
+    });
     </script>
+</div>
+
+<div th:fragment="produtoModals(origem)" xmlns:th="http://www.thymeleaf.org">
+
+    <!-- Modal para Editar Peça -->
+    <div class="modal fade" id="editPieceModal" tabindex="-1" aria-labelledby="editPieceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; background: transparent;">
+
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10; background: white; border-radius: 50%;"></button>
+
+                <div class="modal-body p-0">
+                    <div class="form-container-piece">
+                        <p class="title-piece">Editar Peça</p>
+
+                        <form class="form-piece" th:action="@{/produto/editar}" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="id" id="editPieceId">
+                            <input type="hidden" name="origem" th:value="${origem}">
+
+                            <div class="form-group">
+                                <label>Nome da Peça</label>
+                                <input type="text" name="nome" id="editPieceNome" class="input-piece" placeholder="Ex: Jaqueta Vintage" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea name="descricao" id="editPieceDescricao" class="input-piece textarea-piece" placeholder="Descreva a peça..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Preço</label>
+                                <input type="number" name="preco" id="editPiecePreco" class="input-piece" placeholder="R$ 0,00" step="0.01" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tamanho</label>
+                                <select name="tamanho" id="editPieceTamanho" class="input-piece" required>
+                                    <option value="" disabled>Selecione um tamanho</option>
+                                    <option value="P">P</option>
+                                    <option value="M">M</option>
+                                    <option value="G">G</option>
+                                    <option value="GG">GG</option>
+                                    <option value="U">U</option>
+                                    <option value="34">34</option>
+                                    <option value="35">35</option>
+                                    <option value="36">36</option>
+                                    <option value="37">37</option>
+                                    <option value="38">38</option>
+                                    <option value="39">39</option>
+                                    <option value="40">40</option>
+                                    <option value="41">41</option>
+                                    <option value="42">42</option>
+                                    <option value="43">43</option>
+                                    <option value="44">44</option>
+                                    <option value="45">45</option>
+                                    <option value="46">46</option>
+                                    <option value="47">47</option>
+                                    <option value="48">48</option>
+                                    <option value="49">49</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Categoria</label>
+                                <select name="categoria" id="editPieceCategoria" class="input-piece" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Partes de cima">Partes de cima</option>
+                                    <option value="Partes de baixo">Partes de baixo</option>
+                                    <option value="Acessórios">Acessórios</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Imagem atual</label>
+                                <div class="mb-2">
+                                    <img id="editPiecePreview" src="" alt="Imagem atual" style="max-width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px;">
+                                </div>
+                                <label>Alterar imagem (opcional)</label>
+                                <input type="file" name="imagem" class="input-piece" accept="image/*">
+                            </div>
+
+                            <button type="submit" class="form-btn-piece">Salvar alterações</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de exclusão -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+                <div class="modal-body p-4 text-center">
+                    <h5 class="mb-3" id="deleteConfirmModalLabel">Excluir peça</h5>
+                    <p class="mb-4" id="msg-confirma">Tem certeza que deseja excluir esta peça?</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal" >Não</button>
+                        <button type="button" class="form-btn-piece px-4" id="confirmDeleteButton">Sim, excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para visualizar imagem em tela cheia -->
+    <div class="modal fade" id="imageViewModal" tabindex="-1" aria-labelledby="imageViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+            <div class="modal-content" style="background-color: rgba(0,0,0,0.9); border: none;">
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10;"></button>
+                <div class="modal-body d-flex justify-content-center align-items-center p-0">
+                    <img id="imageViewModalImg" src="" alt="Visualização do produto" style="max-width: 100%; max-height: 100vh; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:fragment="perfilModals" xmlns:th="http://www.thymeleaf.org">
+    <!-- Modal para Adicionar Nova Peça -->
+    <div class="modal fade" id="addPieceModal" tabindex="-1" aria-labelledby="addPieceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="border-radius: 20px; overflow: hidden; border: none; background: transparent;">
+
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
+                    aria-label="Close" style="z-index: 10; background: white; border-radius: 50%;"></button>
+
+                <div class="modal-body p-0">
+                    <div class="form-container-piece">
+                        <p class="title-piece">Adicionar Peça</p>
+
+                        <form class="form-piece" th:action="@{/peca/adicionar}" method="POST"
+                            enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label>Nome da Peça</label>
+                                <input type="text" name="nome" class="input-piece" placeholder="Ex: Jaqueta Vintage"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea name="descricao" class="input-piece textarea-piece"
+                                    placeholder="Descreva a peça..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Preço</label>
+                                <input type="number" name="preco" class="input-piece" placeholder="R$ 0,00" step="0.01"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tamanho</label>
+                                <select name="tamanho" class="input-piece" required>
+                                    <option value="" disabled selected>Selecione um tamanho</option>
+                                    <!-- Tamanhos em letras -->
+                                    <option value="P">P</option>
+                                    <option value="M">M</option>
+                                    <option value="G">G</option>
+                                    <option value="GG">GG</option>
+                                    <option value="U">U</option>
+                                    <!-- Numeração de 34 a 50 -->
+                                    <option value="34">34</option>
+                                    <option value="35">35</option>
+                                    <option value="36">36</option>
+                                    <option value="37">37</option>
+                                    <option value="38">38</option>
+                                    <option value="39">39</option>
+                                    <option value="40">40</option>
+                                    <option value="41">41</option>
+                                    <option value="42">42</option>
+                                    <option value="43">43</option>
+                                    <option value="44">44</option>
+                                    <option value="45">45</option>
+                                    <option value="46">46</option>
+                                    <option value="47">47</option>
+                                    <option value="48">48</option>
+                                    <option value="49">49</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Categoria</label>
+                                <select name="categoria" class="input-piece" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Partes de cima">Partes de cima</option>
+                                    <option value="Partes de baixo">Partes de baixo</option>
+                                    <option value="Acessórios">Acessórios</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Imagem</label>
+                                <input type="file" name="imagem" class="input-piece" accept="image/*" required>
+                            </div>
+
+                            <button type="submit" class="form-btn-piece">Adicionar Peça</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

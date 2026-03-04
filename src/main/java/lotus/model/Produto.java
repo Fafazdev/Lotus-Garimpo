@@ -23,7 +23,7 @@ public class Produto {
     @Column(name = "tamanho_produto")
     private String tamanho;
 
-    @Column(name = "categoria")
+    @Column(name = "nm_categoria")
     private String categoria;
 
     @Column(name = "url_imagem") // ou "nm_imagem", conforme você quiser usar

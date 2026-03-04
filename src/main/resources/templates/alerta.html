@@ -1,0 +1,213 @@
+<div th:fragment="floatingAlertJs" xmlns:th="http://www.thymeleaf.org">
+    <script>
+        (function () {
+            let homeAlertTimeout;
+
+            function showAlert(type, title, message) {
+                const container = document.getElementById('home-alert');
+                const card = document.getElementById('home-alert-card');
+                const titleEl = document.getElementById('home-alert-title');
+                const messageEl = document.getElementById('home-alert-message');
+
+                if (!container || !card || !titleEl || !messageEl) {
+                    return;
+                }
+
+                if (homeAlertTimeout) {
+                    clearTimeout(homeAlertTimeout);
+                }
+
+                titleEl.textContent = title || '';
+                messageEl.innerHTML = message || '';
+
+                card.classList.remove('home-alert-error', 'home-alert-success');
+                if (type === 'success') {
+                    card.classList.add('home-alert-success');
+                } else {
+                    card.classList.add('home-alert-error');
+                }
+
+                container.style.display = 'flex';
+
+                homeAlertTimeout = setTimeout(function () {
+                    container.style.display = 'none';
+                }, 4000);
+            }
+
+            window.showAlert = showAlert;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const container = document.getElementById('home-alert');
+                const closeBtn = document.getElementById('home-alert-close');
+
+                if (container && closeBtn) {
+                    closeBtn.addEventListener('click', function () {
+                        container.style.display = 'none';
+                    });
+                }
+            });
+        })();
+    </script>
+</div>
+
+<div th:fragment="floatingAlert" xmlns:th="http://www.thymeleaf.org">
+    <!-- Alerta flutuante reutilizável -->
+    <div id="home-alert" class="home-alert-container" style="display: none;">
+        <div id="home-alert-card" class="home-alert-card home-alert-error">
+            <div class="home-alert-bar">
+                <svg xmlns="http://www.w3.org/2000/svg" height="96" width="16" viewBox="0 0 16 96">
+                    <path d="M 8 0 
+                             Q 4 4.8, 8 9.6 
+                             T 8 19.2 
+                             Q 4 24, 8 28.8 
+                             T 8 38.4 
+                             Q 4 43.2, 8 48 
+                             T 8 57.6 
+                             Q 4 62.4, 8 67.2 
+                             T 8 76.8 
+                             Q 4 81.6, 8 86.4 
+                             T 8 96 
+                             L 0 96 
+                             L 0 0 
+                             Z" />
+                </svg>
+            </div>
+            <div class="home-alert-content">
+                <div class="home-alert-texts">
+                    <h4 id="home-alert-title" class="home-alert-title">Erro</h4>
+                    <p id="home-alert-message" class="home-alert-message">Algo deu errado.</p>
+                </div>
+                <button id="home-alert-close" class="home-alert-close" aria-label="Fechar alerta">
+                    <span>&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="cookieBanner" xmlns:th="http://www.thymeleaf.org">
+
+    <div id="cookieBanner" class="cookie-banner-fixed">
+        <div class="container-fluid d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+            <p class="mb-0 text-center">Ao navegar por este site <strong>você aceita o uso de cookies</strong> para agilizar
+                a sua experiência de compra.</p>
+            <div class="cookie-buttons-group">
+                <button class="btn-cookie" onclick="aceitarCookies()">ENTENDI</button>
+                <button class="btn-cookie btn-cookie-negar" onclick="negarCookies()">NEGAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function aceitarCookies() {
+            const banner = document.getElementById('cookieBanner');
+            if (!banner) return;
+            banner.classList.add('cookie-banner-removed');
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 300);
+        }
+
+        function negarCookies() {
+            const banner = document.getElementById('cookieBanner');
+            if (!banner) return;
+            banner.classList.add('cookie-banner-removed');
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 300);
+        }
+    </script>
+
+</div>
+
+<div th:fragment="perfilAlert" xmlns:th="http://www.thymeleaf.org">
+    <div id="alert-container" class="flex flex-col gap-2 w-60 sm:w-72 text-[10px] sm:text-xs z-50">
+        <div
+            class="alert-box cursor-default flex items-center justify-between w-full h-12 sm:h-14 rounded-lg bg-[#232531] px-[10px]"
+        >
+            <div class="flex gap-2">
+                <div id="alert-icon-wrapper" class="text-[#d65563] bg-white/5 backdrop-blur-xl p-1 rounded-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-6 h-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+                      ></path>
+                    </svg>
+                </div>
+                <div>
+                    <p id="alert-title" class="text-white">Please try again</p>
+                    <p id="alert-message" class="text-gray-500">This is the description part</p>
+                </div>
+            </div>
+            <button
+                id="alert-close-button"
+                class="text-gray-600 hover:bg-white/10 p-1 rounded-md transition-colors ease-linear"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Função genérica para mostrar alertas visuais (sucesso/erro) específica do perfil
+        function showAlert(type, title, message) {
+            const container = document.getElementById('alert-container');
+            const iconWrapper = document.getElementById('alert-icon-wrapper');
+            const alertTitle = document.getElementById('alert-title');
+            const alertMessage = document.getElementById('alert-message');
+
+            if (!container || !iconWrapper || !alertTitle || !alertMessage) {
+                console.warn('Componente de alerta do perfil não encontrado no DOM');
+                return;
+            }
+
+            alertTitle.textContent = title || '';
+            alertMessage.textContent = message || '';
+
+            if (type === 'success') {
+                iconWrapper.classList.remove('text-[#d65563]');
+                iconWrapper.classList.add('text-[#22c55e]');
+            } else {
+                iconWrapper.classList.remove('text-[#22c55e]');
+                iconWrapper.classList.add('text-[#d65563]');
+            }
+
+            container.style.display = 'flex';
+
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 4000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const closeButton = document.getElementById('alert-close-button');
+            const container = document.getElementById('alert-container');
+            if (closeButton && container) {
+                closeButton.addEventListener('click', function () {
+                    container.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</div>

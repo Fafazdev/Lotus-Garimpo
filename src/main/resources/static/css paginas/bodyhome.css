@@ -3,7 +3,6 @@
     background-color: #499273; 
 }
 
-
 /* =========================================
    1. BANNER PRINCIPAL
    ========================================= */
@@ -118,22 +117,6 @@
     fill: #df8bb0;
 }
 
-/* descrição e categoria no card (mesmas regras do bodyprodutos.css) */
-.card-produto .description span {
-    display: block;
-    font-size: 0.9rem;
-    color: #444;
-    margin: 6px 0;
-}
-.card-produto .category span {
-    display: block;
-    font-size: 0.8rem;
-    color: #777;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    font-weight: 600;
-}
-
 .card-produto .title span {
     font-weight: 700;
     color: #519f79;
@@ -219,138 +202,3 @@
     font-size: 1.1rem;
     line-height: 1.6;
 }
-
-/* =========================================
-   7. ALERTA HOME (card flutuante)
-   ========================================= */
-#home-alert.home-alert-container {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2000;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    pointer-events: none;
-}
-
-.home-alert-card {
-    pointer-events: auto;
-    display: flex;
-    align-items: center;
-    max-width: 420px;
-    width: auto;
-    background: linear-gradient(135deg, #ffffff, #fbe5f0);
-    border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    border: 1px solid #fbe5f0;
-}
-
-.home-alert-bar {
-    height: 100%;
-    width: 16px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: stretch;
-}
-
-.home-alert-bar svg {
-    width: 100%;
-    height: 100%;
-}
-
-.home-alert-content {
-    padding: 10px 14px;
-    overflow: hidden;
-}
-
-.home-alert-title {
-    margin: 2px 0 4px 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #b91c1c;
-}
-
-.home-alert-message {
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    color: #4b5563;
-}
-
-.home-alert-close {
-    background: transparent;
-    border: none;
-    padding: 0 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ff69b4;
-}
-
-.home-alert-close-icon {
-    width: 20px;
-    height: 20px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-}
-
-.home-alert-card.home-alert-error .home-alert-bar path {
-    fill: #ff69b4;
-    stroke: #ff69b4;
-}
-
-.home-alert-card.home-alert-success .home-alert-bar path {
-    fill: #519f79;
-    stroke: #519f79;
-}
-
-.home-alert-card.home-alert-success .home-alert-title {
-    color: #166534;
-}
-
- .card-produto .manage-buttons {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .card-produto .edit-card-button,
-        .card-produto .delete-card-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            background: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-        }
-
-        .card-produto .edit-card-button i,
-        .card-produto .delete-card-button i {
-            font-size: 14px;
-        }
-
-        .card-produto .edit-card-button {
-            color: #2d5a27;
-        }
-
-        .card-produto .delete-card-button {
-            color: #ff4b6e;
-        }
-
-        .card-produto .edit-card-button:hover,
-        .card-produto .delete-card-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
-            background: #fdfdfd;
-        }

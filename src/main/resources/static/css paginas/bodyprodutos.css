@@ -68,22 +68,6 @@
     margin-bottom: 15px;
 }
 
-/* descrição e categoria no card de produto */
-.card-produto .description span {
-    display: block;
-    font-size: 0.9rem;
-    color: #444;
-    margin: 6px 0;
-}
-.card-produto .category span {
-    display: block;
-    font-size: 0.8rem;
-    color: #777;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    font-weight: 600;
-}
-
 /* Lista de Categorias */
 .sidebar-list {
     list-style: none;
@@ -276,44 +260,3 @@
 .cart-icon {
     width: 18px;
 }
-
-.card-produto .manage-buttons {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .card-produto .edit-card-button,
-        .card-produto .delete-card-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            background: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-        }
-
-        .card-produto .edit-card-button i,
-        .card-produto .delete-card-button i {
-            font-size: 14px;
-        }
-
-        .card-produto .edit-card-button {
-            color: #2d5a27;
-        }
-
-        .card-produto .delete-card-button {
-            color: #ff4b6e;
-        }
-
-        .card-produto .edit-card-button:hover,
-        .card-produto .delete-card-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
-            background: #fdfdfd;
-        }

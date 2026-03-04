@@ -12,9 +12,11 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900&display=swap" rel="stylesheet" />
 
+    <link th:href="@{/css/bodyhome.css}" rel="stylesheet">
     <link th:href="@{/css/bodyprodutos.css}" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <link th:href="@{/css/header.css}" rel="stylesheet">
+        <link th:href="@{/css/piece-modal.css}" rel="stylesheet">
 </head>
 <header class="top-header">
     <div class="container-fluid px-4 px-lg-5">
@@ -57,10 +59,9 @@
         <div class="row">
             <div class="col-12">
                 <nav class="nav-menu">
-                    <a href="/">Início</a>
-                    <a href="#">Produtos <i class="fas fa-chevron-down ms-1" style="font-size: 10px;"></i></a>
-                    <a href="#">Sacolinha</a>
-                    <a href="#">Guia de medidas</a>
+                    <a th:href="@{/}">Início</a>
+                    <a th:href="@{/produtos}">Produtos <i class="fas fa-chevron-down ms-1" style="font-size: 10px;"></i></a>
+                    <a th:href="@{/medidas}">Guia de medidas</a>
                 </nav>
             </div>
         </div>
@@ -74,6 +75,7 @@
 
 <body>
 
+<div th:replace="~{alerta :: floatingAlert}"></div>
 <div th:replace="~{modal :: modalLogin}"></div>
 <main class="shop-section">
         <div class="container-fluid px-4 px-lg-5 py-5">
@@ -129,88 +131,69 @@
                 <div class="col-12 col-lg-9">
                     <div class="row">
                         
-                        <div class="col-12 col-md-6 col-lg-4 mb-4">
+                        <div th:each="produto : ${produtos}" class="col-12 col-md-6 col-lg-4 mb-4">
                             <div class="card-produto">
                                 <div class="image_container">
-                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg>
+                                    <!-- use Thymeleaf URL expression to resolve path correctly -->
+                                    <img class="product-image-fullscreen"
+                                         th:src="${produto.imagem} ?: '/imagens/lotus.webp'" alt="Imagem do produto"
+                                         th:attr="data-full-src=${produto.imagem} ?: '/imagens/lotus.webp'"
+                                         style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" />
                                 </div>
-                                <div class="title"><span>Top Lotus</span></div>
+                                <div class="title"><span th:text="${produto.nome}">Nome do produto</span></div>
+                                <!-- descrição do produto -->
+                                <div class="description">
+                                    <span th:text="${produto.descricao}">Descrição do produto</span>
+                                </div>
+                                <!-- categoria do produto -->
+                                <div class="category">
+                                    <span th:text="${produto.categoria}">Categoria</span>
+                                </div>
                                 <div class="size">
                                     <span>Tamanho</span>
                                     <ul class="list-size">
-                                        <li class="item-list"><button class="item-list-button">P</button></li>
-                                        <li class="item-list"><button class="item-list-button">M</button></li>
-                                        <li class="item-list"><button class="item-list-button">G</button></li>
+                                        <li class="item-list"><button class="item-list-button" th:text="${produto.tamanho}">Tamanho</button></li>
                                     </ul>
                                 </div>
-                                <div class="action">
-                                    <div class="price"><span>R$89,90</span></div>
-                                    <button class="cart-button"><span>Comprar</span></button>
+                                <div class="action d-flex justify-content-between align-items-center">
+                                    <div class="price"><span th:text="'R$' + ${#numbers.formatDecimal(produto.preco, 1, 2, 'POINT')}">R$</span></div>
+                                    <div class="manage-buttons">
+                                        <button class="cart-button"><span>Comprar</span></button>
+                                        <div th:if="${session.usuarioLogado != null and produto.usuario != null and produto.usuario.id == session.usuarioLogado.id}">
+                                            <button type="button"
+                                                    class="edit-card-button"
+                                                    th:attr="data-id=${produto.id},
+                                                             data-nome=${produto.nome},
+                                                             data-descricao=${produto.descricao},
+                                                             data-preco=${produto.preco},
+                                                             data-tamanho=${produto.tamanho},
+                                                             data-categoria=${produto.categoria},
+                                                             data-imagem=${produto.imagem}">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                            <form th:action="@{'/produto/excluir/' + ${produto.id}}" method="post" style="display:inline;">
+                                                <input type="hidden" name="origem" value="produtos" />
+                                                <button type="submit" class="delete-card-button">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-12 col-md-6 col-lg-4 mb-4">
-                            <div class="card-produto">
-                                <div class="image_container"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg></div>
-                                <div class="title"><span>Saia Longa</span></div>
-                                <div class="size"><span>Tamanho</span><ul class="list-size"><li class="item-list"><button class="item-list-button">38</button></li></ul></div>
-                                <div class="action"><div class="price"><span>R$129,90</span></div><button class="cart-button"><span>Comprar</span></button></div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6 col-lg-4 mb-4">
-                            <div class="card-produto">
-                                <div class="image_container"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg></div>
-                                <div class="title"><span>Calça Flare</span></div>
-                                <div class="size"><span>Tamanho</span><ul class="list-size"><li class="item-list"><button class="item-list-button">40</button></li></ul></div>
-                                <div class="action"><div class="price"><span>R$149,90</span></div><button class="cart-button"><span>Comprar</span></button></div>
-                            </div>
-                        </div>
                          <div class="col-12 col-md-6 col-lg-4 mb-4">
                             <div class="card-produto">
-                                <div class="image_container"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg></div>
+                                <div class="image_container">
+                                    <!-- placeholder image for static example -->
+                                    <img class="product-image-fullscreen"
+                                         th:src="@{/imagens/lotus.webp}" alt="Imagem do produto"
+                                         th:attr="data-full-src=@{/imagens/lotus.webp}"
+                                         style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" />
+                                </div>
                                 <div class="title"><span>Calça Flare</span></div>
-                                <div class="size"><span>Tamanho</span><ul class="list-size"><li class="item-list"><button class="item-list-button">40</button></li></ul></div>
-                                <div class="action"><div class="price"><span>R$149,90</span></div><button class="cart-button"><span>Comprar</span></button></div>
-                            </div>
-                        </div>
-                         <div class="col-12 col-md-6 col-lg-4 mb-4">
-                            <div class="card-produto">
-                                <div class="image_container"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg></div>
-                                <div class="title"><span>Calça Flare</span></div>
-                                <div class="size"><span>Tamanho</span><ul class="list-size"><li class="item-list"><button class="item-list-button">40</button></li></ul></div>
-                                <div class="action"><div class="price"><span>R$149,90</span></div><button class="cart-button"><span>Comprar</span></button></div>
-                            </div>
-                        </div>
-                         <div class="col-12 col-md-6 col-lg-4 mb-4">
-                            <div class="card-produto">
-                                <div class="image_container"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg></div>
-                                <div class="title"><span>Calça Flare</span></div>
-                                <div class="size"><span>Tamanho</span><ul class="list-size"><li class="item-list"><button class="item-list-button">40</button></li></ul></div>
-                                <div class="action"><div class="price"><span>R$149,90</span></div><button class="cart-button"><span>Comprar</span></button></div>
-                            </div>
-                        </div>
-                         <div class="col-12 col-md-6 col-lg-4 mb-4">
-                            <div class="card-produto">
-                                <div class="image_container"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg></div>
-                                <div class="title"><span>Calça Flare</span></div>
-                                <div class="size"><span>Tamanho</span><ul class="list-size"><li class="item-list"><button class="item-list-button">40</button></li></ul></div>
-                                <div class="action"><div class="price"><span>R$149,90</span></div><button class="cart-button"><span>Comprar</span></button></div>
-                            </div>
-                        </div>
-                         <div class="col-12 col-md-6 col-lg-4 mb-4">
-                            <div class="card-produto">
-                                <div class="image_container"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg></div>
-                                <div class="title"><span>Calça Flare</span></div>
-                                <div class="size"><span>Tamanho</span><ul class="list-size"><li class="item-list"><button class="item-list-button">40</button></li></ul></div>
-                                <div class="action"><div class="price"><span>R$149,90</span></div><button class="cart-button"><span>Comprar</span></button></div>
-                            </div>
-                        </div>
-                         <div class="col-12 col-md-6 col-lg-4 mb-4">
-                            <div class="card-produto">
-                                <div class="image_container"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="image"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path></svg></div>
-                                <div class="title"><span>Calça Flare</span></div>
+                                <div class="description"><span>Descrição do produto</span></div>
+                                <div class="category"><span>Categoria</span></div>
                                 <div class="size"><span>Tamanho</span><ul class="list-size"><li class="item-list"><button class="item-list-button">40</button></li></ul></div>
                                 <div class="action"><div class="price"><span>R$149,90</span></div><button class="cart-button"><span>Comprar</span></button></div>
                             </div>
@@ -222,6 +205,9 @@
             </div>
         </div>
     </main>
+
+<!-- Modais de produto vindos do fragmento modal.html -->
+<div th:replace="~{modal :: produtoModals('produtos')}"></div>
 
 </body>
 <footer class="site-footer">
@@ -272,35 +258,10 @@
             </div>
         </div>
     </div>
-<div id="cookieBanner" class="cookie-banner-fixed">
-    <div class="container-fluid d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
-        <p class="mb-0 text-center">Ao navegar por este site <strong>você aceita o uso de cookies</strong> para agilizar
-            a sua experiência de compra.</p>
-        <div class="cookie-buttons-group">
-            <button class="btn-cookie" onclick="aceitarCookies()">ENTENDI</button>
-            <button class="btn-cookie btn-cookie-negar" onclick="negarCookies()">NEGAR</button>
-        </div>
-    </div>
-</div>
-
+<div th:replace="~{alerta :: cookieBanner}"></div>
 <div th:replace="~{modal :: modalLogin}"></div>
+<div th:replace="~{alerta :: floatingAlertJs}"></div>
 
-<script>
-    function aceitarCookies() {
-        const banner = document.getElementById('cookieBanner');
-        banner.classList.add('cookie-banner-removed');
-        setTimeout(() => {
-            banner.style.display = 'none';
-        }, 300);
-    }
-
-    function negarCookies() {
-        const banner = document.getElementById('cookieBanner');
-        banner.classList.add('cookie-banner-removed');
-        setTimeout(() => {
-            banner.style.display = 'none';
-        }, 300);
-    }
-</script>
+<script th:src="@{/js/produtos.js}"></script>
 
 </html>
