@@ -2,6 +2,8 @@ package lotus.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_usuarios")
@@ -29,26 +31,11 @@ public class Usuario {
     @Column(name = "cd_cpf")
     private String cpf;
 
-    @Column(name = "endereco")
-    private String endereco;
-
-    @Column(name = "numero")
-    private String numero;
-
-    @Column(name = "complemento")
-    private String complemento;
-
-    @Column(name = "cidade")
-    private String cidade;
-
-    @Column(name = "estado")
-    private String estado;
-
-    @Column(name = "cep")
-    private String cep;
-
     @Column(name = "imagem")
     private String imagem;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Endereco> enderecos = new ArrayList<>();
 
     // Construtor padrão
     public Usuario() {}
@@ -78,24 +65,104 @@ public class Usuario {
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
 
-    public String getEndereco() { return endereco; }
-    public void setEndereco(String endereco) { this.endereco = endereco; }
-
-    public String getNumero() { return numero; }
-    public void setNumero(String numero) { this.numero = numero; }
-
-    public String getComplemento() { return complemento; }
-    public void setComplemento(String complemento) { this.complemento = complemento; }
-
-    public String getCidade() { return cidade; }
-    public void setCidade(String cidade) { this.cidade = cidade; }
-
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-
-    public String getCep() { return cep; }
-    public void setCep(String cep) { this.cep = cep; }
-
     public String getImagem() { return imagem; }
     public void setImagem(String imagem) { this.imagem = imagem; }
+
+    public List<Endereco> getEnderecos() { return enderecos; }
+    public void setEnderecos(List<Endereco> enderecos) { this.enderecos = enderecos; }
+
+    private Endereco getEnderecoPrincipal() {
+        if (enderecos == null || enderecos.isEmpty()) {
+            return null;
+        }
+        return enderecos.get(0);
+    }
+
+    private Endereco getOrCreateEnderecoPrincipal() {
+        if (enderecos == null) {
+            enderecos = new ArrayList<>();
+        }
+        if (enderecos.isEmpty()) {
+            Endereco endereco = new Endereco();
+            endereco.setUsuario(this);
+            enderecos.add(endereco);
+        }
+        return enderecos.get(0);
+    }
+
+    // Métodos de conveniência para o Thymeleaf e controllers
+    public String getEndereco() {
+        Endereco endereco = getEnderecoPrincipal();
+        return (endereco != null) ? endereco.getLogradouro() : null;
+    }
+
+    public void setEndereco(String enderecoLogradouro) {
+        Endereco endereco = getEnderecoPrincipal();
+        if (endereco == null) {
+            return; // não cria endereço sem CEP
+        }
+        endereco.setLogradouro(enderecoLogradouro);
+    }
+
+    public String getNumero() {
+        Endereco endereco = getEnderecoPrincipal();
+        return (endereco != null) ? endereco.getNumero() : null;
+    }
+
+    public void setNumero(String numero) {
+        Endereco endereco = getEnderecoPrincipal();
+        if (endereco == null) {
+            return;
+        }
+        endereco.setNumero(numero);
+    }
+
+    public String getComplemento() {
+        Endereco endereco = getEnderecoPrincipal();
+        return (endereco != null) ? endereco.getComplemento() : null;
+    }
+
+    public void setComplemento(String complemento) {
+        Endereco endereco = getEnderecoPrincipal();
+        if (endereco == null) {
+            return;
+        }
+        endereco.setComplemento(complemento);
+    }
+
+    public String getCidade() {
+        Endereco endereco = getEnderecoPrincipal();
+        return (endereco != null) ? endereco.getCidade() : null;
+    }
+
+    public void setCidade(String cidade) {
+        Endereco endereco = getEnderecoPrincipal();
+        if (endereco == null) {
+            return;
+        }
+        endereco.setCidade(cidade);
+    }
+
+    public String getEstado() {
+        Endereco endereco = getEnderecoPrincipal();
+        return (endereco != null) ? endereco.getUf() : null;
+    }
+
+    public void setEstado(String estado) {
+        Endereco endereco = getEnderecoPrincipal();
+        if (endereco == null) {
+            return;
+        }
+        endereco.setUf(estado);
+    }
+
+    public String getCep() {
+        Endereco endereco = getEnderecoPrincipal();
+        return (endereco != null) ? endereco.getCep() : null;
+    }
+
+    public void setCep(String cep) {
+        Endereco endereco = getOrCreateEnderecoPrincipal();
+        endereco.setCep(cep);
+    }
 }
