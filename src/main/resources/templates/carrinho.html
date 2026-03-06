@@ -1,0 +1,64 @@
+<div th:fragment="carrinhoModal">
+    <link href="/css/carrinho.css" rel="stylesheet">
+
+    <div class="cart-overlay" id="cartOverlay" onclick="fecharCarrinho()"></div>
+
+    <div class="cart-modal" id="cartModal">
+
+        <div class="cart-header">
+            <h2>Seu Carrinho</h2>
+            <button class="close-cart-btn" onclick="fecharCarrinho()">×</button>
+        </div>
+
+        <div class="cart-items">
+
+            <div th:if="${#lists.isEmpty(itensCarrinho)}" class="cart-empty">
+                Seu carrinho está vazio.
+            </div>
+
+            <div class="cart-item" th:each="item : ${itensCarrinho}">
+                <div class="item-image" style="background-color: #fbe5f0;">
+                    <img th:src="${item.produto.imagem} ?: '/imagens/lotus.webp'" alt="Produto" class="image" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px;">
+                </div>
+                <div class="item-details">
+                    <span class="item-name" th:text="${item.produto.nome}">Nome do produto</span>
+                    <span class="item-size" th:text="${'Tamanho: ' + item.produto.tamanho}">Tamanho</span>
+                    <span class="item-price" th:text="'R$ ' + ${#numbers.formatDecimal(item.produto.preco, 1, 2, 'POINT')}">R$ 0,00</span>
+
+                    <div class="item-actions">
+                        <span class="item-qty" th:text="${'Qtd: ' + item.quantidade}">Qtd: 1</span>
+                        <button class="btn-remove" type="button" th:attr="data-item-id=${item.id}">Remover</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-summary">
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span id="cartSubtotal" th:text="'R$ ' + ${#numbers.formatDecimal(subtotalCarrinho, 1, 2, 'POINT')}">R$ 0,00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Frete</span>
+                    <span style="color: #666; font-size: 0.85rem;">Calculado no pagamento</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="cartTotal" th:text="'R$ ' + ${#numbers.formatDecimal(subtotalCarrinho, 1, 2, 'POINT')}">R$ 0,00</span>
+                </div>
+            </div>
+
+            <button class="btn-checkout" onclick="window.location.href='/checkout'">
+                Escolher forma de pagamento
+            </button>
+
+            <button class="btn-clear-cart" type="button" onclick="limparCarrinho()">
+                Remover todos os itens do carrinho
+            </button>
+        </div>
+    </div>
+
+    <script th:src="@{/js/carrinho.js}"></script>
+</div>

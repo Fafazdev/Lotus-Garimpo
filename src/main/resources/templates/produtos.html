@@ -47,9 +47,9 @@
                         <span th:text="${'Olá, ' + session.usuarioLogado.nome}">Usuário</span>
                     </a>
 
-                    <a href="#" class="action-item">
+                    <a href="#" class="action-item" onclick="abrirCarrinho(); return false;">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-badge">0</span>
+                        <span class="cart-badge" th:text="${quantidadeCarrinho} ?: 0">0</span>
                         <span>Meu carrinho</span>
                     </a>
                 </div>
@@ -158,7 +158,10 @@
                                 <div class="action d-flex justify-content-between align-items-center">
                                     <div class="price"><span th:text="'R$' + ${#numbers.formatDecimal(produto.preco, 1, 2, 'POINT')}">R$</span></div>
                                     <div class="manage-buttons">
-                                        <button class="cart-button"><span>Comprar</span></button>
+                                        <form th:action="@{/carrinho/adicionar}" method="post" style="display:inline;">
+                                            <input type="hidden" name="produtoId" th:value="${produto.id}">
+                                            <button class="cart-button" type="submit"><span>Comprar</span></button>
+                                        </form>
                                         <div th:if="${session.usuarioLogado != null and produto.usuario != null and produto.usuario.id == session.usuarioLogado.id}">
                                             <button type="button"
                                                     class="edit-card-button"
@@ -208,6 +211,9 @@
 
 <!-- Modais de produto vindos do fragmento modal.html -->
 <div th:replace="~{modal :: produtoModals('produtos')}"></div>
+
+<!-- Modal do carrinho puxado via Thymeleaf -->
+<div th:replace="~{carrinho :: carrinhoModal}"></div>
 
 </body>
 <footer class="site-footer">
