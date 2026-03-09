@@ -60,7 +60,29 @@
             <div class="col-12">
                 <nav class="nav-menu">
                     <a th:href="@{/}">Início</a>
-                    <a th:href="@{/produtos}">Produtos <i class="fas fa-chevron-down ms-1" style="font-size: 10px;"></i></a>
+                    <div class="nav-dropdown nav-dropdown-produtos">
+                        <a th:href="@{/produtos}" class="nav-dropdown-trigger">Produtos <i class="fas fa-chevron-down ms-1" style="font-size: 10px;"></i></a>
+                        <div class="nav-dropdown-menu" aria-label="Características dos produtos">
+                            <div class="nav-dropdown-grid">
+                                <div class="nav-dropdown-group">
+                                    <span class="nav-dropdown-title">Peça</span>
+                                    <div class="nav-dropdown-options" data-caracteristica="nome"></div>
+                                </div>
+                                <div class="nav-dropdown-group">
+                                    <span class="nav-dropdown-title">Categoria</span>
+                                    <div class="nav-dropdown-options" data-caracteristica="categoria"></div>
+                                </div>
+                                <div class="nav-dropdown-group">
+                                    <span class="nav-dropdown-title">Tamanho</span>
+                                    <div class="nav-dropdown-options" data-caracteristica="tamanho"></div>
+                                </div>
+                                <div class="nav-dropdown-group">
+                                    <span class="nav-dropdown-title">Preço</span>
+                                    <div class="nav-dropdown-options" data-caracteristica="preco"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <a th:href="@{/medidas}">Guia de medidas</a>
                 </nav>
             </div>
@@ -262,6 +284,7 @@
 <div th:replace="~{alerta :: floatingAlertJs}"></div>
 
 <script th:src="@{/js/search-autocomplete.js}"></script>
+<script th:src="@{/js/product-nav-dropdown.js}"></script>
 <script th:src="@{/js/produtos.js}"></script>
 
 </html>

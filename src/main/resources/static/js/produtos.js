@@ -173,6 +173,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const queryParams = new URLSearchParams(window.location.search);
         const buscaInicial = (queryParams.get('busca') || '').trim();
         const categoriaBuscaInicial = normalize(queryParams.get('categoriaBusca') || '');
+        const tamanhoBuscaInicialRaw = queryParams.get('tamanhoBusca') || '';
+        const faixaPrecoInicial = (queryParams.get('faixaPreco') || '').trim();
 
         const parsePriceValue = function (value) {
             const raw = (value || '').toString().replace(/[^\d,.-]/g, '');
@@ -227,6 +229,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const normalizeSize = function (value) {
             return normalize(value).replace(/^tamanho\s+/, '').trim();
         };
+
+        const tamanhoBuscaInicial = normalizeSize(tamanhoBuscaInicialRaw);
 
         const faixasPreco = [
             { value: '', label: 'Todos os preços' },
@@ -379,6 +383,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (hasCategoria) {
                 categorySelect.value = categoriaBuscaInicial;
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+            }
+        }
+
+        if (tamanhoBuscaInicial) {
+            const hasTamanho = Array.from(sizeSelect.options).some(function (option) {
+                return option.value === tamanhoBuscaInicial;
+            });
+
+            if (hasTamanho) {
+                sizeSelect.value = tamanhoBuscaInicial;
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+            }
+        }
+
+        if (faixaPrecoInicial) {
+            const hasFaixaPreco = Array.from(priceSelect.options).some(function (option) {
+                return option.value === faixaPrecoInicial;
+            });
+
+            if (hasFaixaPreco) {
+                priceSelect.value = faixaPrecoInicial;
                 if (searchInput) {
                     searchInput.value = '';
                 }
