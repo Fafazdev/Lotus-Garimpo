@@ -17,6 +17,42 @@
         let currentSuggestions = [];
         let activeIndex = -1;
 
+        const redirectToCategoryResults = function (term) {
+            const value = (term || '').trim();
+            if (!value) {
+                return;
+            }
+
+            const fallback = function () {
+                window.location.assign('/produtos?busca=' + encodeURIComponent(value));
+            };
+
+            fetch('/produto/categoria-por-termo?q=' + encodeURIComponent(value), {
+                headers: {
+                    Accept: 'application/json'
+                }
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        return null;
+                    }
+                    return response.json();
+                })
+                .then(function (payload) {
+                    const categoria = (payload && payload.categoria ? payload.categoria : '').toString().trim();
+
+                    if (categoria) {
+                        window.location.assign('/produtos?categoriaBusca=' + encodeURIComponent(categoria));
+                        return;
+                    }
+
+                    fallback();
+                })
+                .catch(function () {
+                    fallback();
+                });
+        };
+
         const hideSuggestions = function () {
             suggestionsPanel.classList.remove('is-open');
             suggestionsPanel.innerHTML = '';
@@ -134,21 +170,38 @@
         });
 
         searchInput.addEventListener('keydown', function (event) {
-            if (!currentSuggestions.length) {
-                return;
-            }
-
             if (event.key === 'ArrowDown') {
+                if (!currentSuggestions.length) {
+                    return;
+                }
                 event.preventDefault();
                 const nextIndex = activeIndex < currentSuggestions.length - 1 ? activeIndex + 1 : 0;
                 setActiveSuggestion(nextIndex);
             } else if (event.key === 'ArrowUp') {
+                if (!currentSuggestions.length) {
+                    return;
+                }
                 event.preventDefault();
                 const nextIndex = activeIndex > 0 ? activeIndex - 1 : currentSuggestions.length - 1;
                 setActiveSuggestion(nextIndex);
-            } else if (event.key === 'Enter' && activeIndex >= 0) {
+            } else if (event.key === 'Enter') {
                 event.preventDefault();
-                selectSuggestion(currentSuggestions[activeIndex]);
+
+                const selectedValue = activeIndex >= 0
+                    ? currentSuggestions[activeIndex]
+                    : searchInput.value.trim();
+
+                if (!selectedValue) {
+                    return;
+                }
+
+                if (activeIndex >= 0) {
+                    selectSuggestion(selectedValue);
+                } else {
+                    hideSuggestions();
+                }
+
+                redirectToCategoryResults(selectedValue);
             } else if (event.key === 'Escape') {
                 hideSuggestions();
             }

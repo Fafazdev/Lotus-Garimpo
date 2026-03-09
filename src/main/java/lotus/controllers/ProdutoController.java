@@ -18,6 +18,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -66,6 +67,55 @@ public class ProdutoController {
         return new ArrayList<>(sugestoes);
     }
 
+    @GetMapping("/produto/categoria-por-termo")
+    @ResponseBody
+    public Map<String, String> buscarCategoriaPorTermo(@RequestParam(value = "q", defaultValue = "") String query) {
+        String termoDigitado = query == null ? "" : query.trim();
+        String termoNormalizado = normalize(termoDigitado);
+
+        if (termoNormalizado.isEmpty()) {
+            return Map.of("categoria", "");
+        }
+
+        List<Produto> encontrados = produtoRepository
+                .findTop30ByNomeContainingIgnoreCaseOrDescricaoContainingIgnoreCaseOrCategoriaContainingIgnoreCaseOrTamanhoContainingIgnoreCaseOrderByIdDesc(
+                        termoDigitado,
+                        termoDigitado,
+                        termoDigitado,
+                        termoDigitado
+                );
+
+        String categoriaEncontrada = "";
+
+        for (Produto produto : encontrados) {
+            if (containsNormalized(produto.getNome(), termoNormalizado)) {
+                String categoria = safeValue(produto.getCategoria());
+                if (!categoria.isEmpty()) {
+                    categoriaEncontrada = categoria;
+                    break;
+                }
+            }
+        }
+
+        if (categoriaEncontrada.isEmpty()) {
+            for (Produto produto : encontrados) {
+                String categoria = safeValue(produto.getCategoria());
+                if (categoria.isEmpty()) {
+                    continue;
+                }
+
+                if (containsNormalized(produto.getDescricao(), termoNormalizado)
+                        || containsNormalized(produto.getCategoria(), termoNormalizado)
+                        || containsNormalized(produto.getTamanho(), termoNormalizado)) {
+                    categoriaEncontrada = categoria;
+                    break;
+                }
+            }
+        }
+
+        return Map.of("categoria", categoriaEncontrada);
+    }
+
     private static void addSuggestionIfMatches(Set<String> suggestions, String rawValue, String normalizedTerm) {
         if (rawValue == null) {
             return;
@@ -79,6 +129,17 @@ public class ProdutoController {
         if (normalize(value).contains(normalizedTerm)) {
             suggestions.add(value);
         }
+    }
+
+    private static boolean containsNormalized(String value, String normalizedTerm) {
+        if (value == null || normalizedTerm == null || normalizedTerm.isEmpty()) {
+            return false;
+        }
+        return normalize(value).contains(normalizedTerm);
+    }
+
+    private static String safeValue(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private static String normalize(String value) {

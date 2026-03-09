@@ -170,6 +170,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 .trim();
         };
 
+        const queryParams = new URLSearchParams(window.location.search);
+        const buscaInicial = (queryParams.get('busca') || '').trim();
+        const categoriaBuscaInicial = normalize(queryParams.get('categoriaBusca') || '');
+
         const parsePriceValue = function (value) {
             const raw = (value || '').toString().replace(/[^\d,.-]/g, '');
             if (!raw) return 0;
@@ -363,6 +367,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         priceContainer.appendChild(priceSelect);
+
+        if (searchInput && buscaInicial) {
+            searchInput.value = buscaInicial;
+        }
+
+        if (categoriaBuscaInicial) {
+            const hasCategoria = Array.from(categorySelect.options).some(function (option) {
+                return option.value === categoriaBuscaInicial;
+            });
+
+            if (hasCategoria) {
+                categorySelect.value = categoriaBuscaInicial;
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+            }
+        }
 
         const aplicarFiltros = function () {
             const categoriaSelecionada = categorySelect.value || '';
