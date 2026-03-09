@@ -21,6 +21,63 @@ document.addEventListener('DOMContentLoaded', function () {
     if (editModalElement) {
         const editModal = new bootstrap.Modal(editModalElement);
 
+        // Função auxiliar para sincronizar os dropdowns customizados
+        function syncCustomSelect(selectId, value) {
+            const hiddenSelect = document.getElementById(selectId);
+            const custom = document.querySelector('.custom-select[data-select-id="' + selectId + '"]');
+            if (!hiddenSelect || !custom) return;
+
+            if (value != null) {
+                hiddenSelect.value = value;
+            }
+
+            const labelEl = custom.querySelector('.custom-select-label');
+            const placeholder = custom.querySelector('.custom-select-toggle')?.getAttribute('data-placeholder') || '';
+            const option = hiddenSelect.options[hiddenSelect.selectedIndex];
+            labelEl.textContent = option && option.value ? option.textContent : placeholder;
+
+            custom.querySelectorAll('.custom-select-option').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-value') === hiddenSelect.value);
+            });
+        }
+
+        // Inicializa comportamento dos dropdowns customizados (clique e seleção)
+        document.querySelectorAll('#editPieceModal .custom-select').forEach(custom => {
+            const selectId = custom.getAttribute('data-select-id');
+            const toggle = custom.querySelector('.custom-select-toggle');
+            const options = custom.querySelectorAll('.custom-select-option');
+
+            if (!selectId || !toggle) return;
+
+            toggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+
+                document.querySelectorAll('#editPieceModal .custom-select.open').forEach(other => {
+                    if (other !== custom) {
+                        other.classList.remove('open');
+                    }
+                });
+
+                custom.classList.toggle('open');
+            });
+
+            options.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const value = btn.getAttribute('data-value') || '';
+                    syncCustomSelect(selectId, value);
+                    custom.classList.remove('open');
+                });
+            });
+        });
+
+        // Fecha dropdowns customizados ao clicar fora do modal
+        document.addEventListener('click', function () {
+            document.querySelectorAll('#editPieceModal .custom-select.open').forEach(custom => {
+                custom.classList.remove('open');
+            });
+        });
+
         document.querySelectorAll('.edit-card-button').forEach(btn => {
             btn.addEventListener('click', function () {
                 const id = btn.getAttribute('data-id');
@@ -35,8 +92,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('editPieceNome').value = nome;
                 document.getElementById('editPieceDescricao').value = descricao;
                 document.getElementById('editPiecePreco').value = preco;
+
+                // Atualiza selects ocultos e dropdowns customizados
                 document.getElementById('editPieceTamanho').value = tamanho;
                 document.getElementById('editPieceCategoria').value = categoria;
+                syncCustomSelect('editPieceTamanho');
+                syncCustomSelect('editPieceCategoria');
 
                 const preview = document.getElementById('editPiecePreview');
                 if (preview) {

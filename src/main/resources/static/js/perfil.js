@@ -173,8 +173,8 @@ function saveCepAndAddress(button) {
     });
 }
 
-// Detectar mudanças nos inputs
-Document.addEventListener('DOMContentLoaded', function () {
+// Detectar mudanças nos inputs e configurar eventos adicionais da página de perfil
+document.addEventListener('DOMContentLoaded', function () {
     const editableInputs = document.querySelectorAll('.editable-input');
     editableInputs.forEach(input => {
         const initialValue = input.value;
@@ -230,7 +230,213 @@ Document.addEventListener('DOMContentLoaded', function () {
             e.target.value = telefone;
         });
     });
+
+    // CEP do formulário de endereços (cards) no perfil
+    const cepEnderecoFormInput = document.getElementById('enderecoFormCep');
+    if (cepEnderecoFormInput) {
+        cepEnderecoFormInput.addEventListener('blur', function (e) {
+            buscarEnderecoPorCepPerfilForm();
+        });
+
+        cepEnderecoFormInput.addEventListener('input', function (e) {
+            let digits = e.target.value.replace(/\D/g, '');
+            if (digits.length > 8) {
+                digits = digits.substring(0, 8);
+            }
+            e.target.value = digits;
+        });
+    }
+
+    // Eventos iniciais dos cards de endereço
+    document.querySelectorAll('.endereco-card-perfil').forEach(card => {
+        bindEnderecoCardEventos(card);
+    });
+
+    // Submit AJAX do formulário de endereço (adicionar/editar)
+    const formEndereco = document.getElementById('formEnderecoPerfil');
+    if (formEndereco) {
+        formEndereco.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const payload = {
+                id: document.getElementById('enderecoFormId').value || null,
+                cep: document.getElementById('enderecoFormCep').value || '',
+                logradouro: document.getElementById('enderecoFormLogradouro').value || '',
+                numero: document.getElementById('enderecoFormNumero').value || '',
+                bairro: document.getElementById('enderecoFormBairro').value || '',
+                cidade: document.getElementById('enderecoFormCidade').value || '',
+                uf: document.getElementById('enderecoFormUf').value || '',
+                complemento: document.getElementById('enderecoFormComplemento').value || ''
+            };
+
+            fetch('/api/perfil/enderecos/salvar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success) {
+                        showAlert('error', 'Erro ao salvar endereço', data.message || 'Não foi possível salvar o endereço.');
+                        return;
+                    }
+
+                    upsertEnderecoCard(data.endereco);
+                    limparFormularioEnderecoPerfil();
+                    showAlert('success', 'Endereço salvo', data.message || 'Endereço salvo com sucesso.');
+                })
+                .catch(err => {
+                    console.error('Erro ao salvar endereço:', err);
+                    showAlert('error', 'Erro de comunicação', 'Não foi possível salvar o endereço.');
+                });
+        });
+    }
 });
+
+// Limpa o formulário de endereço (volta para modo "novo endereço")
+function limparFormularioEnderecoPerfil() {
+    const idInput = document.getElementById('enderecoFormId');
+    if (!idInput) return;
+
+    idInput.value = '';
+    const fields = [
+        'enderecoFormCep',
+        'enderecoFormLogradouro',
+        'enderecoFormNumero',
+        'enderecoFormBairro',
+        'enderecoFormCidade',
+        'enderecoFormUf',
+        'enderecoFormComplemento'
+    ];
+
+    fields.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = '';
+    });
+}
+
+// Liga os eventos de editar/excluir para um card de endereço específico
+function bindEnderecoCardEventos(card) {
+    const editBtn = card.querySelector('.btn-endereco-editar');
+    if (editBtn) {
+        editBtn.addEventListener('click', function () {
+            const form = document.getElementById('formEnderecoPerfil');
+            if (!form) return;
+
+            document.getElementById('enderecoFormId').value = this.getAttribute('data-id') || '';
+            document.getElementById('enderecoFormCep').value = this.getAttribute('data-cep') || '';
+            document.getElementById('enderecoFormLogradouro').value = this.getAttribute('data-logradouro') || '';
+            document.getElementById('enderecoFormNumero').value = this.getAttribute('data-numero') || '';
+            document.getElementById('enderecoFormBairro').value = this.getAttribute('data-bairro') || '';
+            document.getElementById('enderecoFormCidade').value = this.getAttribute('data-cidade') || '';
+            document.getElementById('enderecoFormUf').value = this.getAttribute('data-uf') || '';
+            document.getElementById('enderecoFormComplemento').value = this.getAttribute('data-complemento') || '';
+
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+
+    const deleteBtn = card.querySelector('.btn-endereco-excluir');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            if (!id) return;
+
+            fetch('/api/perfil/enderecos/excluir', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: Number(id) })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success) {
+                        showAlert('error', 'Erro ao excluir endereço', data.message || 'Não foi possível excluir o endereço.');
+                        return;
+                    }
+
+                    card.remove();
+
+                    const grid = document.querySelector('.enderecos-grid-perfil');
+                    if (!grid || grid.querySelectorAll('.endereco-card-perfil').length === 0) {
+                        const msg = document.querySelector('.sem-endereco-msg');
+                        if (msg) {
+                            msg.style.display = 'block';
+                        }
+                    }
+
+                    showAlert('success', 'Endereço removido', data.message || 'Endereço removido com sucesso.');
+                })
+                .catch(err => {
+                    console.error('Erro ao excluir endereço:', err);
+                    showAlert('error', 'Erro de comunicação', 'Não foi possível excluir o endereço.');
+                });
+        });
+    }
+}
+
+// Cria ou atualiza um card de endereço no grid
+function upsertEnderecoCard(endereco) {
+    if (!endereco) return;
+
+    const section = document.querySelector('.card-info.mt-4');
+    if (!section) return;
+
+    let grid = section.querySelector('.enderecos-grid-perfil');
+    const semMsg = section.querySelector('.sem-endereco-msg');
+    if (semMsg) {
+        semMsg.style.display = 'none';
+    }
+
+    if (!grid) {
+        grid = document.createElement('div');
+        grid.className = 'enderecos-grid-perfil mt-4';
+        // insere antes da mensagem "sem-endereco-msg" se existir
+        if (semMsg && semMsg.parentElement) {
+            semMsg.parentElement.insertBefore(grid, semMsg);
+        } else {
+            section.appendChild(grid);
+        }
+    }
+
+    let card = grid.querySelector('.endereco-card-perfil[data-id="' + endereco.id + '"]');
+    const isNovo = !card;
+
+    const complementoTexto = endereco.complemento ? 'Complemento: ' + endereco.complemento : '';
+
+    const inner =
+        '<div class="endereco-card-linha-principal">' +
+        '  <span class="endereco-card-logradouro">' + (endereco.logradouro || '') + ', ' + (endereco.numero || '') + '</span>' +
+        '</div>' +
+        '<div class="endereco-card-detalhe">' + (endereco.bairro || '') + ' - ' + (endereco.cidade || '') + ' / ' + (endereco.uf || '') + '</div>' +
+        '<div class="endereco-card-detalhe">CEP: ' + (endereco.cep || '') + '</div>' +
+        (complementoTexto
+            ? '<div class="endereco-card-detalhe">' + complementoTexto + '</div>'
+            : '') +
+        '<div class="endereco-card-actions">' +
+        '  <button type="button" class="btn-endereco-editar"' +
+        '          data-id="' + endereco.id + '"' +
+        '          data-cep="' + (endereco.cep || '') + '"' +
+        '          data-logradouro="' + (endereco.logradouro || '') + '"' +
+        '          data-numero="' + (endereco.numero || '') + '"' +
+        '          data-bairro="' + (endereco.bairro || '') + '"' +
+        '          data-cidade="' + (endereco.cidade || '') + '"' +
+        '          data-uf="' + (endereco.uf || '') + '"' +
+        '          data-complemento="' + (endereco.complemento || '') + '">Editar</button>' +
+        '  <button type="button" class="btn-endereco-excluir" data-id="' + endereco.id + '">Excluir</button>' +
+        '</div>';
+
+    if (!card) {
+        card = document.createElement('div');
+        card.className = 'endereco-card-perfil';
+        card.setAttribute('data-id', endereco.id);
+        card.innerHTML = inner;
+        grid.appendChild(card);
+    } else {
+        card.innerHTML = inner;
+    }
+
+    bindEnderecoCardEventos(card);
+}
 
 // Buscar endereço por CEP
 function buscarEnderecoPorCep() {
@@ -343,4 +549,71 @@ function buscarEnderecoPorCep() {
                     showAlert('error', 'Erro de comunicação', 'Não foi possível buscar o CEP.');
                 });
         });
+}
+
+// Buscar endereço para o formulário de endereços (cards) no perfil
+function buscarEnderecoPorCepPerfilForm() {
+    const cepInput = document.getElementById('enderecoFormCep');
+    if (!cepInput) return;
+
+    let cep = cepInput.value.replace(/\D/g, '');
+
+    if (cep.length === 0) {
+        return;
+    }
+
+    if (cep.length !== 8) {
+        showAlert('error', 'CEP inválido', 'CEP deve conter 8 dígitos.');
+        return;
+    }
+
+    // Formata para exibição
+    cepInput.value = cep.substring(0, 5) + '-' + cep.substring(5);
+
+    // Tenta BrasilAPI primeiro
+    fetch('https://brasilapi.com.br/api/cep/v1/' + cep)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('BrasilAPI respondeu com status ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            preencherCamposEnderecoPerfilForm(data.street, data.neighborhood, data.city, data.state);
+        })
+        .catch(error => {
+            console.warn('Erro com BrasilAPI (form perfil), tentando ViaCEP...', error);
+
+            fetch('https://viacep.com.br/ws/' + cep + '/json/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        showAlert('error', 'CEP não encontrado', 'Verifique o CEP informado e tente novamente.');
+                        return;
+                    }
+
+                    preencherCamposEnderecoPerfilForm(
+                        data.logradouro,
+                        data.bairro,
+                        data.localidade,
+                        data.uf
+                    );
+                })
+                .catch(err2 => {
+                    console.error('Erro ao buscar CEP (form perfil):', err2);
+                    showAlert('error', 'Erro de comunicação', 'Não foi possível buscar o CEP.');
+                });
+        });
+}
+
+function preencherCamposEnderecoPerfilForm(logradouro, bairro, cidade, uf) {
+    const logInput = document.getElementById('enderecoFormLogradouro');
+    const bairroInput = document.getElementById('enderecoFormBairro');
+    const cidadeInput = document.getElementById('enderecoFormCidade');
+    const ufInput = document.getElementById('enderecoFormUf');
+
+    if (logInput) logInput.value = logradouro || '';
+    if (bairroInput) bairroInput.value = bairro || '';
+    if (cidadeInput) cidadeInput.value = cidade || '';
+    if (ufInput) ufInput.value = uf || '';
 }

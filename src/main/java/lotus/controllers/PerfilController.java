@@ -4,16 +4,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
 import lotus.model.Usuario;
 import lotus.model.Produto;
+import lotus.model.Endereco;
+import lotus.repositories.EnderecoRepository;
 import lotus.repositories.UsuarioRepository;
 import lotus.repositories.ProdutoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -32,15 +36,211 @@ public class PerfilController {
     @Autowired
     private ProdutoRepository produtoRepository;
 
+    @Autowired
+    private EnderecoRepository enderecoRepository;
+
     @GetMapping("/perfil")
     public String perfil(Model model, HttpSession session,
                          @org.springframework.web.bind.annotation.RequestParam(value = "pecaAdicionada", required = false) String pecaAdicionada) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuario == null) {
+            return "redirect:/";
+        }
+
         model.addAttribute("usuario", usuario);
+
+        // Endereços vinculados ao usuário (para exibir como cards na página de perfil)
+        model.addAttribute("enderecos", enderecoRepository.findByUsuario(usuario));
         if (pecaAdicionada != null) {
             model.addAttribute("mensagemPeca", "Peça adicionada com sucesso!");
         }
         return "perfil";
+    }
+
+    @PostMapping("/perfil/enderecos/salvar")
+    public String salvarEnderecoPerfil(
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam("cep") String cep,
+            @RequestParam("logradouro") String logradouro,
+            @RequestParam("numero") String numero,
+            @RequestParam("bairro") String bairro,
+            @RequestParam("cidade") String cidade,
+            @RequestParam("uf") String uf,
+            @RequestParam(value = "complemento", required = false) String complemento,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null) {
+            return "redirect:/";
+        }
+
+        Endereco endereco;
+        if (id != null) {
+            endereco = enderecoRepository
+                    .findByIdAndUsuario(id, usuarioLogado)
+                    .orElse(null);
+            if (endereco == null) {
+                redirectAttributes.addFlashAttribute("perfilErroEndereco", "Endereço inválido para o usuário logado.");
+                return "redirect:/perfil";
+            }
+        } else {
+            endereco = new Endereco();
+            endereco.setUsuario(usuarioLogado);
+        }
+
+        endereco.setCep(cep);
+        endereco.setLogradouro(logradouro);
+        endereco.setNumero(numero);
+        endereco.setBairro(bairro);
+        endereco.setCidade(cidade);
+        endereco.setUf(uf);
+        endereco.setComplemento(complemento);
+
+        enderecoRepository.save(endereco);
+
+        redirectAttributes.addFlashAttribute("perfilSucessoEndereco",
+                (id == null ? "Endereço adicionado com sucesso." : "Endereço atualizado com sucesso."));
+
+        return "redirect:/perfil";
+    }
+
+    @PostMapping("/perfil/enderecos/excluir")
+    public String excluirEnderecoPerfil(@RequestParam("id") Long id,
+                                        HttpSession session,
+                                        RedirectAttributes redirectAttributes) {
+
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null) {
+            return "redirect:/";
+        }
+
+        enderecoRepository.findByIdAndUsuario(id, usuarioLogado).ifPresent(enderecoRepository::delete);
+
+        redirectAttributes.addFlashAttribute("perfilSucessoEndereco", "Endereço removido com sucesso.");
+        return "redirect:/perfil";
+    }
+
+    @PostMapping("/api/perfil/enderecos/salvar")
+    @ResponseBody
+    public Map<String, Object> salvarEnderecoPerfilAjax(
+            @RequestBody Map<String, String> dados,
+            HttpSession session) {
+
+        Map<String, Object> resposta = new HashMap<>();
+
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null) {
+            resposta.put("success", false);
+            resposta.put("requiresLogin", true);
+            resposta.put("message", "Usuário não autenticado.");
+            return resposta;
+        }
+
+        String idStr = dados.get("id");
+        String cep = dados.getOrDefault("cep", "");
+        String logradouro = dados.getOrDefault("logradouro", "");
+        String numero = dados.getOrDefault("numero", "");
+        String bairro = dados.getOrDefault("bairro", "");
+        String cidade = dados.getOrDefault("cidade", "");
+        String uf = dados.getOrDefault("uf", "");
+        String complemento = dados.getOrDefault("complemento", "");
+
+        if (cep.isBlank() || logradouro.isBlank() || numero.isBlank() || bairro.isBlank()
+                || cidade.isBlank() || uf.isBlank()) {
+            resposta.put("success", false);
+            resposta.put("message", "Preencha todos os campos obrigatórios do endereço.");
+            return resposta;
+        }
+
+        Long id = null;
+        if (idStr != null && !idStr.isBlank()) {
+            try {
+                id = Long.parseLong(idStr);
+            } catch (NumberFormatException e) {
+                // ignora, trata como novo endereço
+            }
+        }
+
+        Endereco endereco;
+        if (id != null) {
+            endereco = enderecoRepository
+                    .findByIdAndUsuario(id, usuarioLogado)
+                    .orElse(null);
+            if (endereco == null) {
+                resposta.put("success", false);
+                resposta.put("message", "Endereço inválido para o usuário logado.");
+                return resposta;
+            }
+        } else {
+            endereco = new Endereco();
+            endereco.setUsuario(usuarioLogado);
+        }
+
+        endereco.setCep(cep);
+        endereco.setLogradouro(logradouro);
+        endereco.setNumero(numero);
+        endereco.setBairro(bairro);
+        endereco.setCidade(cidade);
+        endereco.setUf(uf);
+        endereco.setComplemento(complemento);
+
+        enderecoRepository.save(endereco);
+
+        Map<String, Object> enderecoJson = new HashMap<>();
+        enderecoJson.put("id", endereco.getId());
+        enderecoJson.put("cep", endereco.getCep());
+        enderecoJson.put("logradouro", endereco.getLogradouro());
+        enderecoJson.put("numero", endereco.getNumero());
+        enderecoJson.put("bairro", endereco.getBairro());
+        enderecoJson.put("cidade", endereco.getCidade());
+        enderecoJson.put("uf", endereco.getUf());
+        enderecoJson.put("complemento", endereco.getComplemento());
+
+        resposta.put("success", true);
+        resposta.put("message", id == null ? "Endereço adicionado com sucesso." : "Endereço atualizado com sucesso.");
+        resposta.put("endereco", enderecoJson);
+
+        return resposta;
+    }
+
+    @PostMapping("/api/perfil/enderecos/excluir")
+    @ResponseBody
+    public Map<String, Object> excluirEnderecoPerfilAjax(
+            @RequestBody Map<String, Long> dados,
+            HttpSession session) {
+
+        Map<String, Object> resposta = new HashMap<>();
+
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null) {
+            resposta.put("success", false);
+            resposta.put("requiresLogin", true);
+            resposta.put("message", "Usuário não autenticado.");
+            return resposta;
+        }
+
+        Long id = dados.get("id");
+        if (id == null) {
+            resposta.put("success", false);
+            resposta.put("message", "ID do endereço não informado.");
+            return resposta;
+        }
+
+        Optional<Endereco> optEndereco = enderecoRepository.findByIdAndUsuario(id, usuarioLogado);
+        if (optEndereco.isEmpty()) {
+            resposta.put("success", false);
+            resposta.put("message", "Endereço não encontrado para o usuário.");
+            return resposta;
+        }
+
+        enderecoRepository.delete(optEndereco.get());
+
+        resposta.put("success", true);
+        resposta.put("message", "Endereço removido com sucesso.");
+        resposta.put("id", id);
+
+        return resposta;
     }
 
     @PostMapping("/perfil/completar")

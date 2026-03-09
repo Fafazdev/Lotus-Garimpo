@@ -1,0 +1,203 @@
+/* Layout geral da p\u00e1gina de checkout (entrega) */
+
+.checkout-page {
+    min-height: 100vh;
+    background: #f8faf8;
+    padding: 40px 0 60px;
+}
+
+.checkout-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.checkout-header-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #2d5a27;
+    margin-bottom: 6px;
+}
+
+.checkout-subtitle {
+    color: #7b7b7b;
+    font-size: 14px;
+}
+
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 32px;
+    margin-top: 32px;
+}
+
+@media (max-width: 992px) {
+    .checkout-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cards de endere\u00e7o */
+
+.endereco-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d5a27;
+    margin-bottom: 16px;
+}
+
+.endereco-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.endereco-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 2px solid #e4e6e2;
+    background: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.endereco-card:hover {
+    border-color: #ff69b4;
+    box-shadow: 0 8px 24px rgba(45, 90, 39, 0.12);
+    transform: translateY(-1px);
+}
+
+.endereco-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.endereco-card-selected {
+    border-color: #2d5a27;
+    box-shadow: 0 0 0 2px rgba(45, 90, 39, 0.12);
+}
+
+/* Destaque automático do card quando o rádio estiver selecionado */
+.endereco-card:has(input[type="radio"]:checked) {
+    border-color: #2d5a27;
+    box-shadow: 0 0 0 2px rgba(45, 90, 39, 0.12);
+}
+
+.endereco-nome-logradouro {
+    font-weight: 700;
+    color: #2d2d2d;
+}
+
+.endereco-detalhes {
+    font-size: 13px;
+    color: #5a5a5a;
+}
+
+.endereco-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #f2f8f2;
+    font-size: 11px;
+    font-weight: 600;
+    color: #2d5a27;
+    margin-top: 4px;
+}
+
+.sem-endereco-msg {
+    padding: 18px 16px;
+    border-radius: 12px;
+    background: #fff8f6;
+    border: 1px dashed #ff69b4;
+    color: #8a4a62;
+    font-size: 14px;
+}
+
+.endereco-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-continuar-checkout {
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #2d5a27 0%, #1f3d1a 100%);
+    color: #ffffff;
+    font-weight: 700;
+    padding: 10px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-continuar-checkout:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-novo-endereco {
+    border-radius: 999px;
+    border: 1px solid #ff69b4;
+    background: #ffffff;
+    color: #ff69b4;
+    font-weight: 700;
+    padding: 10px 18px;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Coluna de resumo do pedido */
+
+.checkout-summary-box {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 18px 20px;
+    box-shadow: 0 10px 30px rgba(25, 49, 21, 0.12);
+}
+
+.checkout-summary-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d5a27;
+    margin-bottom: 14px;
+}
+
+.checkout-summary-items {
+    max-height: 220px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.checkout-summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #4b4b4b;
+    padding: 6px 0;
+    border-bottom: 1px dashed #ececec;
+}
+
+.checkout-summary-item:last-child {
+    border-bottom: none;
+}
+
+.checkout-summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 800;
+    margin-top: 10px;
+    color: #2d5a27;
+}

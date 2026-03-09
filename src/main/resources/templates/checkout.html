@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900&display=swap" rel="stylesheet" />
+
+    <link th:href="@{/css/bodyhome.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/checkout.css}" rel="stylesheet">
+</head>
+
+<body>
+<header class="top-header">
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-4 order-2 order-md-1 mt-3 mt-md-0">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="O que você está buscando?">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-4 order-1 order-md-2 text-md-center">
+                <img src="../imagens/lotus.webp" alt="L\u00f3tus Logo" class="logo-img">
+            </div>
+
+            <div class="col-6 col-md-4 order-1 order-md-3">
+                <div class="header-actions">
+                    <a th:if="${session.usuarioLogado == null}" href="#" class="action-item" data-bs-toggle="modal"
+                       data-bs-target="#loginModal">
+                        <i class="far fa-user"></i>
+                        <span>Minha conta</span>
+                    </a>
+
+                    <a th:if="${session.usuarioLogado != null}" th:href="@{/perfil}" class="action-item">
+                        <i class="fas fa-user-circle" style="color: #ff69b4;"></i>
+                        <span th:text="${'Ola, ' + session.usuarioLogado.nome}"></span>
+                    </a>
+
+                    <a href="#" class="action-item" onclick="abrirCarrinho(); return false;">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" th:text="${quantidadeCarrinho} ?: 0">0</span>
+                        <span>Meu carrinho</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <nav class="nav-menu">
+                    <a th:href="@{/}">Inicio</a>
+                    <a th:href="@{/produtos}">Produtos</a>
+                    <a th:href="@{/medidas}">Guia de medidas</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div th:replace="~{alerta :: floatingAlert}"></div>
+<div th:replace="~{modal :: modalLogin}"></div>
+
+<main class="checkout-page">
+    <div class="checkout-container">
+        <div class="mb-3">
+            <div class="breadcrumb-text">
+                <a th:href="@{/}">Inicio</a> &gt; <a th:href="@{/produtos}">Produtos</a> &gt; <span>Checkout</span>
+            </div>
+        </div>
+
+        <h1 class="checkout-header-title">Endereço de entrega</h1>
+        <p class="checkout-subtitle">Escolha para onde vamos enviar seu pedido.</p>
+
+        <div th:if="${erroCheckout != null}" class="alert alert-danger mt-3" role="alert">
+            <span th:text="${erroCheckout}">Erro</span>
+        </div>
+        <div th:if="${sucessoCheckout != null}" class="alert alert-success mt-3" role="alert">
+            <span th:text="${sucessoCheckout}">Sucesso</span>
+        </div>
+
+        <section class="checkout-layout">
+            <section>
+                <h2 class="endereco-section-title">Escolha um dos seus endereços</h2>
+
+                <form th:action="@{/checkout/selecionar-endereco}" method="post" class="endereco-form">
+                    <div th:if="${#lists.isEmpty(enderecos)}" class="sem-endereco-msg">
+                        Você ainda não possui endereços cadastrados. Cadastre um novo para continuar.
+                    </div>
+
+                    <div th:if="${!#lists.isEmpty(enderecos)}" class="endereco-grid">
+                        <label class="endereco-card"
+                               th:each="endereco : ${enderecos}"
+                               th:for="${'endereco-' + endereco.id}"
+                               th:classappend="${session.enderecoSelecionado != null and session.enderecoSelecionado.id == endereco.id} ? ' endereco-card-selected'">
+                            <input type="radio" name="enderecoId"
+                                   th:id="${'endereco-' + endereco.id}"
+                                   th:value="${endereco.id}"
+                                   th:checked="${session.enderecoSelecionado != null and session.enderecoSelecionado.id == endereco.id}">
+
+                            <div class="endereco-conteudo">
+                                <div class="endereco-nome-logradouro"
+                                     th:text="${endereco.logradouro} + ', ' + ${endereco.numero}">Rua Exemplo, 123</div>
+                                <div class="endereco-detalhes"
+                                     th:text="${endereco.bairro} + ' - ' + ${endereco.cidade} + ' / ' + ${endereco.uf}">Bairro - Cidade / UF</div>
+                                <div class="endereco-detalhes"
+                                     th:text="${'CEP: ' + endereco.cep}">CEP: 00000-000</div>
+                                <div class="endereco-detalhes" th:if="${endereco.complemento != null and !#strings.isEmpty(endereco.complemento)}"
+                                     th:text="${'Complemento: ' + endereco.complemento}">Complemento</div>
+
+                                <span class="endereco-tag" th:if="${session.enderecoSelecionado != null and session.enderecoSelecionado.id == endereco.id}">
+                                    Endereço selecionado
+                                </span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="endereco-actions">
+                        <button type="submit" class="btn-continuar-checkout"
+                                th:disabled="${#lists.isEmpty(enderecos)}">
+                            Continuar para pagamento
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+
+                        <a th:href="@{/perfil}" class="btn-novo-endereco">
+                            <i class="fas fa-plus"></i>
+                            Adicionar novo enderereço
+                        </a>
+                    </div>
+                </form>
+            </section>
+
+            <aside>
+                <div class="checkout-summary-box">
+                    <h2 class="checkout-summary-title">Resumo do pedido</h2>
+
+                    <p class="checkout-summary-count text-muted mb-2">
+                        <span th:text="${quantidadeCarrinho} + ' produto(s)'">0 produto(s)</span>
+                    </p>
+
+                    <div class="checkout-summary-items">
+                        <div class="checkout-summary-item" th:each="item : ${itensCarrinho}">
+                            <span th:text="|${item.produto.nome} (${item.quantidade})|">Nome do produto</span>
+                            <span th:text="'R$ ' + ${#numbers.formatDecimal(item.produto.preco, 1, 2, 'POINT')}">R$ 0,00</span>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(itensCarrinho)}" class="text-muted small">
+                            Seu carrinho está vazio.
+                        </div>
+                    </div>
+
+                    <div class="checkout-summary-total" style="margin-top: 8px;">
+                        <span>Total dos produtos</span>
+                        <span th:text="'R$ ' + ${#numbers.formatDecimal(subtotalCarrinho, 1, 2, 'POINT')}">R$ 0,00</span>
+                    </div>
+
+                    <div class="checkout-summary-total" style="font-weight: 600; margin-top: 4px;">
+                        <span>Frete</span>
+                        <span th:if="${freteCarrinho != null}"
+                              th:text="'R$ ' + ${#numbers.formatDecimal(freteCarrinho, 1, 2, 'POINT')}">R$ 0,00</span>
+                        <span th:if="${freteCarrinho == null}" class="text-muted small">Selecione um endereço</span>
+                    </div>
+
+                    <div class="checkout-summary-total" style="margin-top: 8px;">
+                        <span>Total com frete</span>
+                        <span th:text="'R$ ' + ${#numbers.formatDecimal(totalCarrinhoComFrete, 1, 2, 'POINT')}">R$ 0,00</span>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </div>
+</main>
+
+<!-- Modal do carrinho reutilizado -->
+<div th:replace="~{carrinho :: carrinhoModal}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+<script th:src="@{/js/carrinho.js}"></script>
+<script th:src="@{/js/checkout.js}"></script>
+</body>
+
+<footer class="site-footer">
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="row pt-5 pb-4">
+            <div class="col-12 col-md-6 mb-4 mb-md-0">
+                <h4 class="footer-title">Departamentos</h4>
+                <ul class="footer-links">
+                    <li><a th:href="@{/}">Inicio</a></li>
+                    <li><a th:href="@{/produtos}">Produtos</a></li>
+                    <li><a href="#" onclick="abrirCarrinho(); return false;">Sacolinha</a></li>
+                    <li><a th:href="@{/medidas}">Guia de medidas</a></li>
+                </ul>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <h4 class="footer-title">Permaneça conectado</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-icon" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row pb-5 align-items-center">
+            <div class="col-12 d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3">
+                <h4 class="footer-title mb-0 me-md-3">Meios de pagamento</h4>
+
+                <div class="payment-methods">
+                    <div class="payment-card visa"><i class="fab fa-cc-visa"></i></div>
+                    <div class="payment-card master"><i class="fab fa-cc-mastercard"></i></div>
+                    <div class="payment-card amex"><i class="fab fa-cc-amex"></i></div>
+                    <div class="payment-card pix"><i class="fab fa-pix"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row pt-4 pb-4">
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <p class="copyright-text mb-0">Copyright Lotus Garimpo - 2026. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</html>

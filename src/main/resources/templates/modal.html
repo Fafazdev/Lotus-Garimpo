@@ -203,7 +203,8 @@
 
                             <div class="form-group">
                                 <label>Tamanho</label>
-                                <select name="tamanho" id="editPieceTamanho" class="input-piece" required>
+                                <!-- Select real usado somente para envio do formulário -->
+                                <select name="tamanho" id="editPieceTamanho" class="input-piece d-none" required>
                                     <option value="" disabled>Selecione um tamanho</option>
                                     <option value="P">P</option>
                                     <option value="M">M</option>
@@ -228,17 +229,61 @@
                                     <option value="49">49</option>
                                     <option value="50">50</option>
                                 </select>
+
+                                <div class="custom-select" data-select-id="editPieceTamanho">
+                                    <button type="button" class="custom-select-toggle" data-placeholder="Selecione um tamanho">
+                                        <span class="custom-select-label">Selecione um tamanho</span>
+                                        <span class="custom-select-arrow">▾</span>
+                                    </button>
+                                    <div class="custom-select-menu">
+                                        <button type="button" class="custom-select-option" data-value="P">P</button>
+                                        <button type="button" class="custom-select-option" data-value="M">M</button>
+                                        <button type="button" class="custom-select-option" data-value="G">G</button>
+                                        <button type="button" class="custom-select-option" data-value="GG">GG</button>
+                                        <button type="button" class="custom-select-option" data-value="U">U</button>
+                                        <button type="button" class="custom-select-option" data-value="34">34</button>
+                                        <button type="button" class="custom-select-option" data-value="35">35</button>
+                                        <button type="button" class="custom-select-option" data-value="36">36</button>
+                                        <button type="button" class="custom-select-option" data-value="37">37</button>
+                                        <button type="button" class="custom-select-option" data-value="38">38</button>
+                                        <button type="button" class="custom-select-option" data-value="39">39</button>
+                                        <button type="button" class="custom-select-option" data-value="40">40</button>
+                                        <button type="button" class="custom-select-option" data-value="41">41</button>
+                                        <button type="button" class="custom-select-option" data-value="42">42</button>
+                                        <button type="button" class="custom-select-option" data-value="43">43</button>
+                                        <button type="button" class="custom-select-option" data-value="44">44</button>
+                                        <button type="button" class="custom-select-option" data-value="45">45</button>
+                                        <button type="button" class="custom-select-option" data-value="46">46</button>
+                                        <button type="button" class="custom-select-option" data-value="47">47</button>
+                                        <button type="button" class="custom-select-option" data-value="48">48</button>
+                                        <button type="button" class="custom-select-option" data-value="49">49</button>
+                                        <button type="button" class="custom-select-option" data-value="50">50</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group">
                                 <label>Categoria</label>
-                                <select name="categoria" id="editPieceCategoria" class="input-piece" required>
+                                <select name="categoria" id="editPieceCategoria" class="input-piece d-none" required>
                                     <option value="">Selecione uma categoria</option>
                                     <option value="Partes de cima">Partes de cima</option>
                                     <option value="Partes de baixo">Partes de baixo</option>
                                     <option value="Acessórios">Acessórios</option>
                                     <option value="Outros">Outros</option>
                                 </select>
+
+                                <div class="custom-select" data-select-id="editPieceCategoria">
+                                    <button type="button" class="custom-select-toggle" data-placeholder="Selecione uma categoria">
+                                        <span class="custom-select-label">Selecione uma categoria</span>
+                                        <span class="custom-select-arrow">▾</span>
+                                    </button>
+                                    <div class="custom-select-menu">
+                                        <button type="button" class="custom-select-option" data-value="Partes de cima">Partes de cima</button>
+                                        <button type="button" class="custom-select-option" data-value="Partes de baixo">Partes de baixo</button>
+                                        <button type="button" class="custom-select-option" data-value="Acessórios">Acessórios</button>
+                                        <button type="button" class="custom-select-option" data-value="Outros">Outros</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group">
