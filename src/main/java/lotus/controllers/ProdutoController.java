@@ -10,11 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class ProdutoController {
@@ -27,6 +32,62 @@ public class ProdutoController {
         List<Produto> produtos = produtoRepository.findAll();
         model.addAttribute("produtos", produtos);
         return "produtos"; 
+    }
+
+    @GetMapping("/produto/sugestoes")
+    @ResponseBody
+    public List<String> buscarSugestoes(@RequestParam(value = "q", defaultValue = "") String query) {
+        String termoDigitado = query == null ? "" : query.trim();
+        String termoNormalizado = normalize(termoDigitado);
+
+        if (termoNormalizado.isEmpty()) {
+            return List.of();
+        }
+
+        List<Produto> encontrados = produtoRepository
+                .findTop30ByNomeContainingIgnoreCaseOrDescricaoContainingIgnoreCaseOrCategoriaContainingIgnoreCaseOrTamanhoContainingIgnoreCaseOrderByIdDesc(
+                        termoDigitado,
+                        termoDigitado,
+                        termoDigitado,
+                        termoDigitado
+                );
+
+        Set<String> sugestoes = new LinkedHashSet<>();
+        for (Produto produto : encontrados) {
+            addSuggestionIfMatches(sugestoes, produto.getNome(), termoNormalizado);
+            addSuggestionIfMatches(sugestoes, produto.getCategoria(), termoNormalizado);
+            addSuggestionIfMatches(sugestoes, produto.getTamanho(), termoNormalizado);
+
+            if (sugestoes.size() >= 10) {
+                break;
+            }
+        }
+
+        return new ArrayList<>(sugestoes);
+    }
+
+    private static void addSuggestionIfMatches(Set<String> suggestions, String rawValue, String normalizedTerm) {
+        if (rawValue == null) {
+            return;
+        }
+
+        String value = rawValue.trim();
+        if (value.isEmpty()) {
+            return;
+        }
+
+        if (normalize(value).contains(normalizedTerm)) {
+            suggestions.add(value);
+        }
+    }
+
+    private static String normalize(String value) {
+        String safe = value == null ? "" : value;
+        return Normalizer
+                .normalize(safe, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "")
+                .toLowerCase()
+                .trim();
     }
 
     @GetMapping("/produto/editar/{id}")

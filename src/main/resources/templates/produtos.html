@@ -131,7 +131,7 @@
                 <div class="col-12 col-lg-9">
                     <div class="row">
                         
-                        <div th:each="produto : ${produtos}" class="col-12 col-md-6 col-lg-4 mb-4">
+                        <div th:each="produto : ${produtos}" class="col-12 col-md-6 col-lg-4 mb-4" th:attr="data-produto-id=${produto.id}">
                             <div class="card-produto">
                                 <div class="image_container">
                                     <!-- use Thymeleaf URL expression to resolve path correctly -->
@@ -261,6 +261,7 @@
 <div th:replace="~{modal :: modalLogin}"></div>
 <div th:replace="~{alerta :: floatingAlertJs}"></div>
 
+<script th:src="@{/js/search-autocomplete.js}"></script>
 <script th:src="@{/js/produtos.js}"></script>
 
 </html>

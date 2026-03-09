@@ -101,6 +101,57 @@ document.addEventListener('DOMContentLoaded', function () {
         const shopSection = document.querySelector('.shop-section');
         if (!shopSection) return;
 
+        const destaqueButton = shopSection.querySelector('.btn-destaque');
+        const cardsRow = shopSection.querySelector('.col-12.col-lg-9 > .row');
+
+        if (destaqueButton && cardsRow) {
+            const cardColumns = Array.from(cardsRow.children);
+
+            cardColumns.forEach(function (column, index) {
+                column.dataset.originalIndex = String(index);
+            });
+
+            let sortDirection = null;
+
+            const getProdutoId = function (column) {
+                const raw = column.dataset.produtoId;
+                const parsed = Number.parseInt(raw || '', 10);
+                return Number.isNaN(parsed) ? null : parsed;
+            };
+
+            const sortCards = function (direction) {
+                const productColumns = cardColumns.filter(function (column) {
+                    return getProdutoId(column) != null;
+                });
+
+                const nonProductColumns = cardColumns.filter(function (column) {
+                    return getProdutoId(column) == null;
+                });
+
+                const sorted = productColumns.slice().sort(function (a, b) {
+                    const aId = getProdutoId(a);
+                    const bId = getProdutoId(b);
+
+                    return direction === 'desc' ? bId - aId : aId - bId;
+                });
+
+                sorted.forEach(function (column) {
+                    cardsRow.appendChild(column);
+                });
+
+                nonProductColumns
+                    .sort(function (a, b) { return Number(a.dataset.originalIndex) - Number(b.dataset.originalIndex); })
+                    .forEach(function (column) {
+                        cardsRow.appendChild(column);
+                    });
+            };
+
+            destaqueButton.addEventListener('click', function () {
+                sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
+                sortCards(sortDirection);
+            });
+        }
+
         const cards = Array.from(shopSection.querySelectorAll('.card-produto'));
         if (!cards.length) return;
 
