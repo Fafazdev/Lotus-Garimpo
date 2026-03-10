@@ -153,33 +153,39 @@
                 <div class="row g-0">
 
                     <div class="col-12 col-md-4 d-flex flex-column">
-                        <div class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
-                            <img src="../imagens/calca.webp" alt="Partes de baixo" class="img-fluid"
-                                style="max-height: 250px;">
-                        </div>
-                        <div class="category-strip text-center py-3">
-                            <h3 class="category-title m-0">Partes de baixo</h3>
-                        </div>
+                        <a th:href="@{/produtos(categoriaBusca='partes de baixo')}" class="d-flex flex-column flex-grow-1 text-decoration-none categoria-link">
+                            <div class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
+                                <img src="../imagens/calca.webp" alt="Partes de baixo" class="img-fluid"
+                                    style="max-height: 250px;">
+                            </div>
+                            <div class="category-strip text-center py-3">
+                                <h3 class="category-title m-0">Partes de baixo</h3>
+                            </div>
+                        </a>
                     </div>
 
                     <div class="col-12 col-md-4 d-flex flex-column">
-                        <div class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
-                            <img src="../imagens/jaqueta.webp" alt="Partes de cima" class="img-fluid"
-                                style="max-height: 250px;">
-                        </div>
-                        <div class="category-strip text-center py-3">
-                            <h3 class="category-title m-0">Partes de cima</h3>
-                        </div>
+                        <a th:href="@{/produtos(categoriaBusca='partes de cima')}" class="d-flex flex-column flex-grow-1 text-decoration-none categoria-link">
+                            <div class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
+                                <img src="../imagens/jaqueta.webp" alt="Partes de cima" class="img-fluid"
+                                    style="max-height: 250px;">
+                            </div>
+                            <div class="category-strip text-center py-3">
+                                <h3 class="category-title m-0">Partes de cima</h3>
+                            </div>
+                        </a>
                     </div>
 
                     <div class="col-12 col-md-4 d-flex flex-column">
-                        <div class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
-                            <img src="../imagens/bolsa.webp" alt="Acessórios" class="img-fluid"
-                                style="max-height: 250px;">
-                        </div>
-                        <div class="category-strip text-center py-3">
-                            <h3 class="category-title m-0">Acessórios</h3>
-                        </div>
+                        <a th:href="@{/produtos(categoriaBusca='acessorios')}" class="d-flex flex-column flex-grow-1 text-decoration-none categoria-link">
+                            <div class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
+                                <img src="../imagens/bolsa.webp" alt="Acessórios" class="img-fluid"
+                                    style="max-height: 250px;">
+                            </div>
+                            <div class="category-strip text-center py-3">
+                                <h3 class="category-title m-0">Acessórios</h3>
+                            </div>
+                        </a>
                     </div>
 
                 </div>
