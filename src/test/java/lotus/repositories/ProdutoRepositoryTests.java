@@ -25,7 +25,7 @@ class ProdutoRepositoryTests {
         u.setEmail("test@domain.com");
         u.setNome("Test User");
         u.setSenha("password");
-        u.setDataNascimento(java.time.LocalDate.now());
+        u.setDataCriacao(java.time.LocalDate.now());
         u.setTipo(1);
         u = usuarioRepository.save(u);
 

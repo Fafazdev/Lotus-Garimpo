@@ -50,8 +50,17 @@
                 </div>
             </div>
 
-            <button class="btn-checkout" onclick="window.location.href='/checkout'">
-               Ir para o checkout
+            <button class="btn-checkout"
+                    th:if="${!#lists.isEmpty(itensCarrinho)}"
+                    onclick="window.location.href='/checkout'">
+                Ir para o checkout
+            </button>
+
+            <button class="btn-checkout"
+                    type="button"
+                    th:if="${#lists.isEmpty(itensCarrinho)}"
+                    onclick="if(window.showAlert){showAlert('error','Carrinho vazio','Seu carrinho está vazio. Adicione itens antes de ir para o checkout.');}else{alert('Seu carrinho está vazio. Adicione itens antes de ir para o checkout.');}">
+                Ir para o checkout
             </button>
 
             <button class="btn-clear-cart" type="button" onclick="limparCarrinho()">

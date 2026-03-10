@@ -169,6 +169,31 @@ function atualizarResumoCarrinhoNoDom(data, removeButton, cartItemsContainer) {
     } else if (emptyDiv) {
         emptyDiv.remove();
     }
+
+    // Atualiza o comportamento do botão de checkout conforme a quantidade no carrinho
+    var quantidadeCarrinho = (data && data.quantidadeCarrinho != null)
+        ? data.quantidadeCarrinho
+        : remainingItems;
+
+    var checkoutButtons = document.querySelectorAll('.cart-modal .btn-checkout');
+    checkoutButtons.forEach(function (btn) {
+        // Limpa qualquer onclick embutido anterior
+        btn.onclick = null;
+
+        if (quantidadeCarrinho > 0) {
+            btn.onclick = function () {
+                window.location.href = '/checkout';
+            };
+        } else {
+            btn.onclick = function () {
+                if (typeof showAlert === 'function') {
+                    showAlert('error', 'Carrinho vazio', 'Seu carrinho está vazio. Adicione itens antes de ir para o checkout.');
+                } else {
+                    alert('Seu carrinho está vazio. Adicione itens antes de ir para o checkout.');
+                }
+            };
+        }
+    });
 }
 
 // Cria ou atualiza visualmente um item do carrinho no modal

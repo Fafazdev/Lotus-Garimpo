@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos - Lótus Garimpo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link th:href="@{/css/bodyhome.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/meus-pedidos.css}" rel="stylesheet">
+</head>
+
+<body>
+<header class="top-header">
+    <div class="container-fluid px-4 px-lg-5 py-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <a th:href="@{/}" class="meus-pedidos-back-btn">
+                &#8592; Voltar
+            </a>
+            <h1 class="h4 mb-0">Meus pedidos</h1>
+            <div></div>
+        </div>
+    </div>
+</header>
+
+<main class="meus-pedidos-main">
+    <div class="meus-pedidos-wrapper px-3 px-md-4 px-lg-0">
+        <div th:if="${sucessoCheckout}" class="alert alert-success" th:text="${sucessoCheckout}"></div>
+        <div th:if="${pixErro}" class="alert alert-danger" th:text="${pixErro}"></div>
+
+        <div th:if="${fretePixIniciado}" class="lotus-frete-wrapper">
+            <div class="lotus-frete-card">
+                <div class="lotus-frete-inner">
+                    <span class="lotus-frete-icon-wrapper">
+                        <img th:src="@{/imagens/lotus.webp}" alt="Lótus Garimpo">
+                    </span>
+
+                    <h5 class="lotus-frete-title">Frete da sua sacolinha</h5>
+                    <p class="lotus-frete-subtitle">
+                        Use este Pix para pagar apenas o frete e liberar o envio das suas peças.
+                    </p>
+
+                    <p class="lotus-frete-value">
+                        Frete: <span th:text="'R$ ' + ${#numbers.formatDecimal(freteValorPix, 1, 2, 'POINT')}">R$ 0,00</span>
+                    </p>
+
+                    <div class="lotus-frete-copy w-100 mb-1">
+                        <label class="form-label mb-1">Código Pix copia e cola</label>
+                        <textarea class="form-control form-control-sm" rows="2" readonly
+                                  th:text="${freteQrCode}">Copia e cola do frete</textarea>
+                    </div>
+
+                    <div class="lotus-frete-qr-wrapper" th:if="${freteQrCodeBase64 != null}">
+                        <img class="lotus-frete-qr" th:src="|data:image/png;base64,${freteQrCodeBase64}|" alt="QR Code Frete" />
+                    </div>
+
+                    <p class="lotus-frete-note">
+                        Após o pagamento do frete, a loja irá preparar o envio da sua sacolinha.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(pedidos)}" class="alert alert-info">
+            Você ainda não tem pedidos registrados.
+        </div>
+
+        <div class="row justify-content-center g-4" th:if="${!#lists.isEmpty(pedidos)}">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4" th:each="pedido : ${pedidos}">
+                <div class="lotus-pedido-card">
+                    <span class="lotus-pedido-icon-wrapper">
+                        <img th:src="@{/imagens/lotus.webp}" alt="Lótus Garimpo">
+                    </span>
+
+                    <div class="lotus-pedido-inner">
+                        <div class="lotus-pedido-header">
+                            <div>
+                                <h5 class="lotus-pedido-title">
+                                    <span th:if="${pedido.itens != null and !#lists.isEmpty(pedido.itens)}"
+                                          th:text="${pedido.itens[0].produto.nome}">Produto</span>
+                                    <span th:if="${pedido.itens == null or #lists.isEmpty(pedido.itens)}">Pedido</span>
+                                </h5>
+                                <p class="lotus-pedido-date" th:text="${#temporals.format(pedido.dataCompra, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2026 12:00
+                                </p>
+                            </div>
+
+                                <span class="badge meus-pedidos-badge-status"
+                                    th:classappend="${pedido.status == 'SACOLINHA_ABERTA'} ? ' bg-warning text-dark' : ' bg-success'"
+                                    th:text="${#strings.replace(pedido.status, '_', ' ')}">
+                                STATUS
+                            </span>
+                        </div>
+
+                        <p class="mb-1">
+                            <span class="meus-pedidos-label">Valor das peças:</span>
+                            <span th:text="'R$ ' + ${#numbers.formatDecimal(pedido.valorPago, 1, 2, 'POINT')}">R$ 0,00</span>
+                        </p>
+                        <p class="mb-1">
+                            <span class="meus-pedidos-label">Frete:</span>
+                            <span th:text="${pedido.valorFrete != null && pedido.valorFrete > 0} ? 'R$ ' + ${#numbers.formatDecimal(pedido.valorFrete, 1, 2, 'POINT')} : 'R$ 0,00'">
+                                R$ 0,00
+                            </span>
+                        </p>
+
+                        <div class="mb-1" th:if="${pedido.itens != null and !#lists.isEmpty(pedido.itens)}">
+                            <span class="meus-pedidos-label d-block">Itens:</span>
+                            <ul class="mb-1 ps-3 small">
+                                <li th:each="item : ${pedido.itens}">
+                                    <span th:text="${item.produto.nome}">Nome do produto</span>
+                                    <span th:text="' (' + ${item.quantidade} + 'x)'">(1x)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <p class="mb-1" th:if="${pedido.itens == null or #lists.isEmpty(pedido.itens)}">
+                            <span class="meus-pedidos-label">Produto:</span>
+                            <span>Dados do produto indisponíveis.</span>
+                        </p>
+
+                        <div class="mt-2">
+                            <p class="mb-1 text-muted small" th:if="${pedido.status == 'SACOLINHA_ABERTA'}">
+                                Este pedido faz parte da sua sacolinha. Você pode fechar o envio só deste pedido.
+                            </p>
+                            <p class="mb-1 text-muted small" th:if="${pedido.status != 'SACOLINHA_ABERTA'}">
+                                Pedido aguardando envio ou em andamento.
+                            </p>
+
+                            <form th:if="${pedido.status == 'SACOLINHA_ABERTA'}" th:action="@{/meus-pedidos/fechar-sacolinha}" method="post" class="mt-2">
+                                <input type="hidden" name="pedidoId" th:value="${pedido.id}">
+                                <button type="submit" class="meus-pedidos-btn-sacolinha">
+                                    Fechar sacolinha deste pedido
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="site-footer mt-5">
+    <div class="container-fluid px-4 px-lg-5 py-3">
+        <p class="mb-0 small">Meus pedidos - Lótus Garimpo</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

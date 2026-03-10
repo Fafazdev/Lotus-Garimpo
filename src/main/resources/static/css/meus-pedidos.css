@@ -1,0 +1,225 @@
+main.meus-pedidos-main {
+    min-height: 100vh;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+    background: #f8faf8;
+}
+
+.meus-pedidos-wrapper {
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.meus-pedidos-back-btn {
+    border-radius: 999px;
+    border: 1px solid #ff85c2;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ff85c2;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.meus-pedidos-back-btn:hover {
+    background: #ff85c2;
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(255, 133, 194, 0.45);
+    transform: translateY(-1px);
+}
+
+.meus-pedidos-badge-status {
+    border-radius: 999px;
+    padding-inline: 1.25rem;
+    padding-block: 0.35rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+}
+
+.meus-pedidos-badge-status.bg-success {
+    background-color: #1f8b4c !important;
+}
+
+.meus-pedidos-label {
+    font-weight: 600;
+}
+
+/* Card de pedido no estilo do card de frete, com ícone da Lótus */
+.lotus-pedido-card {
+    --shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0,
+              rgba(60, 64, 67, 0.15) 0 2px 6px 2px;
+    background: #ffffff;
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow);
+    padding-top: 2.6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.lotus-pedido-inner {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.lotus-pedido-icon-wrapper {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -50%);
+    background: #ffe1f0;
+    border-radius: 999px;
+    padding: 0.55rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+.lotus-pedido-icon-wrapper img {
+    display: block;
+    height: 40px;
+}
+
+.lotus-pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.lotus-pedido-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #44403c;
+    margin: 0;
+}
+
+.lotus-pedido-date {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.meus-pedidos-btn-sacolinha {
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #ff85c2 0%, #ff66b2 100%);
+    color: #ffffff;
+    font-weight: 700;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-shadow: 0 8px 18px rgba(255, 102, 178, 0.35);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+}
+
+.meus-pedidos-btn-sacolinha:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(255, 102, 178, 0.4);
+}
+
+/* Card de frete no estilo do cookie-banner, com logo da Lótus */
+.lotus-frete-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.lotus-frete-card {
+    --shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0,
+              rgba(60, 64, 67, 0.15) 0 2px 6px 2px;
+    width: 80%;
+    max-width: 320px;
+    background: #ffffff;
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow);
+}
+
+.lotus-frete-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2.8rem 1.5rem 1.5rem;
+}
+
+.lotus-frete-icon-wrapper {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -50%);
+    background: #ffe1f0;
+    border-radius: 999px;
+    padding: 0.6rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+.lotus-frete-icon-wrapper img {
+    display: block;
+    height: 46px;
+}
+
+.lotus-frete-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: #44403c;
+}
+
+.lotus-frete-subtitle {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.75rem;
+}
+
+.lotus-frete-value {
+    font-size: 0.9rem;
+    color: #44403c;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.lotus-frete-value span {
+    font-weight: 700;
+}
+
+.lotus-frete-copy label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.lotus-frete-copy textarea {
+    font-size: 0.8rem;
+}
+
+.lotus-frete-note {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+
+.lotus-frete-qr-wrapper {
+    margin-top: 0.75rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.lotus-frete-qr {
+    max-width: 150px;
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    padding: 6px;
+    background: #fff;
+}

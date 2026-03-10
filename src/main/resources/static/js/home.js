@@ -160,6 +160,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const loginModal = new bootstrap.Modal(loginModalEl);
                 loginModal.show();
             }
+        } else if (erro === 'carrinhoVazio') {
+            // Tentativa de ir para o checkout sem itens no carrinho
+            showAlert('error', 'Carrinho vazio', 'Seu carrinho está vazio. Adicione itens antes de ir para o checkout.');
         } else if (sucesso === 'produtoAtualizado') {
             // Sucesso na atualização de um card de produto
             showAlert('success', 'Peça atualizada', 'A peça foi atualizada com sucesso.');

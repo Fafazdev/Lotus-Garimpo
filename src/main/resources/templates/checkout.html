@@ -126,6 +126,7 @@
 
                     <div class="endereco-actions">
                         <button type="submit" class="btn-continuar-checkout"
+                                th:formaction="@{/checkout/continuar-para-pagamento}"
                                 th:disabled="${#lists.isEmpty(enderecos)}">
                             Continuar para pagamento
                             <i class="fas fa-arrow-right"></i>
