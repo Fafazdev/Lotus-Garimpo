@@ -84,6 +84,7 @@
                         </div>
                     </div>
                     <a th:href="@{/medidas}">Guia de medidas</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#sacolinhaInfoModal" onclick="return false;">Sacolinha</a>
                 </nav>
             </div>
         </div>
@@ -230,6 +231,7 @@
 
 <!-- Modais de produto vindos do fragmento modal.html -->
 <div th:replace="~{modal :: produtoModals('produtos')}"></div>
+<div th:replace="~{modal :: sacolinhaInfoModal}"></div>
 
 </body>
 <footer class="site-footer">
@@ -243,6 +245,7 @@
                     <li><a th:href="@{/}">Início</a></li>
                     <li><a th:href="@{/produtos}">Produtos</a></li>
                     <li><a th:href="@{/medidas}">Guia de medidas</a></li>
+                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#sacolinhaInfoModal" onclick="return false;">Sacolinha</a></li>
                 </ul>
             </div>
 

@@ -18,6 +18,38 @@ main {
     flex: 1;
 }
 
+.profile-nav-wrapper {
+    padding: 24px 0 0;
+}
+
+.profile-nav-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    width: min(100%, 920px);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(45, 90, 39, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(45, 90, 39, 0.12);
+}
+
+.profile-nav-menu a {
+    text-decoration: none;
+    color: #2d5a27;
+    font-size: 14px;
+    font-weight: 800;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.profile-nav-menu a:hover {
+    color: #ff69b4;
+    opacity: 1;
+}
+
 /* Container principal */
 .profile-content {
     min-height: 100%;

@@ -336,18 +336,7 @@
 
     </main>
 
-    <!-- Modal informativo da sacolinha -->
-    <div class="modal fade" id="sacolinhaInfoModal" tabindex="-1" aria-label="Informação da sacolinha" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body p-4">
-                    <div class="sacolinha-info-box">
-                        <p class="sacolinha-info-text mb-0">A opção sacolinha é mais para quem não sente necessidade de já pedir o envio, portanto pagando só o valor da pecinha, e guardamos ela aqui com a gente. Daí, durante os lançamentos novos toda semana, vc pode pegar mais peças e colocar na sua sacolinha. Vc tem 2 meses para fechar ela e pedir o envio, pagando tudo em um frete só❣️</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{modal :: sacolinhaInfoModal}"></div>
 
     <!-- Modais de produto vindos do fragmento modal.html -->
     <div th:replace="~{modal :: produtoModals('home')}"></div>
@@ -369,6 +358,7 @@
                     <li><a th:href="@{/}">Início</a></li>
                     <li><a th:href="@{/produtos}">Produtos</a></li>
                     <li><a th:href="@{/medidas}">Guia de medidas</a></li>
+                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#sacolinhaInfoModal" onclick="return false;">Sacolinha</a></li>
                 </ul>
             </div>
 

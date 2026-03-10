@@ -7,12 +7,24 @@
     <title>Meu Perfil - Lótus Garimpo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/perfil.css}">
+    <link rel="stylesheet" th:href="@{/css/modal.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
 <div th:replace="~{alerta :: perfilAlert}"></div>
+
+    <div class="profile-nav-wrapper">
+        <div class="container-fluid px-4 px-lg-5">
+            <nav class="profile-nav-menu">
+                <a th:href="@{/}">Início</a>
+                <a th:href="@{/produtos}">Produtos</a>
+                <a th:href="@{/medidas}">Guia de medidas</a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#sacolinhaInfoModal" onclick="return false;">Sacolinha</a>
+            </nav>
+        </div>
+    </div>
 
     <main class="profile-content">
         <div class="container-fluid px-4 px-lg-5 py-5">
@@ -293,6 +305,7 @@
 
     <!-- Modal de adicionar peça vindo do fragmento modal.html -->
     <div th:replace="~{modal :: perfilModals}"></div>
+    <div th:replace="~{modal :: sacolinhaInfoModal}"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/perfil.js}"></script>
