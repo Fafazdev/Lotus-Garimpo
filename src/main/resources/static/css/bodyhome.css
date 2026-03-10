@@ -221,7 +221,39 @@
 }
 
 /* =========================================
-   7. ALERTA HOME (card flutuante)
+   7. MODAL SACOLINHA
+   ========================================= */
+#sacolinhaInfoModal .modal-dialog {
+    max-width: 560px;
+}
+
+.sacolinha-info-box {
+    background-color: #ffffff;
+    border: 2px solid #499273;
+    border-radius: 18px;
+    padding: 40px 24px;
+}
+
+.sacolinha-info-text {
+    color: #499273;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    font-weight: 600;
+}
+
+@media (max-width: 576px) {
+    .sacolinha-info-box {
+        padding: 22px 18px;
+    }
+
+    .sacolinha-info-text {
+        font-size: 1.08rem;
+        line-height: 1.7;
+    }
+}
+
+/* =========================================
+   8. ALERTA HOME (card flutuante)
    ========================================= */
 #home-alert.home-alert-container {
     position: fixed;
