@@ -206,14 +206,20 @@ public class ProdutoController {
 
         if (imagem != null && !imagem.isEmpty()) {
             try {
+                lotus.security.FileUploadValidator.validate(imagem);
                 java.nio.file.Path uploadDir = java.nio.file.Paths.get("src/main/resources/static/imagens").toAbsolutePath().normalize();
                 java.nio.file.Files.createDirectories(uploadDir);
-                String filename = System.currentTimeMillis() + "_" + imagem.getOriginalFilename();
+                String filename = lotus.security.FileUploadValidator.generateSafeFilename(imagem);
                 java.nio.file.Path filePath = uploadDir.resolve(filename);
                 imagem.transferTo(filePath.toFile());
                 produto.setImagem("/imagens/" + filename);
+            } catch (IllegalArgumentException e) {
+                if ("home".equalsIgnoreCase(origem)) {
+                    return "redirect:/?erro=imagemInvalida";
+                }
+                return "redirect:/produtos?erro=imagemInvalida";
             } catch (Exception e) {
-                e.printStackTrace();
+                // falha de I/O — continua sem atualizar imagem
             }
         }
 

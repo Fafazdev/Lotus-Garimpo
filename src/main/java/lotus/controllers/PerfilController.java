@@ -125,7 +125,7 @@ public class PerfilController {
             }
         } catch (Exception e) {
             Map<String, String> erro = new HashMap<>();
-            erro.put("erro", "Erro na requisição: " + e.getMessage());
+            erro.put("erro", "Erro ao buscar endereço. Verifique o CEP e tente novamente.");
             return erro;
         }
     }
@@ -214,7 +214,7 @@ public class PerfilController {
             
         } catch (Exception e) {
             resposta.put("sucesso", false);
-            resposta.put("mensagem", "Erro ao atualizar: " + e.getMessage());
+            resposta.put("mensagem", "Erro interno ao atualizar. Tente novamente.");
         }
         
         return resposta;
@@ -255,31 +255,22 @@ public class PerfilController {
         // trata a imagem enviada pelo formulário
         if (imagem != null && !imagem.isEmpty()) {
             try {
-                // usa caminho absoluto para garantir que sempre funcione
+                lotus.security.FileUploadValidator.validate(imagem);
                 java.nio.file.Path uploadDir = java.nio.file.Paths.get("src/main/resources/static/imagens").toAbsolutePath().normalize();
                 java.nio.file.Files.createDirectories(uploadDir);
-                String filename = System.currentTimeMillis() + "_" + imagem.getOriginalFilename();
+                String filename = lotus.security.FileUploadValidator.generateSafeFilename(imagem);
                 java.nio.file.Path filePath = uploadDir.resolve(filename);
                 imagem.transferTo(filePath.toFile());
-                // salva o caminho relativo que será usado nas páginas
                 produto.setImagem("/imagens/" + filename);
+            } catch (IllegalArgumentException e) {
+                return "redirect:/perfil?erro=imagemInvalida";
             } catch (Exception e) {
-                // se falhar no upload, apenas registra no console e continua sem imagem
-                e.printStackTrace();
+                // falha de I/O — continua sem imagem
             }
         }
 
         // salva no banco de dados
         produtoRepository.save(produto);
-
-        // opcional: imprimir para debug
-        System.out.println("Peça adicionada:");
-        System.out.println("Nome: " + nome);
-        System.out.println("Descrição: " + descricao);
-        System.out.println("Preço: " + preco);
-        System.out.println("Tamanho: " + tamanho);
-        System.out.println("Categoria: " + categoria);
-        System.out.println("Usuário: " + usuarioLogado.getNome());
 
         // Redireciona de volta para o perfil mostrando mensagem de sucesso
         return "redirect:/perfil?pecaAdicionada=true";
