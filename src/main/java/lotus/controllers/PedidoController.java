@@ -1,6 +1,7 @@
 package lotus.controllers;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import lotus.model.Endereco;
 import lotus.model.Pedido;
@@ -16,7 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class PedidoController {
@@ -46,6 +51,75 @@ public class PedidoController {
         model.addAttribute("hasSacolinhaAberta", hasSacolinhaAberta);
 
         return "meus-pedidos";
+    }
+
+    @GetMapping("/vendedor/pedidos")
+    public String listarPedidosDoVendedor(HttpSession session, Model model) {
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+
+        if (usuarioLogado == null || usuarioLogado.getTipo() == null || usuarioLogado.getTipo() != 2) {
+            return "redirect:/?erro=permissao";
+        }
+
+        List<Pedido> pedidos = pedidoRepository.findAllByOrderByDataCompraDesc();
+
+        model.addAttribute("pedidos", pedidos);
+
+        // Dados da dashboard para o vendedor
+        long totalPedidos = pedidos.size();
+        long totalSacolinha = pedidos.stream()
+            .filter(p -> "SACOLINHA_ABERTA".equalsIgnoreCase(p.getStatus()))
+            .count();
+        long totalAguardandoEnvio = pedidos.stream()
+            .filter(p -> "AGUARDANDO_ENVIO".equalsIgnoreCase(p.getStatus()))
+            .count();
+        long totalEnviados = pedidos.stream()
+            .filter(p -> "ENVIADO".equalsIgnoreCase(p.getStatus()))
+            .count();
+
+        BigDecimal totalValorPecas = pedidos.stream()
+            .map(Pedido::getValorPago)
+            .filter(Objects::nonNull)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalFrete = pedidos.stream()
+            .map(Pedido::getValorFrete)
+            .filter(Objects::nonNull)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        model.addAttribute("totalPedidos", totalPedidos);
+        model.addAttribute("totalSacolinha", totalSacolinha);
+        model.addAttribute("totalAguardandoEnvio", totalAguardandoEnvio);
+        model.addAttribute("totalEnviados", totalEnviados);
+        model.addAttribute("totalValorPecas", totalValorPecas);
+        model.addAttribute("totalFrete", totalFrete);
+
+        // Dados do gráfico (últimos 7 dias)
+        LocalDate hoje = LocalDate.now();
+        List<String> vendasLabels = new ArrayList<>();
+        List<BigDecimal> vendasValores = new ArrayList<>();
+
+        for (int i = 6; i >= 0; i--) {
+            LocalDate dia = hoje.minusDays(i);
+            String label = formataDiaSemana(dia.getDayOfWeek());
+
+            BigDecimal totalDia = pedidos.stream()
+                .filter(p -> p.getDataCompra() != null &&
+                    p.getDataCompra().toLocalDate().isEqual(dia))
+                .map(Pedido::getValorPago)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            vendasLabels.add(label);
+            vendasValores.add(totalDia);
+        }
+
+        model.addAttribute("vendasLabels", vendasLabels);
+        model.addAttribute("vendasValores", vendasValores);
+
+        // Nome do vendedor para saudação no dashboard
+        model.addAttribute("vendedorNome", usuarioLogado.getNome());
+        return "pedidos-vendedor";
     }
 
     @PostMapping("/meus-pedidos/fechar-sacolinha")
@@ -109,6 +183,46 @@ public class PedidoController {
         }
 
         return "redirect:/meus-pedidos";
+    }
+
+    @PostMapping("/vendedor/pedidos/{id}/confirmar-envio")
+    public String confirmarEnvio(@PathVariable("id") Long id,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null || usuarioLogado.getTipo() == null || usuarioLogado.getTipo() != 2) {
+            return "redirect:/?erro=permissao";
+        }
+
+        Pedido pedido = pedidoRepository.findById(id).orElse(null);
+        if (pedido == null) {
+            redirectAttributes.addFlashAttribute("vendedorErro", "Pedido não encontrado.");
+            return "redirect:/vendedor/pedidos";
+        }
+
+        if (!"AGUARDANDO_ENVIO".equalsIgnoreCase(pedido.getStatus())) {
+            redirectAttributes.addFlashAttribute("vendedorErro", "Este pedido não está aguardando envio.");
+            return "redirect:/vendedor/pedidos";
+        }
+
+        pedido.setStatus("ENVIADO");
+        pedidoRepository.save(pedido);
+
+        redirectAttributes.addFlashAttribute("vendedorSucesso", "Pedido marcado como ENVIADO.");
+        return "redirect:/vendedor/pedidos";
+    }
+
+    private String formataDiaSemana(DayOfWeek diaSemana) {
+        return switch (diaSemana) {
+            case MONDAY -> "Seg";
+            case TUESDAY -> "Ter";
+            case WEDNESDAY -> "Qua";
+            case THURSDAY -> "Qui";
+            case FRIDAY -> "Sex";
+            case SATURDAY -> "Sáb";
+            case SUNDAY -> "Dom";
+        };
     }
 
     private BigDecimal calcularFreteInterno(BigDecimal subtotal, Endereco endereco, int quantidadeItens) {

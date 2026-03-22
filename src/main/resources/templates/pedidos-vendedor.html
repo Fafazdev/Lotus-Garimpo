@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos - Vendedor - Lótus Garimpo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/bodyhome.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/meus-pedidos.css}" rel="stylesheet">
+    <link th:href="@{/css/pedidos-vendedor.css}" rel="stylesheet">
+</head>
+
+<body>
+<header class="top-header">
+    <div class="container-fluid px-4 px-lg-5 py-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <a th:href="@{/perfil}" class="meus-pedidos-back-btn">
+                &#8592; Voltar ao perfil
+            </a>
+            <h1 class="h4 mb-0">Pedidos dos clientes</h1>
+            <button class="btn btn-sm vendedor-dashboard-toggle" type="button"
+                    data-bs-toggle="offcanvas" data-bs-target="#dashboardOffcanvas"
+                    aria-controls="dashboardOffcanvas">
+                Abrir painel de vendas
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="meus-pedidos-main">
+    <div class="meus-pedidos-wrapper px-3 px-md-4 px-lg-0">
+        <!-- Lista de pedidos ocupa a tela inteira; dashboard fica na offcanvas -->
+        <div class="row g-4">
+            <div class="col-12">
+                <div th:if="${vendedorSucesso}" class="alert alert-success" th:text="${vendedorSucesso}"></div>
+                <div th:if="${vendedorErro}" class="alert alert-danger" th:text="${vendedorErro}"></div>
+
+                <div th:if="${#lists.isEmpty(pedidos)}" class="alert alert-info">
+                    Nenhum pedido encontrado.
+                </div>
+
+                <div class="row justify-content-center g-4" th:if="${!#lists.isEmpty(pedidos)}">
+                    <div class="col-12 col-sm-8 col-md-6 col-lg-4" th:each="pedido : ${pedidos}">
+                        <div class="lotus-pedido-card">
+                    <span class="lotus-pedido-icon-wrapper">
+                        <img th:src="@{/imagens/lotus.webp}" alt="Lótus Garimpo">
+                    </span>
+
+                    <div class="lotus-pedido-inner">
+                        <div class="lotus-pedido-header">
+                            <div>
+                                <h5 class="lotus-pedido-title">
+                                    <span th:if="${pedido.itens != null and !#lists.isEmpty(pedido.itens)}"
+                                          th:text="${pedido.itens[0].produto.nome}">Produto</span>
+                                    <span th:if="${pedido.itens == null or #lists.isEmpty(pedido.itens)}">Pedido</span>
+                                </h5>
+                                <p class="lotus-pedido-date"
+                                   th:text="${#temporals.format(pedido.dataCompra, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2026 12:00
+                                </p>
+                                <p class="small text-muted"
+                                   th:text="${'Cliente: ' + (pedido.cliente != null ? pedido.cliente.nome : 'N/I')}">
+                                    Cliente
+                                </p>
+                            </div>
+
+                            <span class="badge meus-pedidos-badge-status"
+                                  th:classappend="${pedido.status == 'SACOLINHA_ABERTA'} ? ' bg-warning text-dark' :
+                                                  (pedido.status == 'AGUARDANDO_ENVIO' ? ' bg-primary' :
+                                                   (pedido.status == 'ENVIADO' ? ' bg-success' : ' bg-secondary'))"
+                                  th:text="${#strings.replace(pedido.status, '_', ' ')}">
+                                STATUS
+                            </span>
+                        </div>
+
+                        <p class="mb-1">
+                            <span class="meus-pedidos-label">Valor das peças:</span>
+                            <span th:text="'R$ ' + ${#numbers.formatDecimal(pedido.valorPago, 1, 2, 'POINT')}">R$ 0,00</span>
+                        </p>
+                        <p class="mb-1">
+                            <span class="meus-pedidos-label">Frete:</span>
+                            <span th:text="${pedido.valorFrete != null && pedido.valorFrete > 0} ? 'R$ ' + ${#numbers.formatDecimal(pedido.valorFrete, 1, 2, 'POINT')} : 'R$ 0,00'">
+                                R$ 0,00
+                            </span>
+                        </p>
+
+                        <div class="mb-1" th:if="${pedido.itens != null and !#lists.isEmpty(pedido.itens)}">
+                            <span class="meus-pedidos-label d-block">Itens:</span>
+                            <ul class="mb-1 ps-3 small">
+                                <li th:each="item : ${pedido.itens}">
+                                    <span th:text="${item.produto.nome}">Nome do produto</span>
+                                    <span th:text="' (' + ${item.quantidade} + 'x)'">(1x)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <p class="mb-1" th:if="${pedido.itens == null or #lists.isEmpty(pedido.itens)}">
+                            <span class="meus-pedidos-label">Produto:</span>
+                            <span>Dados do produto indisponíveis.</span>
+                        </p>
+
+                        <div class="mt-2">
+                            <p class="mb-1 text-muted small" th:if="${pedido.status == 'SACOLINHA_ABERTA'}">
+                                Pedido ainda em sacolinha do cliente.
+                            </p>
+                            <p class="mb-1 text-muted small" th:if="${pedido.status == 'AGUARDANDO_ENVIO'}">
+                                Pedido pago, aguardando envio.
+                            </p>
+                            <p class="mb-1 text-muted small" th:if="${pedido.status == 'ENVIADO'}">
+                                Pedido já foi enviado ao cliente.
+                            </p>
+
+                            <form th:if="${pedido.status == 'AGUARDANDO_ENVIO'}"
+                                  th:action="@{'/vendedor/pedidos/' + ${pedido.id} + '/confirmar-envio'}"
+                                  method="post" class="mt-2">
+                                <button type="submit" class="meus-pedidos-btn-sacolinha w-100">
+                                    Confirmar que foi enviado
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Offcanvas lateral da dashboard de vendas -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="dashboardOffcanvas" aria-labelledby="dashboardOffcanvasLabel">
+    <div class="offcanvas-header vendedor-dashboard-header">
+        <h5 class="offcanvas-title" id="dashboardOffcanvasLabel">Dashboard de Vendas</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body vendedor-dashboard">
+        <div class="dashboard-header">
+            <div class="d-flex align-items-center gap-2">
+                <div class="dashboard-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div>
+                    <h2>Dashboard de Vendas</h2>
+                    <p class="dashboard-welcome">
+                        Bem-vindo, <span th:text="${vendedorNome}">Vendedor</span>!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-title">TOTAL DE PEDIDOS</span>
+                <span class="kpi-value" th:text="${totalPedidos}">0</span>
+                <span class="kpi-sub kpi-sub-success">Este mês</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-title">AGUARDANDO ENVIO</span>
+                <span class="kpi-value" th:text="${totalAguardandoEnvio}">0</span>
+                <span class="kpi-sub kpi-sub-alert">
+                    <i class="fas fa-circle-exclamation me-1"></i>
+                    Atenção:
+                    <span th:text="${totalAguardandoEnvio}">0</span>
+                </span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-title">VALOR DAS PEÇAS</span>
+                <span class="kpi-value"
+                      th:text="'R$ ' + ${#numbers.formatDecimal(totalValorPecas ?: 0, 1, 2, 'POINT')}">
+                    R$ 0,00
+                </span>
+                <span class="kpi-sub kpi-sub-success">
+                    em alta (+
+                    <span th:text="'R$ ' + ${#numbers.formatDecimal(totalValorPecas ?: 0, 1, 2, 'POINT')}">R$ 0,00</span>
+                    )
+                </span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-title">FRETE ARRECADADO</span>
+                <span class="kpi-value"
+                      th:text="'R$ ' + ${#numbers.formatDecimal(totalFrete ?: 0, 1, 2, 'POINT')}">
+                    R$ 0,00
+                </span>
+                <span class="kpi-sub">Mês atual</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="chart-container">
+                <h3 class="section-title">Evolução das Vendas (Últimos 7 dias)</h3>
+                <canvas id="vendasChart" height="100"></canvas>
+            </div>
+
+            <div class="actions-container">
+                <h3 class="section-title">Ações de Controle Rápido</h3>
+                <button class="btn-action">
+                    <i class="fas fa-bag-shopping me-2"></i>
+                    Gerenciar Sacolinhas (<span th:text="${totalSacolinha}">0</span>)
+                </button>
+                <button class="btn-action">
+                    <i class="fas fa-print me-2"></i>
+                    Imprimir Etiquetas de Envio
+                </button>
+                <button class="btn-action">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Ver Pedidos Concluídos
+                </button>
+                <button class="btn-action" disabled style="opacity:0.6; cursor:not-allowed;">
+                    Exportar Relatório Mensal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="site-footer mt-5">
+    <div class="container-fluid px-4 px-lg-5 py-3">
+        <p class="mb-0 small">Pedidos - Vendedor - Lótus Garimpo</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script th:inline="javascript">
+    const ctx = document.getElementById('vendasChart');
+    if (ctx) {
+        const vendasLabels = [[${vendasLabels}]];
+        const vendasValores = [[${vendasValores}]];
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: vendasLabels,
+                datasets: [{
+                    label: 'Valor de Vendas (R$)',
+                    data: vendasValores,
+                    borderColor: '#b54976',
+                    backgroundColor: 'rgba(181, 73, 118, 0.2)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+</script>
+</body>
+
+</html>

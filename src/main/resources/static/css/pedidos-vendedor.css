@@ -1,0 +1,137 @@
+.vendedor-dashboard-toggle {
+    background-color: #ff85c2;
+    border-color: #ff69b4;
+    color: #ffffff;
+}
+
+.vendedor-dashboard-toggle:hover,
+.vendedor-dashboard-toggle:focus {
+    background-color: #ff4b9a;
+    border-color: #ff4b9a;
+    color: #ffffff;
+}
+
+.vendedor-dashboard-header {
+    background-color: #ff85c2;
+    color: #ffffff;
+}
+
+/* Dashboard de vendas dentro da offcanvas */
+.vendedor-dashboard {
+    color: #333333;
+    background-color: #f8f9fa;
+}
+
+.vendedor-dashboard .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.vendedor-dashboard .dashboard-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.vendedor-dashboard .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.vendedor-dashboard .kpi-card {
+    background: #ffffff;
+    padding: 12px 14px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+.vendedor-dashboard .kpi-title {
+    font-size: 11px;
+    color: #6c757d;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.vendedor-dashboard .kpi-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #b54976;
+}
+
+.vendedor-dashboard .kpi-sub {
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+.vendedor-dashboard .kpi-sub-success {
+    color: #28a745;
+}
+
+.vendedor-dashboard .kpi-sub-alert {
+    color: #dc3545;
+}
+
+.vendedor-dashboard .main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: transparent;
+}
+
+.vendedor-dashboard .chart-container,
+.vendedor-dashboard .actions-container {
+    background-color: #ffffff;
+    padding: 12px 14px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e0e0e0;
+}
+
+/* Garante que nenhuma borda/fundo verde apareça ao redor do gráfico */
+#dashboardOffcanvas {
+    background-color: #f8f9fa !important;
+}
+
+#dashboardOffcanvas .chart-container {
+    background-color: #ffffff !important;
+    border-color: #e0e0e0 !important;
+}
+
+.vendedor-dashboard .section-title {
+    font-size: 14px;
+    margin: 0 0 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 6px;
+}
+
+.vendedor-dashboard .btn-action {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    background-color: transparent;
+    border: 1px solid #b54976;
+    color: #b54976;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vendedor-dashboard .btn-action:hover {
+    background-color: #b54976;
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .vendedor-dashboard .main-content {
+        flex-direction: column;
+    }
+}
