@@ -423,3 +423,55 @@
     </div>
 
 </div>
+
+<div th:fragment="vendedorValorPecasModal" xmlns:th="http://www.thymeleaf.org">
+    <!-- Modal com detalhes das transações de Valor das Peças (mês atual, pedidos pagos/enviados) -->
+    <div class="modal fade" id="valorPecasDetalhesModal" tabindex="-1" aria-labelledby="valorPecasDetalhesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius: 18px; overflow: hidden; border: none;">
+                <div class="modal-header" style="background-color: #ff85c2; color: #ffffff; border-bottom: none;">
+                    <h5 class="modal-title fw-semibold" id="valorPecasDetalhesModalLabel">Detalhamento das vendas (Valor das peças)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: #ffffff; opacity: 0.9;"></button>
+                </div>
+                <div class="modal-body" style="background-color: #f8f9fa;">
+                    <div th:if="${#lists.isEmpty(pedidosValorPecasMes)}" class="alert alert-info mb-0">
+                        Nenhuma venda registrada ainda para o mês atual.
+                    </div>
+
+                    <div th:if="${!#lists.isEmpty(pedidosValorPecasMes)}">
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-1">
+                                <thead>
+                                <tr>
+                                    <th class="text-muted small">Data / Hora</th>
+                                    <th class="text-muted small">Cliente</th>
+                                    <th class="text-end text-muted small">Valor das peças</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="pedido : ${pedidosValorPecasMes}">
+                                    <td th:text="${pedido.dataCompra != null ? #temporals.format(pedido.dataCompra, 'dd/MM/yyyy HH:mm') : '-'}"></td>
+                                    <td th:text="${pedido.cliente != null ? pedido.cliente.nome : 'N/I'}"></td>
+                                    <td class="text-end fw-semibold text-success"
+                                        th:text="'R$ ' + ${#numbers.formatDecimal(pedido.valorPago, 1, 2, 'POINT')}">
+                                        R$ 0,00
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <span class="me-2 fw-semibold">Total em peças (mês atual):</span>
+                            <span class="fw-bold" style="color: #28a745;"
+                                  th:text="'R$ ' + ${#numbers.formatDecimal(totalValorPecas ?: 0, 1, 2, 'POINT')}">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="background-color: #f8f9fa; border-top: none;">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
