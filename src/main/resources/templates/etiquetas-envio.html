@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Etiquetas de Envio - Lótus Garimpo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/etiquetas-envio.css}">
+</head>
+<body>
+<div class="etiquetas-container">
+    <div th:if="${#lists.isEmpty(pedidosEtiquetas)}" class="alert alert-info sem-etiquetas-aviso">
+        Nenhum pedido aguardando envio para gerar etiquetas.
+    </div>
+
+    <div th:if="${!#lists.isEmpty(pedidosEtiquetas)}">
+        <div class="mb-3 sem-etiquetas-aviso">
+            <p class="mb-1"><strong>Orientação:</strong> esta página foi formatada para impressão de etiquetas dos Correios (remetente/destinatário). Use a opção de impressão do navegador.</p>
+        </div>
+
+           <div th:each="pedido : ${pedidosEtiquetas}"
+               th:with="enderecoDest=${#lists.isEmpty(pedido.cliente.enderecos)} ? null : ${pedido.cliente.enderecos[0]}">
+              <div class="etiqueta" th:attr="id=${'etiqueta-' + pedido.id}">
+                <div class="etiqueta-header">
+                    <div class="etiqueta-titulo">Etiqueta de Envio - Pedido <span th:text="${pedido.id}">0</span></div>
+                    <div class="etiqueta-logo">Lótus Garimpo</div>
+                </div>
+
+                <div class="bloco">
+                    <div class="bloco-titulo">Remetente</div>
+                    <div class="linha-campo">
+                        <span class="campo-label">Nome:</span>
+                        <span class="campo-valor" th:text="${remetente != null ? remetente.nome : 'N/I'}">Loja</span>
+                    </div>
+                    <div class="linha-campo">
+                        <span class="campo-label">Endereço:</span>
+                        <span class="campo-valor"
+                              th:text="${remetenteEndereco != null ? remetenteEndereco.logradouro + ', ' + remetenteEndereco.numero : '—'}">Rua X, 123</span>
+                    </div>
+                    <div class="linha-campo">
+                        <span class="campo-label">Bairro:</span>
+                        <span class="campo-valor" th:text="${remetenteEndereco != null ? remetenteEndereco.bairro : '—'}">Bairro</span>
+                    </div>
+                    <div class="linha-campo">
+                        <span class="campo-label">Cidade/UF:</span>
+                        <span class="campo-valor"
+                              th:text="${remetenteEndereco != null ? remetenteEndereco.cidade + ' - ' + remetenteEndereco.uf : '—'}">Cidade - UF</span>
+                    </div>
+                    <div class="linha-campo">
+                        <span class="campo-label">CEP:</span>
+                        <span class="campo-valor" th:text="${remetenteEndereco != null ? remetenteEndereco.cep : '—'}">00000-000</span>
+                    </div>
+                </div>
+
+                <div class="bloco mt-2">
+                    <div class="bloco-titulo">Destinatário</div>
+                    <div class="linha-campo">
+                        <span class="campo-label">Nome:</span>
+                        <span class="campo-valor" th:text="${pedido.cliente != null ? pedido.cliente.nome : 'Cliente não informado'}">Cliente</span>
+                    </div>
+                    <div class="linha-campo">
+                        <span class="campo-label">Endereço:</span>
+                        <span class="campo-valor"
+                              th:text="${enderecoDest != null ? enderecoDest.logradouro + ', ' + enderecoDest.numero + (enderecoDest.complemento != null ? ' - ' + enderecoDest.complemento : '') : 'Endereço não cadastrado'}">Rua Y, 999</span>
+                    </div>
+                    <div class="linha-campo">
+                        <span class="campo-label">Bairro:</span>
+                        <span class="campo-valor" th:text="${enderecoDest != null ? enderecoDest.bairro : '—'}">Bairro</span>
+                    </div>
+                    <div class="linha-campo">
+                        <span class="campo-label">Cidade/UF:</span>
+                        <span class="campo-valor"
+                              th:text="${enderecoDest != null ? enderecoDest.cidade + ' - ' + enderecoDest.uf : '—'}">Cidade - UF</span>
+                    </div>
+                    <div class="linha-campo">
+                        <span class="campo-label">CEP:</span>
+                        <span class="campo-valor" th:text="${enderecoDest != null ? enderecoDest.cep : '—'}">00000-000</span>
+                    </div>
+                </div>
+
+                <div class="linha-campo mt-2">
+                    <span class="campo-label">Obs.:</span>
+                    <span class="campo-valor" th:text="${'Conteúdo: peças de vestuário - Pedido ' + pedido.id}">Conteúdo</span>
+                </div>
+
+                <div class="acoes-etiqueta d-flex justify-content-end">
+                    <button type="button" class="btn btn-sm btn-outline-dark btn-imprimir-uma"
+                            th:attr="data-etiqueta-id=${'etiqueta-' + pedido.id}">
+                        Imprimir esta etiqueta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const botoes = document.querySelectorAll('.btn-imprimir-uma');
+        botoes.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const id = btn.getAttribute('data-etiqueta-id');
+                const todas = document.querySelectorAll('.etiqueta');
+                todas.forEach(function (el) { el.classList.remove('etiqueta-print'); });
+
+                const alvo = document.getElementById(id);
+                if (alvo) {
+                    alvo.classList.add('etiqueta-print');
+                    window.print();
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

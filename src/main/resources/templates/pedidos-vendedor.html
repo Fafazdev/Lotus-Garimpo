@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="row justify-content-center g-4" th:if="${!#lists.isEmpty(pedidos)}">
-                    <div class="col-12 col-sm-8 col-md-6 col-lg-4" th:each="pedido : ${pedidos}">
+                    <div class="col-12 col-sm-8 col-md-6 col-lg-4" th:each="pedido : ${pedidos}" th:attr="data-pedido-status=${pedido.status}">
                         <div class="lotus-pedido-card">
                     <span class="lotus-pedido-icon-wrapper">
                         <img th:src="@{/imagens/lotus.webp}" alt="Lótus Garimpo">
@@ -127,7 +127,10 @@
             </div>
         </div>
     </div>
-</main>
+    </main>
+
+    <!-- Modal de detalhes de Valor das Peças (fragmento Thymeleaf) -->
+    <div th:replace="~{modal :: vendedorValorPecasModal}"></div>
 
 <!-- Offcanvas lateral da dashboard de vendas -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="dashboardOffcanvas" aria-labelledby="dashboardOffcanvasLabel">
@@ -165,7 +168,8 @@
                     <span th:text="${totalAguardandoEnvio}">0</span>
                 </span>
             </div>
-            <div class="kpi-card">
+            <!-- Card clicável para abrir o modal de detalhes das vendas -->
+            <div class="kpi-card" data-bs-toggle="modal" data-bs-target="#valorPecasDetalhesModal" style="cursor: pointer;">
                 <span class="kpi-title">VALOR DAS PEÇAS</span>
                 <span class="kpi-value"
                       th:text="'R$ ' + ${#numbers.formatDecimal(totalValorPecas ?: 0, 1, 2, 'POINT')}">
@@ -195,19 +199,19 @@
 
             <div class="actions-container">
                 <h3 class="section-title">Ações de Controle Rápido</h3>
-                <button class="btn-action">
+                <button class="btn-action" id="btnGerenciarSacolinha" type="button">
                     <i class="fas fa-bag-shopping me-2"></i>
                     Gerenciar Sacolinhas (<span th:text="${totalSacolinha}">0</span>)
                 </button>
-                <button class="btn-action">
+                <button class="btn-action" id="btnImprimirEtiquetas" type="button" th:attr="data-etiquetas-url=@{/vendedor/pedidos/etiquetas}">
                     <i class="fas fa-print me-2"></i>
                     Imprimir Etiquetas de Envio
                 </button>
-                <button class="btn-action">
+                <button class="btn-action" id="btnVerConcluidos" type="button">
                     <i class="fas fa-check-circle me-2"></i>
                     Ver Pedidos Concluídos
                 </button>
-                <button class="btn-action" disabled style="opacity:0.6; cursor:not-allowed;">
+                <button class="btn-action" id="btnExportarMensal" type="button" th:attr="data-export-url=@{/vendedor/pedidos/export-mensal}">
                     Exportar Relatório Mensal
                 </button>
             </div>
@@ -223,37 +227,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script th:inline="javascript">
-    const ctx = document.getElementById('vendasChart');
-    if (ctx) {
-        const vendasLabels = [[${vendasLabels}]];
-        const vendasValores = [[${vendasValores}]];
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: vendasLabels,
-                datasets: [{
-                    label: 'Valor de Vendas (R$)',
-                    data: vendasValores,
-                    borderColor: '#b54976',
-                    backgroundColor: 'rgba(181, 73, 118, 0.2)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-    }
+    window.vendasLabels = [[${vendasLabels}]];
+    window.vendasValores = [[${vendasValores}]];
 </script>
+<script th:src="@{/js/pedidos-vendedor.js}"></script>
 </body>
 
 </html>

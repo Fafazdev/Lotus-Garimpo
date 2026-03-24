@@ -16,7 +16,7 @@
     <link th:href="@{/css/bodyprodutos.css}" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <link th:href="@{/css/header.css}" rel="stylesheet">
-        <link th:href="@{/css/piece-modal.css}" rel="stylesheet">
+    <link th:href="@{/css/piece-modal.css}" rel="stylesheet">
 </head>
 <header class="top-header">
     <div class="container-fluid px-4 px-lg-5">
@@ -60,7 +60,8 @@
             <div class="col-12">
                 <nav class="nav-menu">
                     <a th:href="@{/}">Início</a>
-                    <a th:href="@{/produtos}">Produtos <i class="fas fa-chevron-down ms-1" style="font-size: 10px;"></i></a>
+                    <a th:href="@{/produtos}">Produtos <i class="fas fa-chevron-down ms-1"
+                            style="font-size: 10px;"></i></a>
                     <a th:href="@{/medidas}">Guia de medidas</a>
                 </nav>
             </div>
@@ -75,11 +76,11 @@
 
 <body>
 
-<div th:replace="~{alerta :: floatingAlert}"></div>
-<div th:replace="~{modal :: modalLogin}"></div>
-<main class="shop-section">
+    <div th:replace="~{alerta :: floatingAlert}"></div>
+    <div th:replace="~{modal :: modalLogin}"></div>
+    <main class="shop-section">
         <div class="container-fluid px-4 px-lg-5 py-5">
-            
+
             <div class="row mb-5 align-items-center">
                 <div class="col-6">
                     <div class="breadcrumb-text">
@@ -94,9 +95,9 @@
             </div>
 
             <div class="row">
-                
+
                 <aside class="col-12 col-lg-3 mb-5">
-                    
+
                     <h2 class="sidebar-title">Categorias</h2>
                     <ul class="sidebar-list">
                         <li><a href="#">Partes de cima</a></li>
@@ -107,7 +108,7 @@
 
                     <h2 class="sidebar-title mt-5">Filtrar por</h2>
                     <h3 class="sidebar-subtitle">Tamanho</h3>
-                    
+
                     <div class="filter-options">
                         <label class="custom-checkbox">
                             <input type="checkbox">
@@ -130,15 +131,15 @@
 
                 <div class="col-12 col-lg-9">
                     <div class="row">
-                        
+
                         <div th:each="produto : ${produtos}" class="col-12 col-md-6 col-lg-4 mb-4">
                             <div class="card-produto">
                                 <div class="image_container">
                                     <!-- use Thymeleaf URL expression to resolve path correctly -->
                                     <img class="product-image-fullscreen"
-                                         th:src="${produto.imagem} ?: '/imagens/lotus.webp'" alt="Imagem do produto"
-                                         th:attr="data-full-src=${produto.imagem} ?: '/imagens/lotus.webp'"
-                                         style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" />
+                                        th:src="${produto.imagem} ?: '/imagens/lotus.webp'" alt="Imagem do produto"
+                                        th:attr="data-full-src=${produto.imagem} ?: '/imagens/lotus.webp'"
+                                        style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" />
                                 </div>
                                 <div class="title"><span th:text="${produto.nome}">Nome do produto</span></div>
                                 <!-- descrição do produto -->
@@ -152,20 +153,22 @@
                                 <div class="size">
                                     <span>Tamanho</span>
                                     <ul class="list-size">
-                                        <li class="item-list"><button class="item-list-button" th:text="${produto.tamanho}">Tamanho</button></li>
+                                        <li class="item-list"><button class="item-list-button"
+                                                th:text="${produto.tamanho}">Tamanho</button></li>
                                     </ul>
                                 </div>
                                 <div class="action d-flex justify-content-between align-items-center">
-                                    <div class="price"><span th:text="'R$' + ${#numbers.formatDecimal(produto.preco, 1, 2, 'POINT')}">R$</span></div>
+                                    <div class="price"><span
+                                            th:text="'R$' + ${#numbers.formatDecimal(produto.preco, 1, 2, 'POINT')}">R$</span>
+                                    </div>
                                     <div class="manage-buttons">
                                         <form th:action="@{/carrinho/adicionar}" method="post" style="display:inline;">
                                             <input type="hidden" name="produtoId" th:value="${produto.id}">
                                             <button class="cart-button" type="submit"><span>Comprar</span></button>
                                         </form>
-                                        <div th:if="${session.usuarioLogado != null and produto.usuario != null and produto.usuario.id == session.usuarioLogado.id}">
-                                            <button type="button"
-                                                    class="edit-card-button"
-                                                    th:attr="data-id=${produto.id},
+                                        <div
+                                            th:if="${session.usuarioLogado != null and produto.usuario != null and produto.usuario.id == session.usuarioLogado.id}">
+                                            <button type="button" class="edit-card-button" th:attr="data-id=${produto.id},
                                                              data-nome=${produto.nome},
                                                              data-descricao=${produto.descricao},
                                                              data-preco=${produto.preco},
@@ -174,7 +177,8 @@
                                                              data-imagem=${produto.imagem}">
                                                 <i class="fas fa-pen"></i>
                                             </button>
-                                            <form th:action="@{'/produto/excluir/' + ${produto.id}}" method="post" style="display:inline;">
+                                            <form th:action="@{'/produto/excluir/' + ${produto.id}}" method="post"
+                                                style="display:inline;">
                                                 <input type="hidden" name="origem" value="produtos" />
                                                 <button type="submit" class="delete-card-button">
                                                     <i class="fas fa-trash"></i>
@@ -185,35 +189,20 @@
                                 </div>
                             </div>
                         </div>
-                         <div class="col-12 col-md-6 col-lg-4 mb-4">
-                            <div class="card-produto">
-                                <div class="image_container">
-                                    <!-- placeholder image for static example -->
-                                    <img class="product-image-fullscreen"
-                                         th:src="@{/imagens/lotus.webp}" alt="Imagem do produto"
-                                         th:attr="data-full-src=@{/imagens/lotus.webp}"
-                                         style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" />
-                                </div>
-                                <div class="title"><span>Calça Flare</span></div>
-                                <div class="description"><span>Descrição do produto</span></div>
-                                <div class="category"><span>Categoria</span></div>
-                                <div class="size"><span>Tamanho</span><ul class="list-size"><li class="item-list"><button class="item-list-button">40</button></li></ul></div>
-                                <div class="action"><div class="price"><span>R$149,90</span></div><button class="cart-button"><span>Comprar</span></button></div>
-                            </div>
-                        </div>
 
-                        </div>
+
+                    </div>
                 </div>
 
             </div>
         </div>
     </main>
 
-<!-- Modais de produto vindos do fragmento modal.html -->
-<div th:replace="~{modal :: produtoModals('produtos')}"></div>
+    <!-- Modais de produto vindos do fragmento modal.html -->
+    <div th:replace="~{modal :: produtoModals('produtos')}"></div>
 
-<!-- Modal do carrinho puxado via Thymeleaf -->
-<div th:replace="~{carrinho :: carrinhoModal}"></div>
+    <!-- Modal do carrinho puxado via Thymeleaf -->
+    <div th:replace="~{carrinho :: carrinhoModal}"></div>
 
 </body>
 <footer class="site-footer">
@@ -264,10 +253,10 @@
             </div>
         </div>
     </div>
-<div th:replace="~{alerta :: cookieBanner}"></div>
-<div th:replace="~{modal :: modalLogin}"></div>
-<div th:replace="~{alerta :: floatingAlertJs}"></div>
+    <div th:replace="~{alerta :: cookieBanner}"></div>
+    <div th:replace="~{modal :: modalLogin}"></div>
+    <div th:replace="~{alerta :: floatingAlertJs}"></div>
 
-<script th:src="@{/js/produtos.js}"></script>
+    <script th:src="@{/js/produtos.js}"></script>
 
 </html>

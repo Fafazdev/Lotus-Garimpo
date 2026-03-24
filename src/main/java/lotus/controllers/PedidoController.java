@@ -1,6 +1,7 @@
 package lotus.controllers;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import lotus.model.Endereco;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -65,6 +68,33 @@ public class PedidoController {
 
         model.addAttribute("pedidos", pedidos);
 
+        // Data de hoje para filtros
+        LocalDate hoje = LocalDate.now();
+
+        // Filtra pedidos considerados como "venda válida" para o card/ modal de Valor das Peças
+        List<Pedido> pedidosValorPecasMes = new ArrayList<>();
+        for (Pedido p : pedidos) {
+            if (p == null || p.getValorPago() == null || p.getDataCompra() == null) {
+                continue;
+            }
+
+            String status = p.getStatus() != null ? p.getStatus() : "";
+            boolean pagoOuEnviado =
+                    "AGUARDANDO_ENVIO".equalsIgnoreCase(status) ||
+                    "ENVIADO".equalsIgnoreCase(status);
+
+            LocalDate dataPedido = p.getDataCompra().toLocalDate();
+            boolean mesmoMesAtual =
+                    dataPedido.getYear() == hoje.getYear() &&
+                    dataPedido.getMonthValue() == hoje.getMonthValue();
+
+            if (pagoOuEnviado && mesmoMesAtual) {
+                pedidosValorPecasMes.add(p);
+            }
+        }
+
+        model.addAttribute("pedidosValorPecasMes", pedidosValorPecasMes);
+
         // Dados da dashboard para o vendedor
         long totalPedidos = pedidos.size();
         long totalSacolinha = pedidos.stream()
@@ -77,7 +107,8 @@ public class PedidoController {
             .filter(p -> "ENVIADO".equalsIgnoreCase(p.getStatus()))
             .count();
 
-        BigDecimal totalValorPecas = pedidos.stream()
+        // Total de valor das peças considerando apenas as vendas válidas do mês atual
+        BigDecimal totalValorPecas = pedidosValorPecasMes.stream()
             .map(Pedido::getValorPago)
             .filter(Objects::nonNull)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -95,7 +126,6 @@ public class PedidoController {
         model.addAttribute("totalFrete", totalFrete);
 
         // Dados do gráfico (últimos 7 dias)
-        LocalDate hoje = LocalDate.now();
         List<String> vendasLabels = new ArrayList<>();
         List<BigDecimal> vendasValores = new ArrayList<>();
 
@@ -211,6 +241,80 @@ public class PedidoController {
 
         redirectAttributes.addFlashAttribute("vendedorSucesso", "Pedido marcado como ENVIADO.");
         return "redirect:/vendedor/pedidos";
+    }
+
+    @GetMapping("/vendedor/pedidos/etiquetas")
+    public String imprimirEtiquetasEnvio(HttpSession session, Model model) {
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null || usuarioLogado.getTipo() == null || usuarioLogado.getTipo() != 2) {
+            return "redirect:/?erro=permissao";
+        }
+
+        List<Pedido> pedidos = pedidoRepository.findAllByOrderByDataCompraDesc();
+        List<Pedido> pedidosEtiquetas = new ArrayList<>();
+
+        for (Pedido p : pedidos) {
+            if (p == null) continue;
+            String status = p.getStatus() != null ? p.getStatus() : "";
+            if ("AGUARDANDO_ENVIO".equalsIgnoreCase(status)) {
+                pedidosEtiquetas.add(p);
+            }
+        }
+
+        model.addAttribute("pedidosEtiquetas", pedidosEtiquetas);
+        model.addAttribute("remetente", usuarioLogado);
+
+        Endereco remetenteEndereco = null;
+        if (usuarioLogado.getEnderecos() != null && !usuarioLogado.getEnderecos().isEmpty()) {
+            remetenteEndereco = usuarioLogado.getEnderecos().get(0);
+        }
+        model.addAttribute("remetenteEndereco", remetenteEndereco);
+
+        return "etiquetas-envio";
+    }
+
+    @GetMapping("/vendedor/pedidos/export-mensal")
+    public void exportarRelatorioMensal(HttpSession session, HttpServletResponse response) throws IOException {
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null || usuarioLogado.getTipo() == null || usuarioLogado.getTipo() != 2) {
+            response.sendRedirect("/?erro=permissao");
+            return;
+        }
+
+        List<Pedido> pedidos = pedidoRepository.findAllByOrderByDataCompraDesc();
+
+        LocalDate hoje = LocalDate.now();
+        List<Pedido> pedidosMes = new ArrayList<>();
+        for (Pedido p : pedidos) {
+            if (p == null || p.getDataCompra() == null) continue;
+
+            LocalDate dataPedido = p.getDataCompra().toLocalDate();
+            boolean mesmoMesAtual =
+                    dataPedido.getYear() == hoje.getYear() &&
+                    dataPedido.getMonthValue() == hoje.getMonthValue();
+
+            if (mesmoMesAtual) {
+                pedidosMes.add(p);
+            }
+        }
+
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=relatorio_pedidos_mes.csv");
+
+        PrintWriter writer = response.getWriter();
+        writer.println("Data;Cliente;Status;ValorPecas;ValorFrete");
+
+        for (Pedido p : pedidosMes) {
+            String data = p.getDataCompra() != null ? p.getDataCompra().toLocalDate().toString() : "";
+            String cliente = (p.getCliente() != null && p.getCliente().getNome() != null) ? p.getCliente().getNome() : "";
+            String status = p.getStatus() != null ? p.getStatus() : "";
+            String valorPecas = p.getValorPago() != null ? p.getValorPago().toPlainString() : "0";
+            String valorFrete = p.getValorFrete() != null ? p.getValorFrete().toPlainString() : "0";
+
+            writer.println(String.join(";", data, cliente, status, valorPecas, valorFrete));
+        }
+
+        writer.flush();
     }
 
     private String formataDiaSemana(DayOfWeek diaSemana) {
