@@ -28,7 +28,7 @@ public class Usuario {
     @Column(name = "cd_telefone")
     private String telefone;
 
-    @Column(name = "cd_cpf")
+    @Column(name = "cd_cpf", unique = true)
     private String cpf;
 
     @Column(name = "imagem")

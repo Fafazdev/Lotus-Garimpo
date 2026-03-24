@@ -64,9 +64,32 @@
                 <div class="col-12">
                     <nav class="nav-menu">
                         <a th:href="@{/}">Início</a>
-                        <a th:href="@{/produtos}">Produtos <i class="fas fa-chevron-down ms-1"
-                                style="font-size: 10px;"></i></a>
-                        <a href="#">Guia de medidas</a>
+                        <div class="nav-dropdown nav-dropdown-produtos">
+                            <a th:href="@{/produtos}" class="nav-dropdown-trigger">Produtos <i class="fas fa-chevron-down ms-1"
+                                    style="font-size: 10px;"></i></a>
+                            <div class="nav-dropdown-menu" aria-label="Características dos produtos">
+                                <div class="nav-dropdown-grid">
+                                    <div class="nav-dropdown-group">
+                                        <span class="nav-dropdown-title">Peça</span>
+                                        <div class="nav-dropdown-options" data-caracteristica="nome"></div>
+                                    </div>
+                                    <div class="nav-dropdown-group">
+                                        <span class="nav-dropdown-title">Categoria</span>
+                                        <div class="nav-dropdown-options" data-caracteristica="categoria"></div>
+                                    </div>
+                                    <div class="nav-dropdown-group">
+                                        <span class="nav-dropdown-title">Tamanho</span>
+                                        <div class="nav-dropdown-options" data-caracteristica="tamanho"></div>
+                                    </div>
+                                    <div class="nav-dropdown-group">
+                                        <span class="nav-dropdown-title">Preço</span>
+                                        <div class="nav-dropdown-options" data-caracteristica="preco"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a th:href="@{/medidas}">Guia de medidas</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#sacolinhaInfoModal" onclick="return false;">Sacolinha</a>
                     </nav>
                 </div>
             </div>
@@ -235,7 +258,10 @@
     <!-- Modal do carrinho puxado via Thymeleaf -->
     <div th:replace="~{carrinho :: carrinhoModal}"></div>
 
+    <div th:replace="~{modal :: sacolinhaInfoModal}"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/search-autocomplete.js}"></script>
+    <script th:src="@{/js/product-nav-dropdown.js}"></script>
 </body>
 <footer class="site-footer">
     <div class="container-fluid px-4 px-lg-5">
@@ -245,10 +271,10 @@
             <div class="col-12 col-md-6 mb-4 mb-md-0">
                 <h4 class="footer-title">Departamentos</h4>
                 <ul class="footer-links">
-                    <li><a href="#">Início</a></li>
-                    <li><a href="#">Produtos</a></li>
-                    <li><a href="#">Sacolinha</a></li>
-                    <li><a href="#">Guia de medidas</a></li>
+                    <li><a th:href="@{/}">Início</a></li>
+                    <li><a th:href="@{/produtos}">Produtos</a></li>
+                    <li><a th:href="@{/medidas}">Guia de medidas</a></li>
+                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#sacolinhaInfoModal" onclick="return false;">Sacolinha</a></li>
                 </ul>
             </div>
 

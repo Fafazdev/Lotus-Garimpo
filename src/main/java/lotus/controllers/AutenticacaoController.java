@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lotus.model.Usuario;
 import lotus.repositories.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.security.MessageDigest;
@@ -20,6 +22,9 @@ public class AutenticacaoController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/cadastro")
     public String processoCadastro(
             @RequestParam("nome") String nome,
@@ -28,7 +33,7 @@ public class AutenticacaoController {
             @RequestParam("senha") String senha,
             @RequestParam("confirmar_senha") String confirmarSenha,
             @RequestParam("tipo") Integer tipo,
-            HttpSession session) {
+            HttpServletRequest request) {
 
         // Normaliza CPF para apenas dígitos para validação
         String cpfNumerico = cpf != null ? cpf.replaceAll("\\D", "") : "";
@@ -62,14 +67,20 @@ public class AutenticacaoController {
         novoUsuario.setEmail(email);
         novoUsuario.setCpf(cpf);
 
-        // Gera hash da senha (SHA-256) antes de salvar no banco
-        String senhaHash = hashSenha(senha);
-        novoUsuario.setSenha(senhaHash);
+        // Gera hash BCrypt da senha
+        novoUsuario.setSenha(passwordEncoder.encode(senha));
         novoUsuario.setTipo(tipoNormalizado);
         novoUsuario.setDataCriacao(LocalDate.now());
 
         novoUsuario = usuarioRepository.save(novoUsuario);
-        session.setAttribute("usuarioLogado", novoUsuario);
+
+        // Rotação de sessão: invalida sessão anterior e cria uma nova
+        HttpSession oldSession = request.getSession(false);
+        if (oldSession != null) {
+            oldSession.invalidate();
+        }
+        HttpSession newSession = request.getSession(true);
+        newSession.setAttribute("usuarioLogado", novoUsuario);
 
         return "redirect:/perfil";
     }
@@ -84,16 +95,21 @@ public class AutenticacaoController {
     public String processoLogin(
             @RequestParam("email") String email,
             @RequestParam("senha") String senha,
-            HttpSession session) {
+            HttpServletRequest request) {
 
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
 
-            // Compara a senha digitada com o hash armazenado
-            if (usuario.getSenha() != null && hashSenha(senha).equals(usuario.getSenha())) {
-                session.setAttribute("usuarioLogado", usuario);
+            if (isPasswordValid(senha, usuario)) {
+                // Rotação de sessão: invalida a sessão anterior e cria uma nova
+                HttpSession oldSession = request.getSession(false);
+                if (oldSession != null) {
+                    oldSession.invalidate();
+                }
+                HttpSession newSession = request.getSession(true);
+                newSession.setAttribute("usuarioLogado", usuario);
                 return "redirect:/perfil";
             }
         }
@@ -103,8 +119,11 @@ public class AutenticacaoController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.removeAttribute("usuarioLogado");
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         return "redirect:/";
     }
 
@@ -148,19 +167,41 @@ public class AutenticacaoController {
         }
     }
 
-    // Gera hash SHA-256 em hexadecimal para a senha
-    private String hashSenha(String senha) {
-        if (senha == null) return null;
+    // Verifica senha: suporta BCrypt (novo) e SHA-256 legado (migra automaticamente)
+    private boolean isPasswordValid(String rawPassword, Usuario usuario) {
+        String storedHash = usuario.getSenha();
+        if (storedHash == null) return false;
+
+        // Hash BCrypt (começa com $2)
+        if (storedHash.startsWith("$2")) {
+            return passwordEncoder.matches(rawPassword, storedHash);
+        }
+
+        // Hash SHA-256 legado (64 chars hex) — migra para BCrypt automaticamente no próximo login
+        if (storedHash.length() == 64 && storedHash.matches("[a-f0-9]+")) {
+            if (legacySha256(rawPassword).equals(storedHash)) {
+                usuario.setSenha(passwordEncoder.encode(rawPassword));
+                usuarioRepository.save(usuario);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Mantido apenas para migração de senhas SHA-256 existentes
+    private String legacySha256(String value) {
+        if (value == null) return null;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] digest = md.digest(senha.getBytes());
+            byte[] digest = md.digest(value.getBytes());
             StringBuilder sb = new StringBuilder();
             for (byte b : digest) {
                 sb.append(String.format("%02x", b));
             }
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Erro ao gerar hash da senha", e);
+            throw new RuntimeException("Erro ao processar senha", e);
         }
     }
 }
