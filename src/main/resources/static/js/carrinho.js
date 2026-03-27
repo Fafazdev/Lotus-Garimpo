@@ -57,7 +57,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Intercepta botões "Comprar" para adicionar ao carrinho via AJAX
-    var addForms = document.querySelectorAll('form[action="/carrinho/adicionar"]');
+    // Usa a classe cart-add-form para não depender do caminho exato no atributo action
+    var addForms = document.querySelectorAll('form.cart-add-form');
     addForms.forEach(function (form) {
         form.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -67,13 +68,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var produtoId = produtoInput.value;
 
+            // Captura o token CSRF gerado automaticamente pelo Spring/Thymeleaf no formulário
+            var csrfInput = form.querySelector('input[name="_csrf"]');
+            var csrfToken = csrfInput ? csrfInput.value : null;
+
+            var body = 'produtoId=' + encodeURIComponent(produtoId);
+            if (csrfToken) {
+                body += '&_csrf=' + encodeURIComponent(csrfToken);
+            }
+
             fetch('/carrinho/adicionar-ajax', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: 'produtoId=' + encodeURIComponent(produtoId)
+                body: body
             })
             .then(function (response) {
                 if (!response.ok) {

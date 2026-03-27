@@ -185,7 +185,7 @@
                                             th:text="'R$' + ${#numbers.formatDecimal(produto.preco, 1, 2, 'POINT')}">R$</span>
                                     </div>
                                     <div class="manage-buttons">
-                                        <form th:action="@{/carrinho/adicionar}" method="post" style="display:inline;">
+                                        <form th:action="@{/carrinho/adicionar}" method="post" style="display:inline;" class="cart-add-form">
                                             <input type="hidden" name="produtoId" th:value="${produto.id}">
                                             <button class="cart-button" type="submit"><span>Comprar</span></button>
                                         </form>

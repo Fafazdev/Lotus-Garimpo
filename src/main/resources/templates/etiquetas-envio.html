@@ -14,7 +14,7 @@
 
     <div th:if="${!#lists.isEmpty(pedidosEtiquetas)}">
         <div class="mb-3 sem-etiquetas-aviso">
-            <p class="mb-1"><strong>Orientação:</strong> esta página foi formatada para impressão de etiquetas dos Correios (remetente/destinatário). Use a opção de impressão do navegador.</p>
+            <p class="mb-1"><strong>Orientação:</strong> esta página foi formatada para impressão no padrão de etiqueta 10x15cm do Melhor Envio (remetente/destinatário). Use a opção de impressão do navegador.</p>
         </div>
 
            <div th:each="pedido : ${pedidosEtiquetas}"
